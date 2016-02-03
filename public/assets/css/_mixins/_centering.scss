@@ -1,0 +1,28 @@
+@mixin absolute-center($width) {
+	position: absolute;
+	left: 50%;
+	margin-left: -($width / 2);
+}
+
+@mixin absolute-middle($height) {
+	position: absolute;
+	top: 50%;
+	margin-top: -($height / 2);
+}
+
+@mixin child-middle($font-size: $font-size) {
+	font-size: 0;
+
+	&:before {
+		content: '';
+		display: inline-block;
+		height: 100%;
+		vertical-align: middle;
+	}
+	& > * {
+		display: inline-block;
+		font-size: $font-size;
+		max-width: 100%;
+		vertical-align: middle;
+	}
+}

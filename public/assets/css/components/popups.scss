@@ -1,0 +1,17 @@
+// calendar event click
+.event-preview {
+
+}
+// when date is changed and you are about to lose some items to another reservation
+.reservation-warning {
+	font-size: $font-size-big;
+	font-weight: bold;
+}
+
+
+
+.mfp-content {
+	background-color: $white;
+	max-width: $wrapper--width;
+	padding: 20px;
+}

@@ -1,0 +1,42 @@
+.error {
+	color: $fire-engine-red;
+	font-weight: bold;
+}
+
+button,
+input,
+select,
+textarea {
+	background: $forms--bg;
+	border: $forms--b;
+	border-radius: $forms--br;
+	color: $forms--c;
+	font-family: $forms--ff;
+	font-size: $forms--fs;
+	height: $forms--h;
+	outline: none;
+	padding: $forms--p;
+	text-align: $forms--ta;
+
+	&.error {
+		border-color: $fire-engine-red;
+	}
+}
+button {
+	cursor: pointer;
+}
+fieldset {
+	border: none;
+	margin: $margin--big auto;
+}
+form {
+
+
+
+}
+textarea {
+
+	height: auto;
+	min-height: 50px;
+
+}

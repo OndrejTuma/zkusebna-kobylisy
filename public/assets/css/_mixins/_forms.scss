@@ -1,0 +1,33 @@
+@mixin webkit-autofill($background-color, $color: inherit) {
+	&:-webkit-autofill {
+		-webkit-box-shadow: 0 0 0 1000px $background-color inset;
+		-webkit-text-fill-color: $color;
+	}
+}
+
+@mixin webkit-autofill-background($background) {
+	&:-webkit-autofill {
+		-webkit-box-shadow: 0 0 0 1000px $background inset;
+	}
+}
+
+@mixin webkit-autofill-color($color) {
+	&:-webkit-autofill {
+		-webkit-text-fill-color: $color;
+	}
+}
+
+@mixin placeholder($color) {
+	&::-webkit-input-placeholder {
+		color: $color;
+	}
+	&:-moz-placeholder {
+		color: $color;
+	}
+	&::-moz-placeholder {
+		color: $color;
+	}
+	&:-ms-input-placeholder {
+		color: $color;
+	}
+}

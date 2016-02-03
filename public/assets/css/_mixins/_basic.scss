@@ -1,0 +1,68 @@
+
+@mixin dim($width: auto, $height: auto) {
+	height: $height;
+	width: $width;
+}
+
+@mixin square($size) {
+	@include dim($size, $size);
+}
+
+@mixin absolute($top: auto, $left: auto, $bottom: auto, $right: auto) {
+	position: absolute;
+	top: $top;
+	left: $left;
+	bottom: $bottom;
+	right: $right;
+}
+
+@mixin clearfix() {
+	&:after {
+		clear: both;
+		content: "";
+		display: table;
+	}
+}
+
+@mixin opacity($opacity) {
+	$ieOpacity: $opacity * 100;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=#{$ieOpacity})";
+	filter: alpha(opacity=$ieOpacity);
+	opacity: $opacity;
+}
+
+// no underlines for a:before|a:after (just for IE, other browsers are normal)
+@mixin no-pseudo-underline() {
+	&:after,
+	&:before {
+		display: inline-block;
+		text-decoration: underline;
+	}
+	&:after,
+	&:before {
+		text-decoration: none;
+		&:hover {
+			text-decoration: none;
+		}
+	}
+}
+
+// truncate text with '...' postfix
+@mixin text-truncate() {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+// no text selection
+@mixin no-select() {
+	@include vendors(user-select, none);
+	-webkit-touch-callout: none;
+	-khtml-user-select: none;
+}
+
+// cursor with no-select
+@mixin cursor() {
+	@include no-select();
+	cursor: pointer;
+}

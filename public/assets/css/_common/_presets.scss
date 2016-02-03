@@ -1,0 +1,196 @@
+.fl {
+	float: left;
+}
+.fr {
+	float: right;
+}
+
+.table {
+	display: table;
+	margin: 0 0 $margin--default;
+	padding: 0;
+	width: 100%;
+
+	& > * {
+		display: table-cell;
+		width: 1px;	//makes columns even in width
+	}
+
+	&.cols-4 > * {
+		width: 20%;
+	}
+	&.cols-3 > * {
+		width: 33.3%;
+	}
+	&.cols-2 > * {
+		width: 50%;
+	}
+}
+
+.shrinked-50 {
+	width: 50%;
+}
+.shrinked-60 {
+	width: 60%;
+}
+.shrinked-70 {
+	width: 70%;
+}
+.shrinked-80 {
+	width: 80%;
+}
+.shrinked-90 {
+	width: 90%;
+}
+
+.hidden {
+	visibility: hidden;
+}
+.visually-hidden {
+	position: absolute;
+	visibility: hidden;
+}
+
+.mlra {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.tac {
+	text-align: center;
+}
+.tal {
+	text-align: left;
+}
+.tar {
+	text-align: right;
+}
+
+.ttn {
+	text-transform: none;
+}
+.ttu {
+	text-transform: uppercase;
+}
+
+.clear {
+	clear: both;
+}
+.clearfix {
+	@include clearfix();
+}
+.oh {
+	overflow: hidden;
+}
+
+.fsb {
+	font-size: $font-size-big;
+}
+.fsg {
+	font-size: $font-size-great;
+}
+.fss {
+	font-size: $font-size-small;
+}
+.fst {
+	font-size: $font-size-tiny;
+}
+
+
+.mb {
+	margin-bottom: $margin--default;
+}
+.mbb {
+	margin-bottom: $margin--big;
+}
+.mbs {
+	margin-bottom: $margin--small;
+}
+.mbn {
+	margin-bottom: 0;
+}
+.ml {
+	margin-left: $margin--default;
+}
+.mlb {
+	margin-left: $margin--big;
+}
+.mls {
+	margin-left: $margin--small;
+}
+.mln {
+	margin-left: 0;
+}
+.mr {
+	margin-right: $margin--default;
+}
+.mrb {
+	margin-right: $margin--big;
+}
+.mrs {
+	margin-right: $margin--small;
+}
+.mrn {
+	margin-right: 0;
+}
+.mt {
+	margin-top: $margin--default;
+}
+.mtb {
+	margin-top: $margin--big;
+}
+.mts {
+	margin-top: $margin--small;
+}
+.mtn {
+	margin-top: 0;
+}
+
+.pb {
+	padding-bottom: $padding--default;
+}
+.pbb {
+	padding-bottom: $padding--big;
+}
+.pbs {
+	padding-bottom: $padding--small;
+}
+.pbn {
+	padding-bottom: 0;
+}
+.pl {
+	padding-left: $padding--default;
+}
+.plb {
+	padding-left: $padding--big;
+}
+.pls {
+	padding-left: $padding--small;
+}
+.pln {
+	padding-left: 0;
+}
+.pr {
+	padding-right: $padding--default;
+}
+.prb {
+	padding-right: $padding--big;
+}
+.prs {
+	padding-right: $padding--small;
+}
+.prn {
+	padding-right: 0;
+}
+.pt {
+	padding-top: $padding--default;
+}
+.ptb {
+	padding-top: $padding--big;
+}
+.pts {
+	padding-top: $padding--small;
+}
+.ptn {
+	padding-top: 0;
+}

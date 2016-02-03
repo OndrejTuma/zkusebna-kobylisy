@@ -1,0 +1,32 @@
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+	color: $headings--color;
+	display: block;
+	font-family: $headings--family;
+	font-weight: $headings--weight;
+	margin: $headings--margin;
+}
+
+h1, .h1 {
+	font-size: $heading1--size;
+}
+
+h2, .h2 {
+	font-size: $heading2--size;
+}
+
+h3, .h3 {
+	font-size: $heading3--size;
+}
+
+h4, .h4 {
+	font-size: $heading4--size;
+}
+
+h5, .h5 {
+	font-size: $heading5--size;
+}
+
+h6, .h6 {
+	font-size: $heading6--size;
+}

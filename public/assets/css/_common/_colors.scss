@@ -1,0 +1,32 @@
+.black {
+	color: $black;
+}
+.cyan {
+	color: $cyan;
+}
+.red {
+	color: $fire-engine-red;
+}
+.gray {
+	color: $gray;
+}
+.white {
+	color: $white;
+}
+
+.bg--black {
+	background-color: $black;
+}
+.bg--cyan {
+	background-color: $cyan;
+	color: $white;
+}
+.bg--red {
+	background-color: $fire-engine-red;
+}
+.bg--gray {
+	background-color: $gray;
+}
+.bg--white {
+	background-color: $white;
+}

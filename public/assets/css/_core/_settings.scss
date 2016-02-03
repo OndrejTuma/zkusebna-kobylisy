@@ -1,0 +1,10 @@
+
+// set media query variables
+@include media-queries(false);
+
+// set font face
+//@include font-face($font-segoe, $font-segoe, $fonts-url);
+
+// set icomoon icons
+@include icomoon-icons("zkusebna", $icons-url);
+

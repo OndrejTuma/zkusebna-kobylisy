@@ -1,0 +1,7 @@
+@mixin background($image, $props: 0 0 no-repeat) {
+	background: url("#{$images-url}#{$image}") #{$props};
+}
+
+@mixin background-image($image) {
+	background-image: url("#{$images-url}#{$image}");
+}

@@ -1,0 +1,191 @@
+ul#item-list {
+
+	list-style: none;
+	padding-left: 0;
+
+	.expandable {
+		@include cursor();
+		border-bottom: 1px solid $drab;
+		background-color: $marigold;
+		color: $white;
+		margin: 0;
+		padding: 10px 20px;
+
+		&:after {
+			@include absolute(15px, $right: 10px);
+			@include font-icon(chevron-down);
+			@include transform(rotate(0));
+			@include transition(transform .3s);
+		}
+		&.active:after {
+			@include transform(rotate(180deg));
+		}
+		&.cat {
+			background-color: $dark-goldenrod;
+			border-bottom: 1px solid $drab;
+			color: $white;
+			font-size: $font-size-great;
+			padding: 20px 50px;
+
+			&:after {
+				top: 20px;
+			}
+			&:hover {
+				background-color: darken($dark-goldenrod, 5%);
+			}
+			&.active {
+				background-color: $drab;
+			}
+		}
+		&.category-empty {
+			background-color: $gray !important;
+			cursor: default;
+		}
+	}
+	.item-empty .reservable {
+
+	}
+	.reservable {
+		@include cursor();
+		@include transition("color .5s, background-color .1s");
+		background-color: transparent;
+
+		&:hover {
+			background-color: #f0f0f0;
+			color: $christi;
+		}
+		&.already-reserved {
+			cursor: default;
+			opacity: .5;
+
+			&:hover {
+				color: inherit;
+			}
+
+			i {
+				display: none;
+			}
+		}
+		&.already-reserved:hover {
+			background-color: transparent;
+		}
+		&.loading {
+			background-color: transparent;
+			color: $base-color;
+			opacity: .6;
+
+			i.icon-plus:before {
+				@include font-icon(spinner, $content-only: 1);
+				@include animation(spin 1s infinite linear);
+			}
+		}
+		&.reserved {
+
+			&:hover {
+				color: $fire-engine-red;
+			}
+			i {
+				@include transform(rotate(45deg));
+				color: $fire-engine-red;
+			}
+
+		}
+
+		i {
+			@include transition(transform .3s);
+			color: $christi;
+			font-size: $font-size;
+			display: inline-block;
+			margin: 0 0 0 10px;
+			vertical-align: top;
+		}
+		span {
+			float: right;
+		}
+	}
+	.subcategories {
+		margin: $margin--big 0 $margin--big $margin--big;
+
+		.expandable:before {
+			@include absolute(40px, 20px, 25px);
+			content: "";
+			border-left: 1px dashed $gray;
+		}
+
+		strong:before {
+			@include absolute(50%, -10px);
+			border-top: 1px dashed $gray;
+			content: "";
+			margin-top: -1px;
+			width: 10px;
+		}
+	}
+
+	.zkusebna .cat:before,
+	.nastroje .cat:before {
+		@include absolute(60px, 55px, 15px);
+		content: "";
+		border-left: 1px dashed $gray;
+	}
+
+	li {
+
+		$darken-by: 5%;
+		$border-darken-by: 10%;
+
+		position: relative;
+
+		&.zkusebna strong.expandable {
+			background-color: $zkusebna-color;
+			border-color: darken($zkusebna-color, $border-darken-by);
+
+			&:hover,
+			&.active {
+				background-color: darken($zkusebna-color, $darken-by);
+			}
+		}
+		&.technika strong.expandable {
+			background-color: $technika-color;
+			border-color: darken($technika-color, $border-darken-by);
+
+			&:hover,
+			&.active {
+				background-color: darken($technika-color, $darken-by);
+			}
+		}
+		&.nastroje strong.expandable {
+			background-color: $nastroje-color;
+			border-color: darken($nastroje-color, $border-darken-by);
+
+			&:hover,
+			&.active {
+				background-color: darken($nastroje-color, $darken-by);
+			}
+		}
+	}
+	strong {
+		@include transition(background .3s ease-in-out);
+		display: block;
+		font-size: $font-size-big;
+		line-height: 20px;
+		padding: 5px 15px;
+	}
+	ul {
+		@include transition(opacity .5s);
+		list-style: none;
+		opacity: 0;
+		position: absolute;
+		top: -9999px;
+		visibility: hidden;
+
+		&.active {
+			opacity: 1;
+			position: static;
+			visibility: visible;
+		}
+		&.items {
+			padding: 10px 0 10px 30px;
+		}
+	}
+
+}

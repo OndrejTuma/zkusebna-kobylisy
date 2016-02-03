@@ -1,0 +1,16 @@
+
+// set media queries based on @mobile-first variable
+@mixin media-queries($mobile-first: false) {
+	@if $mobile-first == true {
+		$desktop: "only screen and (min-width: #{$container--desktop})" !global;
+		$tablet: "only screen and (min-width: #{$container--tablet})" !global;
+		$phablet: "only screen and (min-width: #{$container--phablet})" !global;
+		$mobile: "only screen and (min-width: #{$container--mobile})" !global;
+	}
+	@else {
+		$desktop: "only screen and (max-width: #{$container--desktop})" !global;
+		$tablet: "only screen and (max-width: #{$container--tablet})" !global;
+		$phablet: "only screen and (max-width: #{$container--phablet})" !global;
+		$mobile: "only screen and (max-width: #{$container--mobile})" !global;
+	}
+}

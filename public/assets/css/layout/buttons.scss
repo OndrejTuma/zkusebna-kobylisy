@@ -1,0 +1,52 @@
+.button {
+
+	background: $buttons--bg;
+	border: none;
+	border-radius: $buttons--border-radius;
+	color: $buttons--color;
+	cursor: pointer;
+	display: inline-block;
+	font-size: $buttons--font-size;
+	font-weight: normal;
+	height: $buttons--height;
+	line-height: $buttons--height;
+	padding: $buttons--padding;
+	text-align: center;
+	white-space: nowrap;
+
+	&:hover {
+		background: $buttons--bg-hover;
+		color: $buttons--color-hover;
+	}
+
+	&--red {
+		@extend .button;
+		background-color: $fire-engine-red;
+
+		&:hover {
+			background-color: $fire-engine-red;
+		}
+	}
+	&--submit {
+		@extend .button;
+		height: 40px;
+		line-height: 40px;
+	}
+	&--white {
+		@extend .button;
+		background-color: $white;
+		color: $cyan;
+
+		&:hover {
+			background-color: $white;
+			color: $cyan;
+		}
+	}
+
+}
+a.button,
+a.button:hover {
+
+	text-decoration: none;
+
+}

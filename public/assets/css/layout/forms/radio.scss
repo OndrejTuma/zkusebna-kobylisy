@@ -1,0 +1,39 @@
+input[type=radio] {
+
+	position: absolute;
+	visibility: hidden;
+
+	& + label {
+
+		color: $cyan;
+		cursor: pointer;
+		font-size: 12px;
+		padding-left: 35px;
+		position: relative;
+		text-transform: uppercase;
+
+		&:after,
+		&:before {
+			border-radius: 50%;
+			content: "";
+		}
+		&:before {
+			@include absolute-middle(20px);
+			@include square(20px);
+			background-color: $mercury;
+			left: 0;
+		}
+
+	}
+	&:checked + label {
+
+		&:after {
+			@include absolute-middle(10px);
+			@include square(10px);
+			background-color: $stack;
+			left: 5px;
+		}
+
+	}
+
+}

@@ -1,0 +1,11 @@
+body {
+	background-color: $bg-color;
+	font-family: $font-family, Arial, sans-serif;
+	color: $base-color;
+	font-size: $font-size;
+	margin: 0;
+}
+
+* {
+	box-sizing: border-box;
+}

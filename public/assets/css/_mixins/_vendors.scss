@@ -1,0 +1,38 @@
+@mixin vendors($rule, $props) {
+	-webkit-#{$rule}: $props;
+	-moz-#{$rule}: $props;
+	-ms-#{$rule}: $props;
+	-o-#{$rule}: $props;
+	#{$rule}: $props;
+}
+
+/* transforms, transitions */
+
+@mixin transition($props: all .3s, $delay: 0) {
+	@include vendors(transition, $props);
+	@include vendors(transition-delay, $delay);
+}
+
+@mixin transform($props, $origin: 50% 50%) {
+	@include vendors(transform, $props);
+	@include vendors(transform-origin, $origin);
+}
+
+@mixin animation($animation) {
+	animation: $animation;
+	-webkit-animation: $animation;
+}
+
+@mixin filter($filter) {
+	@include vendors(filter, $filter);
+}
+
+/* box-sizing */
+
+@mixin box-sizing($val) {
+	@include vendors(box-sizing, $val);
+}
+
+@mixin box-shadow($val) {
+	@include vendors(box-shadow, $val);
+}

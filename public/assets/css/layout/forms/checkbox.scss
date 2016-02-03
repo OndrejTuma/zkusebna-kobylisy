@@ -1,0 +1,57 @@
+input[type=checkbox] {
+
+	$dot-size: 12px;
+
+	position: absolute;
+	visibility: hidden;
+
+	& + label {
+
+		cursor: pointer;
+		font-size: 10px;
+		padding-left: 15px;
+		position: relative;
+
+		&:after,
+		&:before {
+			@include absolute-middle($dot-size);
+			@include square($dot-size);
+			left: 0;
+		}
+
+		&:after {
+			@include font-icon(cross);
+			color: $base-color;
+			font-size: $font-size-tiny;
+			line-height: 12px;
+			text-align: center;
+			visibility: hidden;
+		}
+		&:before {
+			background-color: $mercury;
+			border-radius: 50%;
+			content: "";
+		}
+
+	}
+	&:checked + label {
+
+		&:after {
+			visibility: visible;
+		}
+
+	}
+	&.delete:checked + label {
+
+		color: $fire-engine-red;
+
+		&:after {
+			color: $white;
+		}
+		&:before {
+			background-color: $fire-engine-red;
+		}
+
+	}
+
+}

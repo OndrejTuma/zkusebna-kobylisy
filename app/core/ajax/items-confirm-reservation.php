@@ -17,14 +17,14 @@ $output = "";
 if ($reservation->confirmReservation()) {
 	$output = array(
 		"result" => "success",
-		"heading" => "Rezervaci je potvrzená",
+		"heading" => "Rezervace je potvrzená",
 		"message" => "Nyná čeká na schválení administrátorem. Až se tak stane, pošleme vám zprávu na uvedený email"
 	);
 }
 else {
 	$output = array(
 		"result" => "failure",
-		"message" => "Nepodařilo se rezervaci potvrdit"
+		"message" => "Rezervaci se nepodařilo potvrdit"
 	);
 }
 

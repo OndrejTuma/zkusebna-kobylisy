@@ -11,7 +11,7 @@ $.datetimepicker.setLocale('cs');
 
 
 
-var ZK_APP = (function($, window, document){
+//var ZK_APP = (function($, window, document){
 
 
 	var Zkusebna;
@@ -20,8 +20,10 @@ var ZK_APP = (function($, window, document){
 
 		_classes: {
 			active: "active",
-			reserved: "reserved",
-			loading: "loading"
+			alreadyReserved: "already-reserved",
+			empty: "empty",
+			loading: "loading",
+			reserved: "reserved"
 		},
 		_urls: {
 			ajax: "../../../app/core/ajax/"
@@ -175,7 +177,8 @@ var ZK_APP = (function($, window, document){
 
 			this.$wrappers = {
 				items: $('#items-wrapper'),
-				reservedItems: $('#reserved-items')
+				reservedItems: $('#reserved-items'),
+				reservedItemsWrapper: $('#reserved-items-wrapper')
 			};
 			this.$form = $('#form__reserve');
 			this.$formInputs = {
@@ -193,6 +196,10 @@ var ZK_APP = (function($, window, document){
 			this._renderItems();
 
 			window.onbeforeunload = this._leave.bind(this);
+
+			this.$wrappers.reservedItemsWrapper.mCustomScrollbar({
+				scrollInertia: 80
+			});
 
 		},
 		deleteItem: function(item_id) {
@@ -234,7 +241,7 @@ var ZK_APP = (function($, window, document){
 
 			Zkusebna._request("items-update-reservations.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
-					//TODO
+					//TODO - it works, no need to notify of succesfull update
 				},
 				null,
 				$items
@@ -247,7 +254,7 @@ var ZK_APP = (function($, window, document){
 
 			Zkusebna._request("items-add-reservation.php", this.$form.serialize() + "&item_id=" + item_id,
 				function(data) {
-					self._reserveSuccess($item, data);
+					self._reserveCallback($item, data);
 				},
 				function(xhr, error) {
 					alert(error);
@@ -264,7 +271,7 @@ var ZK_APP = (function($, window, document){
 			});
 			this.$wrappers.reservedItems.on("click", ".button--white", this._confirmReservation.bind(this));
 			this.$wrappers.reservedItems.on("click", ".button--red", function(){
-				self._deleteAllReservedItems();
+				self._cancelReservation();
 			});
 
 		},
@@ -276,70 +283,82 @@ var ZK_APP = (function($, window, document){
 		},
 		_cancelReservation: function() {
 
-			var self = this;
+			var $items = this.$wrappers.items.find("." + Zkusebna._classes.reserved),
+				self = this;
 
 			Zkusebna._request("items-cancel-reservation.php", this.$form.serialize(),
 				function(data) {
-					self._deleteSuccess(data);
+					self._deleteSuccess(data, $items);
 				},
 				function(xhr, error) {
 					alert(error);
-				}
+				},
+				$items
 			);
 
 		},
-		_deleteAllReservedItems: function() {
-			this.deleteItems(Object.keys(this.reservedItems));
-		},
 		updateReservationDate: function() {
-			Zkusebna._request("get-reserved-items.php", this.$form.serialize(),
-				this._updateReservationCallback.bind(this),
+			//checks for collisions within reserved items
+
+			var self = this;
+
+			Zkusebna._request("get-reserved-items.php", this.$form.serialize(),function(data) {
+
+					var non_compatible_names = [],
+						non_compatible_ids = [],
+						compatible_ids = [];
+
+					data.forEach(function(elm) {
+						if (self.reservedItems[elm.id]) {
+							non_compatible_names.push(self.reservedItems[elm.id]);
+							non_compatible_ids.push(elm.id);
+						}
+					});
+
+					compatible_ids = Object.keys(self.reservedItems).diff(non_compatible_ids);
+
+					if (!non_compatible_names.length) {
+						self.updateItems(compatible_ids);
+						self._renderItems();
+					}
+					else {
+						$.magnificPopup.open({
+							items: {
+								src: '<div class="reservation-warning"><h2>Změnou data přijdete o následující položky:</h2>' + non_compatible_names.join("<br>") + '<ul class="tac table cols-2"><li><span class="button--red">Zrušit</span></li><li><span class="button">Potvrdit</span></li></ul></div>',
+								type: 'inline'
+							},
+							modal: true
+						});
+						$(".reservation-warning").on("click", "span", function(e) {
+							if ($(e.target).hasClass("button")) {
+								self.deleteItems(non_compatible_ids);
+								self.updateItems(compatible_ids);
+								self._renderItems();
+							}
+							else {
+
+							}
+							$.magnificPopup.close();
+
+						});
+					}
+				},
 				null,
 				this.$wrappers.items
 			);
 		},
-		_updateReservationCallback: function(data) {
-
-			var non_compatible_names = [],
-				non_compatible_ids = [],
-				compatible_ids = [],
-				self = this;
-
-			data.forEach(function(elm) {
-				if (self.reservedItems[elm.id]) {
-					non_compatible_names.push(self.reservedItems[elm.id].name);
-					non_compatible_ids.push(elm.id);
-				}
-			});
-
-			compatible_ids = Object.keys(self.reservedItems).diff(non_compatible_ids);
-
-			if (!non_compatible_names.length) {
-				self.updateItems(compatible_ids);
-				self._renderItems();
-			}
-			else {
-				$.magnificPopup.open({
-					items: {
-						src: '<div class="reservation-warning"><h2>Změnou data přijdete o následující položky:</h2>' + non_compatible_names.join("<br>") + '<ul class="tac table cols-2"><li><span class="button--red">Zrušit</span></li><li><span class="button">Potvrdit</span></li></ul></div>',
-						type: 'inline'
-					},
-					modal: true
-				});
-				$(".reservation-warning").on("click", "span", function(e) {
-					if ($(e.target).hasClass("button")) {
-						self.deleteItems(non_compatible_ids);
-						self.updateItems(compatible_ids);
-						self._renderItems();
-					}
-					$.magnificPopup.close();
-
-				});
-			}
-		},
+		/**
+		 * renders cart with reserved items
+		 * @returns {string}
+		 * @private
+		 */
 		_renderReservedItems: function() {
 			if (!Object.keys(this.reservedItems).length) {
+				this.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
 				return "";
+			}
+			else {
+				this.$wrappers.reservedItemsWrapper.removeClass(Zkusebna._classes.empty);
 			}
 
 			var output = "<ul>",
@@ -352,9 +371,9 @@ var ZK_APP = (function($, window, document){
 				}
 			}
 
-			output += "<li class='price'>" + price + "</li>";
-			output += "<li class='finish'><span class='button--red'>Zrušit</span><span class='button--white'>Potvrdit</span></li>";
 			output += "</ul>";
+			output += "<div class='price'>" + price + "</div>";
+			output += "<div class='finish'><span class='button--red'>Zrušit</span><span class='button--white'>Potvrdit</span></div>";
 
 			return output;
 		},
@@ -377,6 +396,7 @@ var ZK_APP = (function($, window, document){
 							type: 'inline'
 						}
 					});
+					self.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
 					self.hasActiveReservation = false;
 					self.reservedItems = {};
 					self.$wrappers.reservedItems.html('');
@@ -408,16 +428,13 @@ var ZK_APP = (function($, window, document){
 		},
 		_deleteSuccess: function(data, $items) {
 
-			if ($items.length) {
+			if ($items && $items.length) {
 				$items.removeClass(Zkusebna._classes.reserved);
 			}
 
 			if (data.result == "success") {
 				for (var i = 0; i < data.items.length; i++) {
 					delete this.reservedItems[data.items[i].id];
-				}
-				if (!Object.keys(this.reservedItems).length) {
-					this.hasActiveReservation = false;
 				}
 				this.$wrappers.reservedItems.html(this._renderReservedItems());
 
@@ -432,7 +449,7 @@ var ZK_APP = (function($, window, document){
 			}
 
 		},
-		_reserveSuccess: function($item, data) {
+		_reserveCallback: function($item, data) {
 
 			var form_error = false;
 			for (var input_id in data.empties) {
@@ -468,12 +485,7 @@ var ZK_APP = (function($, window, document){
 				this.$wrappers.reservedItems.html(this._renderReservedItems());
 			}
 			else if (data.result == "failure") {
-				$.magnificPopup.open({
-					items: {
-						src: '<h2>Toto už je rezervované</h2><p>' + data.message + '</p>',
-						type: 'inline'
-					}
-				});
+				alert('Rezervaci se nepodařilo dokončit. Zkuste to prosím znovu a pokud problém přetrvá, kontaktujte administrátora stránek');
 			}
 
 		},
@@ -487,7 +499,15 @@ var ZK_APP = (function($, window, document){
 
 					e.stopPropagation();
 
-					if ($(this).hasClass(Zkusebna._classes.reserved)) {
+					if ($(this).hasClass(Zkusebna._classes.alreadyReserved)) {
+						$.magnificPopup.open({
+							items: {
+								src: '<h2>Toto už je rezervované</h2><p><strong>' + $(this).attr('data-name') + '</strong> má rezervaci od ' + $(this).attr('data-date-from') + ' do ' + $(this).attr('data-date-to') + '</p>',
+								type: 'inline'
+							}
+						});
+					}
+					else if ($(this).hasClass(Zkusebna._classes.reserved)) {
 						self.deleteItem($(this).attr("data-id"))
 					}
 					else {
@@ -542,12 +562,11 @@ var ZK_APP = (function($, window, document){
 					//mask:'31.12.9999 23:59',
 					onChangeDateTime: function() {
 						var date_from = self.$formInputs.date_from.val(),
-							date_to = self.$formInputs.date_to.val(),
-							email = self.$formInputs.email.val();
+							date_to = self.$formInputs.date_to.val();
 
 						if (date_from && date_to) {
-							if (Object.keys(self.reservedItems).length) {
-								this.updateReservationDate(date_from, date_to, email);
+							if (self.hasActiveReservation) {
+								self.updateReservationDate();
 							}
 							self._renderItems();
 						}
@@ -581,4 +600,12 @@ var ZK_APP = (function($, window, document){
 	//return {
 	//	delete: Zkusebna.reserve.delete.bind(Zkusebna.reserve)
 	//}
-})(jQuery, window, document);
+//})(jQuery, window, document);
+
+function fillMeUp() {
+	for (var i = 1; i < 40; i++) {
+		Zkusebna.reserve.reserve(i);
+	}
+}
+//fillMeUp();
+

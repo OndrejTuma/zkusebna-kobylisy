@@ -62,14 +62,21 @@ class Reservation extends Zkusebna {
 
 	/**
 	 * destroy all reserved items and reservation itself
-	 * @return resource
+	 * @return array - ids of deleted items
 	 */
 	public function cancel() {
 		unset($_SESSION["reservation"]);
-		$query = "DELETE FROM {$this->table_names["r-i"]} WHERE reservation_id = {$this->id};";
-		$query .= "DELETE FROM {$this->table_names["reservations"]} WHERE id = {$this->id};";
-		echo $query;
-		return $this->sql->query($query);
+		// get item ids
+		$query = "SELECT item_id FROM {$this->table_names["r-i"]} WHERE reservation_id = {$this->id}";
+		$ids = $this->sql->field_assoc($query);
+		// delete reserved items
+		$query = "DELETE FROM {$this->table_names["r-i"]} WHERE reservation_id = {$this->id}";
+		$this->sql->query($query);
+		// delete reservation
+		$query = "DELETE FROM {$this->table_names["reservations"]} WHERE id = {$this->id}";
+		$this->sql->query($query);
+
+		return array_map(function($item){ return $item['item_id']; }, $ids);
 	}
 
 	/**
@@ -86,7 +93,7 @@ class Reservation extends Zkusebna {
 	 * gets reservation ID, if it exists
 	 * @return null
 	 */
-	public function getId() {
+	public static function getID() {
 		return isset($_SESSION['reservation']) ? $_SESSION['reservation']['id'] : null;
 	}
 
@@ -132,80 +139,10 @@ WHERE i.id = {$item_id} AND (r.date_from > '{$date_from}' OR r.date_to >= '{$dat
 		$this->date_to = $this->_parseDate($date_to);
 
 		$query = "UPDATE {$this->table_names["reservations"]} SET date_from = '{$this->date_from}', date_to = '{$this->date_to}' WHERE id = {$this->id}";
-		echo $query;
+
 		return $this->sql->query($query);
 	}
 
-
-
-
-
-
-
-
-
-/*
-
-
-	public function itemReservedBy($item_id, $date_from, $date_to) {
-
-		$date_from = $this->_parseDate($date_from);
-		$date_to = $this->_parseDate($date_to);
-
-		$query = "SELECT r.name as name, phone, email, date_from, date_to, confirmed FROM {$this->table_names["reservations"]} as r LEFT JOIN {$this->table_names["items"]} as i ON r.item_id = i.id WHERE r.item_id = {$item_id} AND (r.date_from > '{$date_from}' OR r.date_to >= '{$date_from}') AND (r.date_from <= '{$date_to}' OR r.date_to < '{$date_to}')";
-		return $this->sql->fetch_row($this->sql->query($query));
-
-	}
-
-	public function makeReservation($item_id, $date_from, $date_to, $name, $phone, $email) {
-
-		if ($this->_isReserved($item_id, $date_from, $date_to)) {
-			return false;
-		}
-
-		return $this->_saveReservation($item_id, $date_from, $date_to, $name, $phone, $email);
-
-	}
-
-	public function deleteReservations($item_ids, $name, $phone, $email) {
-
-		$query = "DELETE FROM {$this->table_names["reservations"]} WHERE confirmed = 0 AND name = '{$name}' AND phone = '{$phone}' AND email = '{$email}' AND item_id IN ('" . implode("','", $item_ids) . "')";
-		return $this->sql->query($query);
-
-	}
-
-	public function confirmReservations($item_ids, $name, $phone, $email, $date_from, $date_to) {
-
-		$date_from = $this->_parseDate($date_from);
-		$date_to = $this->_parseDate($date_to);
-
-		$query = "UPDATE {$this->table_names["reservations"]} SET confirmed = 1 WHERE date_from = '{$date_from}' AND date_to = '{$date_to}' AND name = '{$name}' AND phone = '{$phone}' AND email = '{$email}' AND item_id IN ('" . implode("','", $item_ids) . "')";
-		return $this->sql->query($query);
-
-	}
-
-	public function updateReservations($item_ids, $name, $phone, $email, $date_from, $date_to) {
-
-		$date_from = $this->_parseDate($date_from);
-		$date_to = $this->_parseDate($date_to);
-
-		$query = "UPDATE {$this->table_names["reservations"]} SET date_from = '{$date_from}', date_to = '{$date_to}' WHERE confirmed = 0 AND name = '{$name}' AND phone = '{$phone}' AND email = '{$email}' AND item_id IN ('" . implode("','", $item_ids) . "')";
-		return $this->sql->query($query);
-
-	}
-
-
-	private function _saveReservation($item_id, $date_from, $date_to, $name, $phone, $email) {
-
-		$date_from = $this->_parseDate($date_from);
-		$date_to = $this->_parseDate($date_to);
-
-		$query = "INSERT INTO {$this->table_names["reservations"]} (date_from,date_to) VALUES ('{$date_from}','{$date_to}');";
-		$query .= "INSERT ";
-		return $this->sql->query($query);
-
-	}
-*/
 }
 
 

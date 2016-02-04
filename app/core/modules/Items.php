@@ -29,11 +29,11 @@ class Items extends Zkusebna {
 		}
 		else {
 			$query = "
-SELECT i.id AS id, i.name AS name, image, price, category, parent_id, reservable, reservation.name AS reserved_by, email, confirmed
+SELECT i.id AS id, i.name AS name, image, price, category, parent_id, reservable, reservation.name AS reserved_by, email, date_from, date_to, confirmed
 FROM {$this->table_names["items"]} AS i
 LEFT JOIN
 (
-SELECT c.name, c.email, r.confirmed, ri.item_id FROM {$this->table_names["reservations"]} AS r
+SELECT c.name, c.email, r.confirmed, ri.item_id, date_from, date_to FROM {$this->table_names["reservations"]} AS r
 LEFT JOIN {$this->table_names["community"]} AS c ON r.who = c.id
 LEFT JOIN  {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 WHERE (date_from > '{$this->date_from}' OR date_to >= '{$this->date_from}') AND (date_from <= '{$this->date_to}' OR date_to < '{$this->date_to}')
@@ -112,8 +112,18 @@ ORDER BY category, parent_id, i.name";
 			}
 			else {
 				$output .= "<strong class='reservable ";
-				$output .= $item["reserved_by"] != null ? ($item["email"] == $this->email && !$item["confirmed"] ? "reserved" : "already-reserved") : "";
-				$output .= "' data-id='{$item["id"]}'>{$item["name"]}";
+				if ($item["reserved_by"] != null) {
+					if ($item["email"] == $this->email && !$item["confirmed"]) {
+						$output .= "reserved' ";
+					}
+					else {
+						$output .= "already-reserved' data-name='{$item["reserved_by"]}' data-date-from='" . Zkusebna::parseSQLDate($item["date_from"]) . "' data-date-to='" . Zkusebna::parseSQLDate($item["date_to"]) . "'";
+					}
+				}
+				else {
+					$output .= "' ";
+				}
+				$output .= "data-id='{$item["id"]}'>{$item["name"]}";
 				$output .= "<i class='icon-plus'></i> <span>{$item["price"]},-</span></strong>";
 			}
 		}

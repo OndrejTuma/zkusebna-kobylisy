@@ -22,6 +22,7 @@
 // thirdparty plugins
 @import "plugins/_fullcalendar";
 @import "plugins/_jquery.datetimepicker";
+@import "plugins/_jquery.mCustomScrollbar";
 @import "plugins/_magnific-popup";
 @import "plugins/_sprite";
 
@@ -51,6 +52,7 @@
 
 // reusable components
 @import "components/calendar";
+@import "components/custom-scrollbar";
 @import "components/item-list";
 @import "components/no-scripts";
 @import "components/popups";

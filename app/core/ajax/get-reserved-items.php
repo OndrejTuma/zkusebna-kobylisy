@@ -9,6 +9,6 @@ $email = isset($_POST["email"]) ? $_POST["email"] : "";
 
 $zkusebna = new Zkusebna();
 
-echo json_encode($zkusebna->getReservedItems($date_from, $date_to, $email));
+echo json_encode($zkusebna->getReservedItems($date_from, $date_to, Reservation::getID()));
 
 ?>

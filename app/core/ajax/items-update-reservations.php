@@ -3,7 +3,6 @@ header('Content-Type: application/json');
 
 include_once("../inc/bootstrap.php");
 
-$item_ids = isset($_POST["item_ids"]) ? $_POST["item_ids"] : array();
 $date_from = isset($_POST["date_from"]) ? $_POST["date_from"] : "";
 $date_to = isset($_POST["date_to"]) ? $_POST["date_to"] : "";
 $email = isset($_POST["email"]) ? $_POST["email"] : "";

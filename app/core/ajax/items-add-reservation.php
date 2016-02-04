@@ -39,10 +39,8 @@ else {
 		$output["result"] = "success";
 		$output["item"] = $reservation->getItemInfo($item_id);
 	}
-	else { //TODO
-		$user = $reservation->whoReservedThis($item_id, $date_from, $date_to);
+	else {
 		$output["result"] = "failure";
-		$output["message"] = "<strong>{$user["name"]}</strong> má rezervaci Od " . $reservation->parseSQLDate($user["date_from"]) . " do " . $reservation->parseSQLDate($user["date_to"]);
 	}
 
 }

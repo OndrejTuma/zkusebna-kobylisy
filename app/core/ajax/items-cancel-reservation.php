@@ -13,7 +13,7 @@ $person = new Person($email, $name, $phone);
 $reservation = new Reservation($date_from, $date_to, $person->getID());
 $output = "";
 
-if ($reservation->cancel()) {
+if ($item_ids = $reservation->cancel()) {
 	$output = array(
 		"result" => "success",
 		"items" => $reservation->getItemsInfo($item_ids)

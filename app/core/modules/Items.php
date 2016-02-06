@@ -50,7 +50,7 @@ LEFT JOIN
 SELECT c.name, c.email, r.confirmed, ri.item_id, date_from, date_to FROM {$this->table_names["reservations"]} AS r
 LEFT JOIN {$this->table_names["community"]} AS c ON r.who = c.id
 LEFT JOIN  {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
-WHERE (date_from > '{$this->date_from}' OR date_to >= '{$this->date_from}') AND (date_from <= '{$this->date_to}' OR date_to < '{$this->date_to}')
+WHERE (date_from > '{$this->date_from}' OR date_to > '{$this->date_from}') AND (date_from < '{$this->date_to}' OR date_to < '{$this->date_to}')
 ) AS reservation
 ON i.id = reservation.item_id
 ORDER BY category, parent_id, i.name";

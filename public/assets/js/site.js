@@ -43,6 +43,22 @@ $.datetimepicker.setLocale('cs');
 
 		},
 
+		_popup: function(heading, message, wrapperClass) {
+			var src;
+			if (wrapperClass !== undefined) {
+				src = '<div class="' + wrapperClass + '"><h2>' + heading + '</h2><p>' + message + '</p></div>';
+			}
+			else {
+				src = '<h2>' + heading + '</h2><p>' + message + '</p>';
+			}
+
+			$.magnificPopup.open({
+				items: {
+					src: src,
+					type: 'inline'
+				}
+			});
+		},
 		_request: function(file, data, success, fail, $item, dataType) {
 
 			var self = this;
@@ -106,11 +122,6 @@ $.datetimepicker.setLocale('cs');
 
 			init: function() {
 				this.$calendar = $('#calendar');
-				this.categoryColor = {
-					zkusebna: '#b8860b',
-					technika: '#67a712',
-					nastroje: '#800080'
-				};
 
 				var self = this;
 
@@ -124,13 +135,23 @@ $.datetimepicker.setLocale('cs');
 					lang: "cs",
 					eventClick: function(event) {
 						if (event.title) {
-							$.magnificPopup.open({
-								items: {
-									src: '<div class="event-preview"><h2>' + event.title + '</h2> Rezervoval/a: <strong>' + event.name + '</strong> Rezervace: <i>' + event.start.format('D.M. HH:mm') + ' - ' + event.end.format('D.M. HH:mm') + '</i></div>',
-									type: 'inline'
-								}
-							});
+							var message = 'Rezervoval/a: <strong>' + event.name + '</strong> Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
+							Zkusebna._popup(event.title, message, "event-preview");
 						}
+					},
+					eventRender: function(event, element) {
+						var message = 'Rezervoval/a: <strong>' + event.name + '</strong> <br>Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
+						element.qtip({
+							content: message,
+							style: {
+								background: 'black',
+								color: '#FFFFFF'
+							},
+							position: {
+								at: 'top center',
+								my: 'bottom center'
+							}
+						});
 					},
 					viewRender: function(view) {
 						var date_from = view.start.format(),
@@ -141,15 +162,15 @@ $.datetimepicker.setLocale('cs');
 							{ date_from: date_from, date_to: date_to },
 							function(events) {
 								self._renderCalendarEvents(events);
-							}
+							},
+							null,
+							self.$calendar
 						);
 
-					}
+					},
+					timeFormat: 'H(:mm)'
 				});
 
-			},
-			_getCategoryColor: function(category_name) {
-				return this.categoryColor[category_name] ? this.categoryColor[category_name] : null;
 			},
 			_renderCalendarEvents: function(events) {
 
@@ -158,11 +179,11 @@ $.datetimepicker.setLocale('cs');
 				events.forEach(function(elm, i) {
 
 					self.$calendar.fullCalendar( 'renderEvent', {
+						className: events[i].category,
 						title: events[i].name,
 						start: events[i].date_from,
 						end: events[i].date_to,
-						name: events[i].reserved_by,
-						color: self._getCategoryColor(events[i].category)
+						name: events[i].reserved_by
 					});
 
 				});
@@ -232,13 +253,14 @@ $.datetimepicker.setLocale('cs');
 				$items = $items.add($("[data-id='" + item_ids[i] + "']"));
 			}
 
-			Zkusebna._request("items-update-reservations.php", this.$form.serialize() + "&" + ids.join("&"),
+			Zkusebna._request("update-reservations.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
 
 				},
 				null,
 				$items
 			);
+
 		},
 		reserve: function(item_id, item_name, $item) {
 
@@ -262,19 +284,15 @@ $.datetimepicker.setLocale('cs');
 						compatible_ids = [];
 
 					data.forEach(function(elm) {
-						if (self.reservedItems[elm.id]) {
-							non_compatible_names.push(self.reservedItems[elm.id]);
+						if (self.reservedItems.indexOf(elm.id) > -1) {
+							non_compatible_names.push(self.reservableItems[elm.id].name);
 							non_compatible_ids.push(elm.id);
 						}
 					});
 
 					compatible_ids = self.reservedItems.diff(non_compatible_ids);
 
-					if (!non_compatible_names.length) {
-						self.updateItems(compatible_ids);
-						self._renderItems();
-					}
-					else {
+					if (non_compatible_names.length) {
 						$.magnificPopup.open({
 							items: {
 								src: '<div class="reservation-warning"><h2>Změnou data přijdete o následující položky:</h2>' + non_compatible_names.join("<br>") + '<ul class="tac table cols-2"><li><span class="button--red">Zrušit</span></li><li><span class="button">Potvrdit</span></li></ul></div>',
@@ -285,28 +303,21 @@ $.datetimepicker.setLocale('cs');
 						$(".reservation-warning").on("click", "span", function(e) {
 							if ($(e.target).hasClass("button")) {
 								self.deleteItems(non_compatible_ids);
-								self.updateItems(compatible_ids);
-								self._renderItems();
 							}
 							else {
-
+								//TODO: uzivatel musi vybrat jine datum!
 							}
 							$.magnificPopup.close();
-
 						});
 					}
+
+					self.updateItems(compatible_ids);
+					self._renderItems();
+
 				},
 				null,
 				this.$wrappers.items
 			);
-		},
-		_popup: function(heading, message) {
-			$.magnificPopup.open({
-				items: {
-					src: '<h2>' + heading + '</h2><p>' + message + '</p>',
-					type: 'inline'
-				}
-			});
 		},
 		_cancelReservation: function() {
 
@@ -319,7 +330,7 @@ $.datetimepicker.setLocale('cs');
 			this.$wrappers.reservedItems.on("click", "li.item", function(){
 				self.deleteItem($(this).attr("data-id"));
 			});
-			this.$wrappers.reservedItems.on("click", ".button--white", this._confirmReservation.bind(this));
+			this.$wrappers.reservedItems.on("click", ".button--white", this._createReservation.bind(this));
 			this.$wrappers.reservedItems.on("click", ".button--red", this._cancelReservation.bind(this));
 
 		},
@@ -351,7 +362,7 @@ $.datetimepicker.setLocale('cs');
 
 			return output;
 		},
-		_confirmReservation: function() {
+		_createReservation: function() {
 
 			var ids = [],
 				self = this;
@@ -364,7 +375,7 @@ $.datetimepicker.setLocale('cs');
 
 			Zkusebna._request("create-reservation.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
-					self._popup(data.heading, data.message);
+					Zkusebna._popup(data.heading, data.message);
 					self.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
 					self.$wrappers.reservedItems.html('');
 					self.reservedItems = [];
@@ -395,16 +406,15 @@ $.datetimepicker.setLocale('cs');
 			}
 
 		},
-		_reserveCallback: function($item, data) {
-
-
-
-		},
 		_reservableHandler: function() {
 
 			var self = this;
 
 			$("ul#item-list .reservable").each(function() {
+
+				if (self.reservedItems.indexOf($(this).attr("data-id")) > -1) {
+					$(this).addClass(Zkusebna._classes.reserved);
+				}
 
 				$(this).click(function(e) {
 
@@ -476,7 +486,7 @@ $.datetimepicker.setLocale('cs');
 							date_to = self.$formInputs.date_to.val();
 
 						if (date_from && date_to) {
-							if (self.hasActiveReservation) {
+							if (self.reservedItems.length) {
 								self.updateReservationDate();
 							}
 							self._renderItems();

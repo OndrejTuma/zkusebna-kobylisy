@@ -1,3 +1,27 @@
 .fc-event-container {
 	cursor: pointer;
 }
+.fc-event {
+
+	&.nastroje {
+		background-color: $nastroje-color;
+		border-color: $nastroje-color;
+	}
+	&.technika {
+		background-color: $technika-color;
+		border-color: $technika-color;
+	}
+	&.zkusebna {
+		background-color: $zkusebna-color;
+		border-color: $zkusebna-color;
+	}
+
+}
+.fc-view-container {
+	@include transition(opacity .3s);
+
+	.loading & {
+		opacity: 0.5;
+	}
+
+}

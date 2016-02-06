@@ -66,7 +66,7 @@ class Reservation extends Zkusebna {
 	}
 
 	/**
-	 *
+	 * Gets reserved items in specific date range
 	 * @param $date_from
 	 * @param $date_to
 	 * @return array
@@ -81,7 +81,7 @@ SELECT i.id as id, i.name as name, image, price, category, parent_id FROM {$this
 LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
-WHERE r.id != '{$this->id}' AND (r.date_from > '{$date_from}' OR r.date_to >= '{$date_from}') AND (r.date_from <= '{$date_to}' OR r.date_to < '{$date_to}')
+WHERE (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')
 GROUP BY i.id
 ";
 
@@ -106,7 +106,7 @@ FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
 LEFT JOIN {$this->table_names["items"]} as i ON i.id = ri.item_id
 LEFT JOIN {$this->table_names["community"]} as c ON c.id = r.who
-WHERE i.id = {$item_id} AND (r.date_from > '{$date_from}' OR r.date_to >= '{$date_from}') AND (r.date_from <= '{$date_to}' OR r.date_to < '{$date_to}')";
+WHERE i.id = {$item_id} AND (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')";
 
 		return $this->sql->fetch_row($this->sql->query($query));
 	}

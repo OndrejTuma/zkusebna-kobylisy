@@ -23,7 +23,7 @@ class CalendarEvents extends Zkusebna {
 		LEFT JOIN {$this->table_names["r-i"]} as ri ON r.id = ri.reservation_id
 		LEFT JOIN {$this->table_names["items"]} as i ON ri.item_id = i.id
 		LEFT JOIN {$this->table_names["community"]} as c ON r.who = c.id
-		WHERE (r.date_from > '{$date_from}' OR r.date_to >= '{$date_from}') AND (r.date_from <= '{$date_to}' OR r.date_to < '{$date_to}')
+		WHERE (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')
 		ORDER BY category, parent_id, i.name";
 
 		return $this->sql->field_assoc($query);

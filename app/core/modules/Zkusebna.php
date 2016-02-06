@@ -36,31 +36,6 @@ class Zkusebna {
 
 	}
 
-	/**
-	 *
-	 * @param $date_from
-	 * @param $date_to
-	 * @param $reservation_id
-	 * @return array
-	 */
-	public function getReservedItems($date_from, $date_to, $reservation_id) {
-
-		$date_from = $this->_parseDate($date_from);
-		$date_to = $this->_parseDate($date_to);
-
-		$query = "
-SELECT i.id as id, i.name as name, image, price, category, parent_id FROM {$this->table_names["reservations"]} as r
-LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
-LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
-LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
-WHERE r.id != '{$reservation_id}' AND (r.date_from > '{$date_from}' OR r.date_to >= '{$date_from}') AND (r.date_from <= '{$date_to}' OR r.date_to < '{$date_to}')
-GROUP BY i.id
-";
-
-		return $this->sql->field_assoc($query);
-
-	}
-
 	public static function parseSQLDate($date) {
 
 		return date("j.n. G:i", strtotime($date));

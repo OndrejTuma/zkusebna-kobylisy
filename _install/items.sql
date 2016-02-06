@@ -21,7 +21,6 @@ CREATE TABLE zkusebna_reservations (
 id INT(6) AUTO_INCREMENT,
 date_from DATETIME NOT NULL,
 date_to DATETIME NOT NULL,
-confirmed tinyint(1) DEFAULT 0,
 approved tinyint(1) DEFAULT 0,
 who INT(6) NOT NULL,
 timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

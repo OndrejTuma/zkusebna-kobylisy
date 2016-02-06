@@ -11,7 +11,7 @@ $sql = new mysql();
 <head>
 	<meta charset="utf-8"/>
 	<title>Zkušebna Kobylisy</title>
-	<link rel="stylesheet" href="<?= ZKUSEBNA_CSS_URL; ?>site.min.css"/>
+	<link rel="stylesheet" href="<?= ZKUSEBNA_CSS_URL; ?>site.css"/>
 </head>
 <body>
 <noscript>
@@ -31,6 +31,6 @@ switch ($page) {
 }
 ?>
 
-<script type="text/javascript" src="<?= ZKUSEBNA_JS_URL; ?>all.min.js"></script>
+<script type="text/javascript" src="<?= ZKUSEBNA_JS_URL; ?>all.js"></script>
 </body>
 </html>

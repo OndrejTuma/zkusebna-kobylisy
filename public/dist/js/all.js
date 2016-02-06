@@ -30431,7 +30431,7 @@ $.datetimepicker.setLocale('cs');
 			reserved: "reserved"
 		},
 		_urls: {
-			ajax: "/zkusebna-kobylisy/app/core/ajax/"
+			ajax: "/app/core/ajax/"
 		},
 
 		init: function() {
@@ -30593,14 +30593,12 @@ $.datetimepicker.setLocale('cs');
 				phone: $('#phone'),
 				email: $('#email')
 			};
-			this.reservedItems = {};
-			this.hasActiveReservation = false;
+			this.reservableItems = {};
+			this.reservedItems = [];
 
 			this._cart();
 			this._datetimePickers();
 			this._renderItems();
-
-			window.onbeforeunload = this._leave.bind(this);
 
 			this.$wrappers.reservedItemsWrapper.mCustomScrollbar({
 				scrollInertia: 80
@@ -30614,24 +30612,19 @@ $.datetimepicker.setLocale('cs');
 		},
 		deleteItems: function(item_ids) {
 
-			var self = this,
-				ids = [],
-				$items = $("");
+			var $items = $("");
 
 			for (var i = 0; i < item_ids.length; i++) {
-				ids.push("item_ids[]=" + item_ids[i]);
 				$items = $items.add($("[data-id='" + item_ids[i] + "']"));
 			}
 
-			Zkusebna._request("items-delete-reservations.php", this.$form.serialize() + "&" + ids.join("&"),
-				function(data) {
-					self._deleteSuccess(data, $items);
-				},
-				function(xhr, error) {
-					alert(error);
-				},
-				$items
-			);
+			this.reservedItems = this.reservedItems.diff(item_ids);
+			this.$wrappers.reservedItems.html(this._renderReservedItems());
+
+			if ($items && $items.length) {
+				$items.removeClass(Zkusebna._classes.reserved);
+			}
+
 		},
 		updateItems: function(item_ids) {
 
@@ -30652,54 +30645,14 @@ $.datetimepicker.setLocale('cs');
 				$items
 			);
 		},
-		reserve: function(item_id) {
+		reserve: function(item_id, item_name, $item) {
 
-			var self = this,
-				$item = $("[data-id='" + item_id + "']");
+			if (this._validateForm()) {
+				this.reservedItems.push(item_id);
+				$item.addClass(Zkusebna._classes.reserved);
 
-			Zkusebna._request("items-add-reservation.php", this.$form.serialize() + "&item_id=" + item_id,
-				function(data) {
-					self._reserveCallback($item, data);
-				},
-				function(xhr, error) {
-					alert(error);
-				},
-				$item
-			);
-
-		},
-		_cart: function() {
-			var self = this;
-
-			this.$wrappers.reservedItems.on("click", "li.item", function(){
-				self.deleteItem($(this).attr("data-id"));
-			});
-			this.$wrappers.reservedItems.on("click", ".button--white", this._confirmReservation.bind(this));
-			this.$wrappers.reservedItems.on("click", ".button--red", function(){
-				self._cancelReservation();
-			});
-
-		},
-		_leave: function() {
-			if (this.hasActiveReservation || Object.keys(this.reservedItems).length) {
-				this._cancelReservation();
-				return 'Rezervace nebyla potvrzena a z bezpečnostních důvodů byla zrušena';
+				this.$wrappers.reservedItems.html(this._renderReservedItems());
 			}
-		},
-		_cancelReservation: function() {
-
-			var $items = this.$wrappers.items.find("." + Zkusebna._classes.reserved),
-				self = this;
-
-			Zkusebna._request("items-cancel-reservation.php", this.$form.serialize(),
-				function(data) {
-					self._deleteSuccess(data, $items);
-				},
-				function(xhr, error) {
-					alert(error);
-				},
-				$items
-			);
 
 		},
 		updateReservationDate: function() {
@@ -30720,7 +30673,7 @@ $.datetimepicker.setLocale('cs');
 						}
 					});
 
-					compatible_ids = Object.keys(self.reservedItems).diff(non_compatible_ids);
+					compatible_ids = self.reservedItems.diff(non_compatible_ids);
 
 					if (!non_compatible_names.length) {
 						self.updateItems(compatible_ids);
@@ -30752,13 +30705,28 @@ $.datetimepicker.setLocale('cs');
 				this.$wrappers.items
 			);
 		},
+		_cancelReservation: function() {
+
+			this.deleteItems(this.reservedItems);
+
+		},
+		_cart: function() {
+			var self = this;
+
+			this.$wrappers.reservedItems.on("click", "li.item", function(){
+				self.deleteItem($(this).attr("data-id"));
+			});
+			this.$wrappers.reservedItems.on("click", ".button--white", this._confirmReservation.bind(this));
+			this.$wrappers.reservedItems.on("click", ".button--red", this._cancelReservation.bind(this));
+
+		},
 		/**
 		 * renders cart with reserved items
 		 * @returns {string}
 		 * @private
 		 */
 		_renderReservedItems: function() {
-			if (!Object.keys(this.reservedItems).length) {
+			if (!this.reservedItems.length) {
 				this.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
 				return "";
 			}
@@ -30769,11 +30737,9 @@ $.datetimepicker.setLocale('cs');
 			var output = "<ul>",
 				price = 0;
 
-			for (var i in this.reservedItems) {
-				if (this.reservedItems.hasOwnProperty(i)) {
-					output += "<li class='item' data-id='" + i + "'>" + this.reservedItems[i].name + "</li>"
-					price += parseInt(this.reservedItems[i].price);
-				}
+			for (var i = 0; i < this.reservedItems.length; i++) {
+				output += "<li class='item' data-id='" + this.reservedItems[i] + "'>" + this.reservableItems[this.reservedItems[i]].name + "</li>"
+				price += parseInt(this.reservableItems[this.reservedItems[i]].price);
 			}
 
 			output += "</ul>";
@@ -30819,79 +30785,22 @@ $.datetimepicker.setLocale('cs');
 		_renderItems: function() {
 			var self = this;
 
-			Zkusebna._request("items-view.php", this.$form.serialize(), function(data) {
-					self.$wrappers.items.html(data);
+			Zkusebna._request("items-view.php", this.$form.serialize(), renderCallback);
 
-					self._expandableHandler();
-					self._reservableHandler();
-				},
-				null,
-				null,
-				"html"
-			);
+			function renderCallback(data) {
 
-		},
-		_deleteSuccess: function(data, $items) {
+				self.reservableItems = data.items;
 
-			if ($items && $items.length) {
-				$items.removeClass(Zkusebna._classes.reserved);
-			}
+				self.$wrappers.items.html(data.html);
 
-			if (data.result == "success") {
-				for (var i = 0; i < data.items.length; i++) {
-					delete this.reservedItems[data.items[i].id];
-				}
-				this.$wrappers.reservedItems.html(this._renderReservedItems());
-
-			}
-			else if (data.result == "failure") {
-				$.magnificPopup.open({
-					items: {
-						src: '<h2 class="error">' + data.message + '</h2>',
-						type: 'inline'
-					}
-				});
+				self._expandableHandler();
+				self._reservableHandler();
 			}
 
 		},
 		_reserveCallback: function($item, data) {
 
-			var form_error = false;
-			for (var input_id in data.empties) {
-				if (data.empties.hasOwnProperty(input_id)) {
-					var $input = $("#" + input_id);
 
-					if (data.empties[input_id]) {
-						$input.addClass("error bounce animated");
-						form_error = true;
-
-						setTimeout(function(){
-							for (var input_id in data.empties) {
-								if (data.empties.hasOwnProperty(input_id) && data.empties[input_id]) {
-									$("#" + input_id).removeClass("bounce animated");
-								}
-							}
-						}, 1000);
-					}
-					else {
-						$input.removeClass("error");
-					}
-				}
-			}
-			if (form_error) {
-				$("html, body").stop().animate({ scrollTop: 0 }, '500', 'swing');
-			}
-
-			if (data.result == "success") {
-				this.hasActiveReservation = true;
-				this.reservedItems[data.item.id] = data.item;
-				$item.addClass(Zkusebna._classes.reserved);
-
-				this.$wrappers.reservedItems.html(this._renderReservedItems());
-			}
-			else if (data.result == "failure") {
-				alert('Rezervaci se nepodařilo dokončit. Zkuste to prosím znovu a pokud problém přetrvá, kontaktujte administrátora stránek');
-			}
 
 		},
 		_reservableHandler: function() {
@@ -30916,7 +30825,7 @@ $.datetimepicker.setLocale('cs');
 						self.deleteItem($(this).attr("data-id"))
 					}
 					else {
-						self.reserve($(this).attr("data-id"));
+						self.reserve($(this).attr("data-id"), $(this).text(), $(this));
 					}
 
 				});
@@ -30993,6 +30902,40 @@ $.datetimepicker.setLocale('cs');
 			};
 			this.$formInputs.date_to.datetimepicker(pickerOptions);
 
+		},
+		_validateForm: function() {
+
+			var isValid = {
+					name: /^.{2,}$/g.test(this.$formInputs.name.val()),
+					phone: /^(\+420 *)?([0-9]{3} *){3}$/g.test(this.$formInputs.phone.val()),
+					email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.$formInputs.email.val())
+				},
+				formIsValid = true,
+				self = this;
+
+			for (var input_id in isValid) {
+				if (isValid.hasOwnProperty(input_id)) {
+					var $input = $("#" + input_id);
+
+					if (isValid[input_id]) {
+						$input.removeClass("error");
+					}
+					else {
+						$input.addClass("error bounce animated");
+						formIsValid = false;
+
+						setTimeout(function(){
+							self.$form.find(".bounce.animated").removeClass("bounce animated");
+						}, 1000);
+					}
+				}
+			}
+
+			if (!formIsValid) {
+				$("html, body").stop().animate({ scrollTop: 0 }, '500', 'swing');
+			}
+
+			return formIsValid;
 		}
 
 	};

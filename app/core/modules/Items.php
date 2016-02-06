@@ -14,6 +14,20 @@ class Items extends Zkusebna {
 			"technika" => "Technika",
 			"nastroje" => "Nástroje"
 		);
+		$this->items = array();
+	}
+
+	/**
+	 * Gets items in array returned from rennderItems function
+	 * @return array
+	 */
+	public function getItems() {
+
+		$output = array();
+		foreach ($this->items as $item) {
+			if ($item['reservable']) $output[$item['id']] = $item;
+		}
+		return $output;
 	}
 
 	public function renderItems($date_from, $date_to, $email) {
@@ -44,7 +58,9 @@ ORDER BY category, parent_id, i.name";
 
 		$output = $this->preview ? "" : "";
 
-		foreach ($this->sql->field_assoc($query) as $item) {
+		$this->items = $this->sql->field_assoc($query);
+
+		foreach ($this->items as $item) {
 			if ($item["parent_id"]) {
 				$this->categories[$item["category"]][$item["parent_id"]]["children"][$item["id"]] = $item;
 			}

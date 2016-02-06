@@ -30639,7 +30639,7 @@ $.datetimepicker.setLocale('cs');
 
 			Zkusebna._request("items-update-reservations.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
-					//TODO - it works, no need to notify of succesfull update
+
 				},
 				null,
 				$items
@@ -30705,6 +30705,14 @@ $.datetimepicker.setLocale('cs');
 				this.$wrappers.items
 			);
 		},
+		_popup: function(heading, message) {
+			$.magnificPopup.open({
+				items: {
+					src: '<h2>' + heading + '</h2><p>' + message + '</p>',
+					type: 'inline'
+				}
+			});
+		},
 		_cancelReservation: function() {
 
 			this.deleteItems(this.reservedItems);
@@ -30753,24 +30761,18 @@ $.datetimepicker.setLocale('cs');
 			var ids = [],
 				self = this;
 
-			for (var i in this.reservedItems) {
-				if (this.reservedItems.hasOwnProperty(i)) {
-					ids.push("item_ids[]=" + i);
-				}
+			for (var i = 0; i < this.reservedItems.length; i++) {
+				ids.push("item_ids[]=" + this.reservedItems[i]);
 			}
 
-			Zkusebna._request("items-confirm-reservation.php", this.$form.serialize() + "&" + ids.join("&"),
+			if (!this._validateForm()) return false;
+
+			Zkusebna._request("create-reservation.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
-					$.magnificPopup.open({
-						items: {
-							src: '<h2>' + data.heading + '</h2><p>' + data.message + '</p>',
-							type: 'inline'
-						}
-					});
+					self._popup(data.heading, data.message);
 					self.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
-					self.hasActiveReservation = false;
-					self.reservedItems = {};
 					self.$wrappers.reservedItems.html('');
+					self.reservedItems = [];
 					self._renderItems();
 				}
 			);

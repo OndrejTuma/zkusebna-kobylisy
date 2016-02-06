@@ -129,12 +129,7 @@ ORDER BY category, parent_id, i.name";
 			else {
 				$output .= "<strong class='reservable ";
 				if ($item["reserved_by"] != null) {
-					if ($item["email"] == $this->email && !$item["confirmed"]) {
-						$output .= "reserved' ";
-					}
-					else {
-						$output .= "already-reserved' data-name='{$item["reserved_by"]}' data-date-from='" . Zkusebna::parseSQLDate($item["date_from"]) . "' data-date-to='" . Zkusebna::parseSQLDate($item["date_to"]) . "'";
-					}
+					$output .= "already-reserved' data-name='{$item["reserved_by"]}' data-date-from='" . Zkusebna::parseSQLDate($item["date_from"]) . "' data-date-to='" . Zkusebna::parseSQLDate($item["date_to"]) . "'";
 				}
 				else {
 					$output .= "' ";

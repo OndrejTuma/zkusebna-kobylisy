@@ -135,13 +135,17 @@ $.datetimepicker.setLocale('cs');
 					lang: "cs",
 					eventClick: function(event) {
 						if (event.title) {
-							var message = 'Rezervoval/a: <strong>' + event.name + '</strong> Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
+							var message = (event.image ? '<img src="' + event.image + '" class="eventImage"/>' : '') + 'Rezervoval/a: <strong>' + event.name + '</strong> Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
 							Zkusebna._popup(event.title, message, "event-preview");
 						}
 					},
-					eventRender: function(event, element) {
+					eventRender: function(event, $element) {
+
+						$element.find('.fc-time').html("<small>" + event.start.format('HH:mm') + "-" + event.end.format('HH:mm') + "</small>");
+
 						var message = 'Rezervoval/a: <strong>' + event.name + '</strong> <br>Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
-						element.qtip({
+
+						$element.qtip({
 							content: message,
 							style: {
 								background: 'black',
@@ -176,14 +180,15 @@ $.datetimepicker.setLocale('cs');
 
 				var self = this;
 
-				events.forEach(function(elm, i) {
+				events.forEach(function(evt) {
 
 					self.$calendar.fullCalendar( 'renderEvent', {
-						className: events[i].category,
-						title: events[i].name,
-						start: events[i].date_from,
-						end: events[i].date_to,
-						name: events[i].reserved_by
+						img: evt.image,
+						className: evt.category,
+						title: evt.name,
+						start: evt.date_from,
+						end: evt.date_to,
+						name: evt.reserved_by
 					});
 
 				});

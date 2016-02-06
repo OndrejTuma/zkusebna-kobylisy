@@ -32,6 +32,20 @@ class Reservation extends Zkusebna {
 	}
 
 	/**
+	 * checks, if set of item ids has collision within reservation date range and returns collided items
+	 * @param $ids array(int)
+	 * @return array(int) - array of items with collision
+	 */
+	public function hasCollision($ids) {
+		$collisions = array();
+		$reservedItems = $this->getReservedItems($this->date_from, $this->date_to);
+		foreach($reservedItems as $item) {
+			if (in_array($item['id'], $ids)) $collisions[] = $item;
+		}
+		return $collisions;
+	}
+
+	/**
 	 * adds items to reservation
 	 * @param $id array[int] - array of item ids to add
 	 * @return resource

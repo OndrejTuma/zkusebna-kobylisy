@@ -21,11 +21,24 @@ if ($name_test || $phone_test || $email_test) {
 	$output["result"] = "empty";
 
 }
+else if (!count($item_ids)) {
+
+	$output["result"] = "no-items";
+
+}
 else {
 	$person = new Person($email, $name, $phone);
 	$reservation = new Reservation($date_from, $date_to, $person->getID());
+	$collisions = $reservation->hasCollision($item_ids);
 
-	if ($reservation->addItems($item_ids)) {
+	if (count($collisions)) {
+		$output = array(
+			"result" => "failure",
+			"heading" => "Rezervaci se nepodařilo potvrdit",
+			"message" => "Vypadá to, že vás někdo předbehl u " . implode(", ", $collisions['name'])
+		);
+	}
+	elseif ($reservation->addItems($item_ids)) {
 		$output = array(
 			"result" => "success",
 			"heading" => "Rezervace je potvrzená",
@@ -33,10 +46,9 @@ else {
 		);
 	}
 	else {
-		$reservation->cancel();
 		$output = array(
 			"result" => "failure",
-			"message" => "Rezervaci se nepodařilo potvrdit"
+			"message" => "Rezervaci se nepodařilo potvrdit."
 		);
 	}
 

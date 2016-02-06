@@ -35,7 +35,7 @@ else {
 	$person = new Person($email, $name, $phone);
 	$reservation = new Reservation($date_from, $date_to, $person->getID());
 
-	if ($reservation->addItems([$item_id])) {
+	if ($reservation->addItems(array($item_id))) {
 		$output["result"] = "success";
 		$output["item"] = $reservation->getItemInfo($item_id);
 	}

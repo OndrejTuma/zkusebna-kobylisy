@@ -77,6 +77,13 @@ gulp.task('scripts', function() {
 		//.pipe(uglify().on('error', gutil.log))
 		//.pipe(gulp.dest(paths.jsDist));
 });
+// Build production scripts
+gulp.task('scripts-build', function() {
+	return gulp.src(paths.jsAssets + "*.js")
+		.pipe(concat('all.min.js'))
+		.pipe(uglify().on('error', gutil.log))
+		.pipe(gulp.dest(paths.jsDist));
+});
 // Reloading browser after scripts are done
 gulp.task('scripts_watch', ['scripts'], browserSync.reload);
 
@@ -103,6 +110,9 @@ gulp.task('watch', function() {
 
 	gulp.watch("{*,app/pages/*}.{php,html}").on("change", browserSync.reload);
 });
+
+
+gulp.task('build', ['sass', 'csso', 'scripts-build', 'sprites', 'imagemin']);
 
 // Default Task
 gulp.task('default', ['sass', 'scripts', 'watch']);

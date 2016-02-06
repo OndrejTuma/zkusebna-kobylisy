@@ -6,7 +6,7 @@ $date_to = isset($_POST["date_to"]) ? $_POST["date_to"] : "";
 $email = isset($_POST["email"]) ? $_POST["email"] : "";
 
 $items = new Items();
-
+var_dump($_SESSION["reservation"]);
 echo $items->renderItems($date_from, $date_to, $email);
 
 ?>

@@ -11,6 +11,10 @@ define("MYSQL_SERVER", "127.0.0.1");
 define("MYSQL_NAME", "root");
 define("MYSQL_PASSWORD", "");
 define("MYSQL_DATABASE", "zkusebna_kobylisy");
+//define("MYSQL_SERVER", "wm99.wedos.net");
+//define("MYSQL_NAME", "a23736_zkusebn");
+//define("MYSQL_PASSWORD", "A3NFvBwh");
+//define("MYSQL_DATABASE", "d23736_zkusebn");
 
 define("MYSQL_ENCODING","utf8");
 

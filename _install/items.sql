@@ -9,6 +9,14 @@ parent_id INT(6),
 PRIMARY KEY (id)
 )engine=InnoDB;
 
+CREATE TABLE zkusebna_community (
+id INT(6) AUTO_INCREMENT,
+name VARCHAR(40) NOT NULL,
+phone VARCHAR(30) NOT NULL,
+email VARCHAR(60) NOT NULL,
+PRIMARY KEY (id)
+)engine=InnoDB;
+
 CREATE TABLE zkusebna_reservations (
 id INT(6) AUTO_INCREMENT,
 date_from DATETIME NOT NULL,
@@ -27,14 +35,6 @@ reservation_id INT(6) NOT NULL,
 PRIMARY KEY (item_id, reservation_id),
 FOREIGN KEY (item_id) REFERENCES zkusebna_items(id),
 FOREIGN KEY (reservation_id) REFERENCES zkusebna_reservations(id)
-)engine=InnoDB;
-
-CREATE TABLE zkusebna_community (
-id INT(6) AUTO_INCREMENT,
-name VARCHAR(40) NOT NULL,
-phone VARCHAR(30) NOT NULL,
-email VARCHAR(60) NOT NULL,
-PRIMARY KEY (id)
 )engine=InnoDB;
 
 

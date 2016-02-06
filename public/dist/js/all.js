@@ -30416,7 +30416,7 @@ $.datetimepicker.setLocale('cs');
 
 
 
-//var ZK_APP = (function($, window, document){
+(function($, window, document){
 
 
 	var Zkusebna;
@@ -30431,7 +30431,7 @@ $.datetimepicker.setLocale('cs');
 			reserved: "reserved"
 		},
 		_urls: {
-			ajax: "../../../app/core/ajax/"
+			ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
 
 		init: function() {
@@ -31005,12 +31005,5 @@ $.datetimepicker.setLocale('cs');
 	//return {
 	//	delete: Zkusebna.reserve.delete.bind(Zkusebna.reserve)
 	//}
-//})(jQuery, window, document);
-
-function fillMeUp() {
-	for (var i = 1; i < 40; i++) {
-		Zkusebna.reserve.reserve(i);
-	}
-}
-//fillMeUp();
+})(jQuery, window, document);
 

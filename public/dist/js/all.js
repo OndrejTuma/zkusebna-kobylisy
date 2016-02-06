@@ -30659,25 +30659,16 @@ $.datetimepicker.setLocale('cs');
 		},
 		updateItems: function(item_ids) {
 
-			var self = this,
-				ids = [],
-				$items = $("");
+			var ids = [];
 
 			for (var i = 0; i < item_ids.length; i++) {
 				ids.push("item_ids[]=" + item_ids[i]);
-				$items = $items.add($("[data-id='" + item_ids[i] + "']"));
 			}
 
-			Zkusebna._request("update-reservations.php", this.$form.serialize() + "&" + ids.join("&"),
-				function(data) {
-
-				},
-				null,
-				$items
-			);
+			Zkusebna._request("update-reservations.php", this.$form.serialize() + "&" + ids.join("&"));
 
 		},
-		reserve: function(item_id, item_name, $item) {
+		reserve: function(item_id, $item) {
 
 			if (this._validateForm()) {
 				this.reservedItems.push(item_id);
@@ -30790,11 +30781,16 @@ $.datetimepicker.setLocale('cs');
 
 			Zkusebna._request("create-reservation.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
-					Zkusebna._popup(data.heading, data.message);
-					self.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
-					self.$wrappers.reservedItems.html('');
-					self.reservedItems = [];
-					self._renderItems();
+					if (data.result == "collision") {
+						self.deleteItems(data.collisions);
+					}
+					else {
+						Zkusebna._popup(data.heading, data.message);
+						self.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
+						self.$wrappers.reservedItems.html('');
+						self.reservedItems = [];
+						self._renderItems();
+					}
 				}
 			);
 		},
@@ -30836,18 +30832,13 @@ $.datetimepicker.setLocale('cs');
 					e.stopPropagation();
 
 					if ($(this).hasClass(Zkusebna._classes.alreadyReserved)) {
-						$.magnificPopup.open({
-							items: {
-								src: '<h2>Toto už je rezervované</h2><p><strong>' + $(this).attr('data-name') + '</strong> má rezervaci od ' + $(this).attr('data-date-from') + ' do ' + $(this).attr('data-date-to') + '</p>',
-								type: 'inline'
-							}
-						});
+						Zkusebna._popup("Toto už je rezervované", "<strong>" + $(this).attr("data-name") + "</strong> má rezervaci od " + $(this).attr("data-date-from") + " do " + $(this).attr("data-date-to"));
 					}
 					else if ($(this).hasClass(Zkusebna._classes.reserved)) {
-						self.deleteItem($(this).attr("data-id"))
+						self.deleteItem($(this).attr("data-id"));
 					}
 					else {
-						self.reserve($(this).attr("data-id"), $(this).text(), $(this));
+						self.reserve($(this).attr("data-id"), $(this));
 					}
 
 				});

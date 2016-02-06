@@ -31,11 +31,12 @@ else {
 	$reservation = new Reservation($date_from, $date_to, $person->getID());
 	$collisions = $reservation->hasCollision($item_ids);
 
-	if (count($collisions)) {
+	if ($collisions) {
 		$output = array(
-			"result" => "failure",
+			"result" => "collision",
+			"collisions" => $collisions,
 			"heading" => "Rezervaci se nepodařilo potvrdit",
-			"message" => "Vypadá to, že vás někdo předbehl u " . implode(", ", $collisions['name'])
+			"message" => "Vypadá to, že vás někdo předbehl u " . implode(", ", array_map(function($item){ return $item['name']; }, $collisions)) . "<br>Tyto položky byly odstraněny z rezervace."
 		);
 	}
 	elseif ($reservation->addItems($item_ids)) {

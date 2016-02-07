@@ -3797,7 +3797,7 @@ The `sprites` mixin generates identical output to the CSS template
   font-style: normal; }
 
 .icons-props, [class^="icon-"]:before,
-[class*=" icon-"]:before, input[type=checkbox] + label:after, #reserved-items-wrapper .price:after, #reserved-items-wrapper li.item:after, ul#item-list .expandable:after {
+[class*=" icon-"]:before, input[type=checkbox] + label:after, #reserved-items-wrapper .price:after, #reserved-items-wrapper li.item:after, .loading .fc-view-container:before, ul#item-list .expandable:after {
   font-family: "zkusebna";
   speak: none;
   font-style: normal;
@@ -6189,6 +6189,18 @@ The `sprites` mixin generates identical output to the CSS template
   100% {
     transform: rotate(360deg); } }
 
+.icon-close:before {
+  content: "\e90b"; }
+
+.icon-mail:before {
+  content: "\e908"; }
+
+.icon-mobile:before {
+  content: "\e909"; }
+
+.icon-checkmark:before {
+  content: "\e90a"; }
+
 .icon-cart:before, #reserved-items-wrapper .price:after {
   content: "\e907"; }
 
@@ -6204,7 +6216,7 @@ The `sprites` mixin generates identical output to the CSS template
 .icon-chevron-left:before {
   content: "\e900"; }
 
-.icon-spinner:before, #reserved-items-wrapper li.item.loading:after, ul#item-list .reservable.loading i.icon-plus:before {
+.icon-spinner:before, #reserved-items-wrapper li.item.loading:after, .loading .fc-view-container:before, ul#item-list .reservable.loading i.icon-plus:before {
   content: "\e901"; }
 
 .icon-plus:before {
@@ -6399,6 +6411,47 @@ a.button--white:hover {
   margin: 0 auto;
   width: 1000px; }
 
+#reservations li {
+  margin: 15px 0; }
+  #reservations li.expanded ul {
+    display: block; }
+  #reservations li i,
+  #reservations li small,
+  #reservations li span,
+  #reservations li strong {
+    -webkit-transition: color 0.3s;
+    -moz-transition: color 0.3s;
+    -ms-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    transition: color 0.3s;
+    -webkit-transition-delay: 0;
+    -moz-transition-delay: 0;
+    -ms-transition-delay: 0;
+    -o-transition-delay: 0;
+    transition-delay: 0;
+    display: inline-block;
+    vertical-align: middle; }
+  #reservations li i,
+  #reservations li span {
+    font-size: 18px;
+    margin: 0 5px; }
+  #reservations li i {
+    cursor: pointer; }
+    #reservations li i:hover {
+      color: #67a712; }
+    #reservations li i.unapprove:hover {
+      color: #cc2229; }
+  #reservations li small {
+    margin: 0 5px; }
+  #reservations li span {
+    cursor: help; }
+  #reservations li strong {
+    color: #00aeef;
+    cursor: pointer;
+    font-size: 18px; }
+  #reservations li ul {
+    display: none; }
+
 #items-wrapper.loading {
   opacity: .5; }
 
@@ -6519,6 +6572,16 @@ a.button--white:hover {
   transition-delay: 0; }
   .loading .fc-view-container {
     opacity: 0.5; }
+    .loading .fc-view-container:before {
+      position: absolute;
+      left: 50%;
+      margin-left: -25px;
+      position: absolute;
+      top: 50%;
+      margin-top: -25px;
+      animation: spin 1s infinite linear;
+      -webkit-animation: spin 1s infinite linear;
+      font-size: 50px; }
 
 .mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar,
 .mCSB_scrollTools .mCSB_draggerRail {

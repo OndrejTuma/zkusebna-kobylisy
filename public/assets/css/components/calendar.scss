@@ -22,6 +22,16 @@
 
 	.loading & {
 		opacity: 0.5;
+
+		&:before {
+			$font-size: 50px;
+
+			@include absolute-center($font-size);
+			@include absolute-middle($font-size);
+			@include animation(spin 1s infinite linear);
+			@include font-icon(spinner);
+			font-size: $font-size;
+		}
 	}
 
 }

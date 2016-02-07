@@ -28,7 +28,8 @@ else if (!count($item_ids)) {
 }
 else {
 	$person = new Person($email, $name, $phone);
-	$reservation = new Reservation($date_from, $date_to, $person->getID());
+	$reservation = new Reservation();
+	$reservation->makeReservation($date_from, $date_to, $person->getID());
 	$collisions = $reservation->hasCollision($item_ids);
 
 	if ($collisions) {

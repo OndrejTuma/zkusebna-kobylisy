@@ -26,6 +26,7 @@ $.datetimepicker.setLocale('cs');
 			reserved: "reserved"
 		},
 		_urls: {
+			//ajax: "/zkusebna-kobylisy/app/core/ajax/",
 			ajax: "/app/core/ajax/"
 		},
 
@@ -92,20 +93,48 @@ $.datetimepicker.setLocale('cs');
 				reservations: $("#reservations")
 			};
 
+			this._expandableHandler();
+			this._approveHandler();
+
 			this._printReservations();
 
 		},
 
+		_approveHandler: function() {
+			var self = this;
+
+			this.$wrappers.reservations.on("click", "i", function() {
+				var action = $(this).hasClass("approve") ? "approve" : "unapprove";
+
+				Zkusebna._request("admin.php", { action: action, reservationId: $(this).parent().attr("data-id") }, function(data) {
+					self.$wrappers.reservations.html(data.html);
+				});
+			});
+		},
+		_expandableHandler: function() {
+			this.$wrappers.reservations.on("click", ".expandable", function() {
+				$(this).parent().toggleClass("expanded");
+			});
+		},
 		_printReservations: function() {
 
 			var self = this;
 
-			$.ajax({
-				method: "POST",
-				url: Zkusebna._urls.ajax + "admin-reservations.php",
-				success: function(data) {
-					self.$wrappers.reservations.html(data);
-				}
+			Zkusebna._request("admin.php", {}, function(data) {
+				self.$wrappers.reservations.html(data.html);
+				$('.tooltip').qtip({
+					content: {
+						attr: 'data-message'
+					},
+					style: {
+						background: 'black',
+						color: '#FFFFFF'
+					},
+					position: {
+						at: 'top center',
+						my: 'bottom center'
+					}
+				});
 			});
 
 		}
@@ -236,7 +265,7 @@ $.datetimepicker.setLocale('cs');
 			var $items = $("");
 
 			for (var i = 0; i < item_ids.length; i++) {
-				$items = $items.add($("[data-id='" + item_ids[i] + "']"));
+				$items = $items.add($(".reservable-item-" + item_ids[i]));
 			}
 
 			this.reservedItems = this.reservedItems.diff(item_ids);
@@ -245,17 +274,6 @@ $.datetimepicker.setLocale('cs');
 			if ($items && $items.length) {
 				$items.removeClass(Zkusebna._classes.reserved);
 			}
-
-		},
-		updateItems: function(item_ids) {
-
-			var ids = [];
-
-			for (var i = 0; i < item_ids.length; i++) {
-				ids.push("item_ids[]=" + item_ids[i]);
-			}
-
-			Zkusebna._request("update-reservations.php", this.$form.serialize() + "&" + ids.join("&"));
 
 		},
 		reserve: function(item_id, $item) {
@@ -307,7 +325,6 @@ $.datetimepicker.setLocale('cs');
 						});
 					}
 
-					self.updateItems(compatible_ids);
 					self._renderItems();
 
 				},
@@ -348,7 +365,7 @@ $.datetimepicker.setLocale('cs');
 				price = 0;
 
 			for (var i = 0; i < this.reservedItems.length; i++) {
-				output += "<li class='item' data-id='" + this.reservedItems[i] + "'>" + this.reservableItems[this.reservedItems[i]].name + "</li>"
+				output += "<li class='item' class='reservable-item-" + this.reservedItems[i] + "' data-id='" + this.reservedItems[i] + "'>" + this.reservableItems[this.reservedItems[i]].name + "</li>"
 				price += parseInt(this.reservableItems[this.reservedItems[i]].price);
 			}
 

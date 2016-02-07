@@ -4,8 +4,15 @@ class Reservation extends Zkusebna {
 
 	private $date_from, $date_to, $who;
 
-	function __construct($date_from, $date_to, $who) {
+	function __construct() {
 		parent::__construct();
+		$this->date_from = "";
+		$this->date_to = "";
+		$this->who = 0;
+		$this->id = 0;
+	}
+
+	public function makeReservation($date_from, $date_to, $who) {
 		$this->date_from = $this->_parseDate($date_from);
 		$this->date_to = $this->_parseDate($date_to);
 		$this->who = $who;

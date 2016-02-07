@@ -21,6 +21,11 @@ switch ($action) {
 		break;
 	case "approvedReservations":
 		break;
+	case "deleteItem":
+		$reservationId = isset($_POST["reservationId"]) ? $_POST["reservationId"] : "";
+		$itemId = isset($_POST["itemId"]) ? $_POST["itemId"] : "";
+		$admin->deleteReservationItem($itemId, $reservationId);
+		break;
 	case "updateItem":
 		$itemId = isset($_POST["itemId"]) ? $_POST["itemId"] : "";
 		$column = isset($_POST["column"]) ? $_POST["column"] : "";

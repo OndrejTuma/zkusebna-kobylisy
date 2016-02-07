@@ -29,6 +29,7 @@ $.datetimepicker.setLocale('cs');
 		},
 		_urls: {
 			ajax: "../../../app/core/ajax/"
+			//ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
 
 		init: function() {
@@ -151,9 +152,15 @@ $.datetimepicker.setLocale('cs');
 			var self = this;
 
 			this.$wrappers.admin.on("click", "i", function() {
-				var action = $(this).hasClass("approve") ? "approve" : "delete";
+				var action = $(this).hasClass("approve") ? "approve" : ($(this).hasClass("delete") ? "delete" : "deleteItem"),
+					data = {
+						action: action,
+						reservationId: $(this).parents("[data-id]").attr("data-id")
+					};
 
-				Zkusebna._request("admin.php", { action: action, reservationId: $(this).parent().attr("data-id") }, function(data) {
+				if (action == "deleteItem") data.itemId = $(this).attr("data-item");
+
+				Zkusebna._request("admin.php", data, function(data) {
 					self.$wrappers.approved.html(data.approved);
 					self.$wrappers.unapproved.html(data.unapproved);
 					Zkusebna._qtips();
@@ -172,7 +179,7 @@ $.datetimepicker.setLocale('cs');
 					column = $(this).attr("data-column"),
 					data = {
 						action: "updateItem",
-						itemId: item_id,
+						"item-id": item_id,
 						column: column
 					},
 					self = this;

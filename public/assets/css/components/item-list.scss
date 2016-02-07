@@ -1,4 +1,4 @@
-ul#item-list {
+ul.item-list {
 
 	list-style: none;
 	padding-left: 0;
@@ -99,9 +99,6 @@ ul#item-list {
 			margin: 0 0 0 10px;
 			vertical-align: top;
 		}
-		span {
-			float: right;
-		}
 	}
 	.subcategories {
 		margin: $margin--big 0 $margin--big $margin--big;
@@ -162,6 +159,13 @@ ul#item-list {
 				background-color: darken($nastroje-color, $darken-by);
 			}
 		}
+	}
+	span {
+
+		&.price {
+			float: right;
+		}
+
 	}
 	strong {
 		@include transition(background .3s ease-in-out);

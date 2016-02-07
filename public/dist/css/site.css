@@ -3797,7 +3797,7 @@ The `sprites` mixin generates identical output to the CSS template
   font-style: normal; }
 
 .icons-props, [class^="icon-"]:before,
-[class*=" icon-"]:before, input[type=checkbox] + label:after, #reserved-items-wrapper .price:after, #reserved-items-wrapper li.item:after, .loading .fc-view-container:before, ul#item-list .expandable:after {
+[class*=" icon-"]:before, input[type=checkbox] + label:after, #reserved-items-wrapper .price:after, #reserved-items-wrapper li.item:after, .loading .fc-view-container:before, ul.item-list .expandable:after {
   font-family: "zkusebna";
   speak: none;
   font-style: normal;
@@ -6204,7 +6204,7 @@ The `sprites` mixin generates identical output to the CSS template
 .icon-cart:before, #reserved-items-wrapper .price:after {
   content: "\e907"; }
 
-.icon-chevron-down:before, ul#item-list .expandable:after {
+.icon-chevron-down:before, ul.item-list .expandable:after {
   content: "\e904"; }
 
 .icon-chevron-up:before {
@@ -6216,7 +6216,7 @@ The `sprites` mixin generates identical output to the CSS template
 .icon-chevron-left:before {
   content: "\e900"; }
 
-.icon-spinner:before, #reserved-items-wrapper li.item.loading:after, .loading .fc-view-container:before, ul#item-list .reservable.loading i.icon-plus:before {
+.icon-spinner:before, #reserved-items-wrapper li.item.loading:after, .loading .fc-view-container:before, ul.item-list .reservable.loading i.icon-plus:before {
   content: "\e901"; }
 
 .icon-plus:before {
@@ -6258,6 +6258,13 @@ input[type=checkbox] {
       color: #fff; }
     input[type=checkbox].delete:checked + label:before {
       background-color: #cc2229; }
+
+.editable[data-column="price"] input {
+  max-width: 50px; }
+
+.editable input {
+  height: 27px;
+  margin-top: -5px; }
 
 .error {
   color: #cc2229;
@@ -6411,46 +6418,11 @@ a.button--white:hover {
   margin: 0 auto;
   width: 1000px; }
 
-#reservations li {
-  margin: 15px 0; }
-  #reservations li.expanded ul {
-    display: block; }
-  #reservations li i,
-  #reservations li small,
-  #reservations li span,
-  #reservations li strong {
-    -webkit-transition: color 0.3s;
-    -moz-transition: color 0.3s;
-    -ms-transition: color 0.3s;
-    -o-transition: color 0.3s;
-    transition: color 0.3s;
-    -webkit-transition-delay: 0;
-    -moz-transition-delay: 0;
-    -ms-transition-delay: 0;
-    -o-transition-delay: 0;
-    transition-delay: 0;
-    display: inline-block;
-    vertical-align: middle; }
-  #reservations li i,
-  #reservations li span {
-    font-size: 18px;
-    margin: 0 5px; }
-  #reservations li i {
-    cursor: pointer; }
-    #reservations li i:hover {
-      color: #67a712; }
-    #reservations li i.unapprove:hover {
-      color: #cc2229; }
-  #reservations li small {
-    margin: 0 5px; }
-  #reservations li span {
-    cursor: help; }
-  #reservations li strong {
-    color: #00aeef;
-    cursor: pointer;
-    font-size: 18px; }
-  #reservations li ul {
-    display: none; }
+#approved-reservations li i.approve {
+  display: none; }
+
+#items li ul {
+  display: block; }
 
 #items-wrapper.loading {
   opacity: .5; }
@@ -6593,10 +6565,10 @@ a.button--white:hover {
 .mCustomScrollbar .mCustomScrollBox {
   padding: 0 20px; }
 
-ul#item-list {
+ul.item-list {
   list-style: none;
   padding-left: 0; }
-  ul#item-list .expandable {
+  ul.item-list .expandable {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -6610,7 +6582,7 @@ ul#item-list {
     color: #fff;
     margin: 0;
     padding: 10px 20px; }
-    ul#item-list .expandable:after {
+    ul.item-list .expandable:after {
       position: absolute;
       top: 15px;
       left: auto;
@@ -6636,7 +6608,7 @@ ul#item-list {
       -ms-transition-delay: 0;
       -o-transition-delay: 0;
       transition-delay: 0; }
-    ul#item-list .expandable.active:after {
+    ul.item-list .expandable.active:after {
       -webkit-transform: rotate(180deg);
       -moz-transform: rotate(180deg);
       -ms-transform: rotate(180deg);
@@ -6647,22 +6619,22 @@ ul#item-list {
       -ms-transform-origin: 50% 50%;
       -o-transform-origin: 50% 50%;
       transform-origin: 50% 50%; }
-    ul#item-list .expandable.cat {
+    ul.item-list .expandable.cat {
       background-color: #b8860b;
       border-bottom: 1px solid #967117;
       color: #fff;
       font-size: 20px;
       padding: 20px 50px; }
-      ul#item-list .expandable.cat:after {
+      ul.item-list .expandable.cat:after {
         top: 20px; }
-      ul#item-list .expandable.cat:hover {
+      ul.item-list .expandable.cat:hover {
         background-color: #a0740a; }
-      ul#item-list .expandable.cat.active {
+      ul.item-list .expandable.cat.active {
         background-color: #967117; }
-    ul#item-list .expandable.category-empty {
+    ul.item-list .expandable.category-empty {
       background-color: #808080 !important;
       cursor: default; }
-  ul#item-list .reservable {
+  ul.item-list .reservable {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -6682,28 +6654,28 @@ ul#item-list {
     -o-transition-delay: 0;
     transition-delay: 0;
     background-color: transparent; }
-    ul#item-list .reservable:hover {
+    ul.item-list .reservable:hover {
       background-color: #f0f0f0;
       color: #67a712; }
-    ul#item-list .reservable.already-reserved {
+    ul.item-list .reservable.already-reserved {
       cursor: default;
       opacity: .5; }
-      ul#item-list .reservable.already-reserved:hover {
+      ul.item-list .reservable.already-reserved:hover {
         color: inherit; }
-      ul#item-list .reservable.already-reserved i {
+      ul.item-list .reservable.already-reserved i {
         display: none; }
-    ul#item-list .reservable.already-reserved:hover {
+    ul.item-list .reservable.already-reserved:hover {
       background-color: transparent; }
-    ul#item-list .reservable.loading {
+    ul.item-list .reservable.loading {
       background-color: transparent;
       color: #404040;
       opacity: .6; }
-      ul#item-list .reservable.loading i.icon-plus:before {
+      ul.item-list .reservable.loading i.icon-plus:before {
         animation: spin 1s infinite linear;
         -webkit-animation: spin 1s infinite linear; }
-    ul#item-list .reservable.reserved:hover {
+    ul.item-list .reservable.reserved:hover {
       color: #cc2229; }
-    ul#item-list .reservable.reserved i {
+    ul.item-list .reservable.reserved i {
       -webkit-transform: rotate(45deg);
       -moz-transform: rotate(45deg);
       -ms-transform: rotate(45deg);
@@ -6715,7 +6687,7 @@ ul#item-list {
       -o-transform-origin: 50% 50%;
       transform-origin: 50% 50%;
       color: #cc2229; }
-    ul#item-list .reservable i {
+    ul.item-list .reservable i {
       -webkit-transition: transform 0.3s;
       -moz-transition: transform 0.3s;
       -ms-transition: transform 0.3s;
@@ -6731,11 +6703,9 @@ ul#item-list {
       display: inline-block;
       margin: 0 0 0 10px;
       vertical-align: top; }
-    ul#item-list .reservable span {
-      float: right; }
-  ul#item-list .subcategories {
+  ul.item-list .subcategories {
     margin: 2em 0 2em 2em; }
-    ul#item-list .subcategories .expandable:before {
+    ul.item-list .subcategories .expandable:before {
       position: absolute;
       top: 40px;
       left: 20px;
@@ -6743,7 +6713,7 @@ ul#item-list {
       right: auto;
       content: "";
       border-left: 1px dashed #808080; }
-    ul#item-list .subcategories strong:before {
+    ul.item-list .subcategories strong:before {
       position: absolute;
       top: 50%;
       left: -10px;
@@ -6753,8 +6723,8 @@ ul#item-list {
       content: "";
       margin-top: -1px;
       width: 10px; }
-  ul#item-list .zkusebna .cat:before,
-  ul#item-list .nastroje .cat:before {
+  ul.item-list .zkusebna .cat:before,
+  ul.item-list .nastroje .cat:before {
     position: absolute;
     top: 60px;
     left: 55px;
@@ -6762,24 +6732,26 @@ ul#item-list {
     right: auto;
     content: "";
     border-left: 1px dashed #808080; }
-  ul#item-list li {
+  ul.item-list li {
     position: relative; }
-    ul#item-list li.zkusebna strong.expandable {
+    ul.item-list li.zkusebna strong.expandable {
       background-color: #b8860b;
       border-color: #886308; }
-      ul#item-list li.zkusebna strong.expandable:hover, ul#item-list li.zkusebna strong.expandable.active {
+      ul.item-list li.zkusebna strong.expandable:hover, ul.item-list li.zkusebna strong.expandable.active {
         background-color: #a0740a; }
-    ul#item-list li.technika strong.expandable {
+    ul.item-list li.technika strong.expandable {
       background-color: #67a712;
       border-color: #4b790d; }
-      ul#item-list li.technika strong.expandable:hover, ul#item-list li.technika strong.expandable.active {
+      ul.item-list li.technika strong.expandable:hover, ul.item-list li.technika strong.expandable.active {
         background-color: #599010; }
-    ul#item-list li.nastroje strong.expandable {
+    ul.item-list li.nastroje strong.expandable {
       background-color: #6c3082;
       border-color: #4d225d; }
-      ul#item-list li.nastroje strong.expandable:hover, ul#item-list li.nastroje strong.expandable.active {
+      ul.item-list li.nastroje strong.expandable:hover, ul.item-list li.nastroje strong.expandable.active {
         background-color: #5d296f; }
-  ul#item-list strong {
+  ul.item-list span.price {
+    float: right; }
+  ul.item-list strong {
     -webkit-transition: background 0.3s ease-in-out;
     -moz-transition: background 0.3s ease-in-out;
     -ms-transition: background 0.3s ease-in-out;
@@ -6794,7 +6766,7 @@ ul#item-list {
     font-size: 15px;
     line-height: 20px;
     padding: 5px 15px; }
-  ul#item-list ul {
+  ul.item-list ul {
     -webkit-transition: opacity 0.5s;
     -moz-transition: opacity 0.5s;
     -ms-transition: opacity 0.5s;
@@ -6810,11 +6782,11 @@ ul#item-list {
     position: absolute;
     top: -9999px;
     visibility: hidden; }
-    ul#item-list ul.active {
+    ul.item-list ul.active {
       opacity: 1;
       position: static;
       visibility: visible; }
-    ul#item-list ul.items {
+    ul.item-list ul.items {
       padding: 10px 0 10px 30px; }
 
 noscript {
@@ -6848,6 +6820,49 @@ noscript {
   background-color: #fff;
   max-width: 1000px;
   padding: 20px; }
+
+.reservation-list li {
+  margin: 15px 0; }
+  .reservation-list li.expanded ul {
+    display: block; }
+  .reservation-list li i,
+  .reservation-list li small,
+  .reservation-list li span,
+  .reservation-list li strong {
+    -webkit-transition: color 0.3s;
+    -moz-transition: color 0.3s;
+    -ms-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    transition: color 0.3s;
+    -webkit-transition-delay: 0;
+    -moz-transition-delay: 0;
+    -ms-transition-delay: 0;
+    -o-transition-delay: 0;
+    transition-delay: 0;
+    display: inline-block;
+    vertical-align: middle; }
+  .reservation-list li i,
+  .reservation-list li span {
+    font-size: 18px;
+    margin: 0 5px; }
+  .reservation-list li i {
+    cursor: pointer; }
+    .reservation-list li i:hover {
+      color: #67a712; }
+    .reservation-list li i.unapprove:hover {
+      color: #cc2229; }
+  .reservation-list li small {
+    margin: 0 5px; }
+  .reservation-list li span {
+    cursor: help; }
+    .reservation-list li span:hover {
+      color: #00aeef; }
+  .reservation-list li strong {
+    color: #00aeef;
+    cursor: pointer;
+    font-size: 18px; }
+  .reservation-list li ul {
+    display: none; }
 
 body {
   background-color: #fff;
@@ -6889,6 +6904,9 @@ body {
 
 .bg--white {
   background-color: #fff; }
+
+.block {
+  display: block; }
 
 .fl {
   float: left; }

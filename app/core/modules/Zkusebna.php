@@ -36,6 +36,19 @@ class Zkusebna {
 
 	}
 
+	/**
+	 * update item's info
+	 * @param $item_id int - item id
+	 * @param $changeSet array(column => val) - array of changes to be made
+	 * @return resource
+	 */
+	public function updateItem($item_id, $column, $val) {
+
+		$query = "UPDATE {$this->table_names["items"]} SET {$column} = '{$val}' WHERE id = $item_id";
+		return $this->sql->query($query);
+
+	}
+
 	public static function parseSQLDate($date) {
 
 		return date("j.n. G:i", strtotime($date));

@@ -30432,12 +30432,13 @@ $.datetimepicker.setLocale('cs');
 			active: "active",
 			alreadyReserved: "already-reserved",
 			empty: "empty",
+			error: "error",
+			inputHighlight: "bounce animated",
 			loading: "loading",
 			reserved: "reserved"
 		},
 		_urls: {
-			//ajax: "/zkusebna-kobylisy/app/core/ajax/",
-			ajax: "/app/core/ajax/"
+			ajax: "../../../app/core/ajax/"
 		},
 
 		init: function() {
@@ -30453,7 +30454,35 @@ $.datetimepicker.setLocale('cs');
 			}
 
 		},
+		_expandableHandler: function() {
 
+			var self = this;
+
+			$(".expandable").each(function() {
+
+				if (!$(this).hasClass(self._classes.active)) {
+					$("ul", $(this).parent()).removeClass(self._classes.active);
+				}
+				else {
+					$("+ ul", this).addClass(self._classes.active);
+				}
+
+				$(this).click(function() {
+
+					if ($(this).hasClass(self._classes.active)) {
+						$(this).removeClass(self._classes.active);
+						$("." + self._classes.active, $(this).parent()).removeClass(self._classes.active);
+					}
+					else {
+						$(this).addClass(self._classes.active);
+						$("+ ul", this).addClass(self._classes.active);
+					}
+
+				});
+
+			});
+
+		},
 		_popup: function(heading, message, wrapperClass) {
 			var src;
 			if (wrapperClass !== undefined) {
@@ -30467,6 +30496,21 @@ $.datetimepicker.setLocale('cs');
 				items: {
 					src: src,
 					type: 'inline'
+				}
+			});
+		},
+		_qtips: function() {
+			$('.tooltip').qtip({
+				content: {
+					attr: 'data-message'
+				},
+				style: {
+					background: 'black',
+					color: '#FFFFFF'
+				},
+				position: {
+					at: 'top center',
+					my: 'bottom center'
 				}
 			});
 		},
@@ -30500,51 +30544,86 @@ $.datetimepicker.setLocale('cs');
 		init: function() {
 
 			this.$wrappers = {
-				reservations: $("#reservations")
+				admin: $("#admin"),
+				approved: $("#approved-reservations"),
+				unapproved: $("#unapproved-reservations"),
+				items: $("#items")
 			};
 
-			this._expandableHandler();
+			this._renderDashboard();
 			this._approveHandler();
-
-			this._printReservations();
+			this._itemsHandler();
+			this._reservationsHandler();
 
 		},
 
 		_approveHandler: function() {
 			var self = this;
 
-			this.$wrappers.reservations.on("click", "i", function() {
-				var action = $(this).hasClass("approve") ? "approve" : "unapprove";
+			this.$wrappers.admin.on("click", "i", function() {
+				var action = $(this).hasClass("approve") ? "approve" : "delete";
 
 				Zkusebna._request("admin.php", { action: action, reservationId: $(this).parent().attr("data-id") }, function(data) {
-					self.$wrappers.reservations.html(data.html);
+					self.$wrappers.approved.html(data.approved);
+					self.$wrappers.unapproved.html(data.unapproved);
+					Zkusebna._qtips();
+					Zkusebna._expandableHandler();
+				});
+			});
+
+		},
+		_itemsHandler: function() {
+			this.$wrappers.items.on("click", ".editable", function() {
+
+				var $node = $(this),
+					val = $(this).text(),
+					item_id = $(this).attr("data-id"),
+					input_id = "temp_editable_item",
+					column = $(this).attr("data-column"),
+					data = {
+						action: "updateItem",
+						itemId: item_id,
+						column: column
+					},
+					self = this;
+
+				$(this).toggleClass(Zkusebna._classes.active);
+
+				if ($(this).hasClass(Zkusebna._classes.active)) {
+					$(this).html("<input type='text' value='" + val + "' id='" + input_id + "'>");
+				}
+				$("#" + input_id).select().focus().on('blur', function() {
+					data.val = $(this).val();
+					Zkusebna._request("admin.php", data, function(res) {
+						if (res.result == "failure") {
+							$node.find("input").addClass(Zkusebna._classes.error + " " + Zkusebna._classes.inputHighlight);
+
+							setTimeout(function(){
+								$("#" + input_id).removeClass(Zkusebna._classes.inputHighlight);
+							}, 1000);
+						}
+						else {
+							$node.removeClass(Zkusebna._classes.active).html(data.val);
+						}
+					});
 				});
 			});
 		},
-		_expandableHandler: function() {
-			this.$wrappers.reservations.on("click", ".expandable", function() {
+		_reservationsHandler: function() {
+			this.$wrappers.admin.on("click", ".expandable", function() {
 				$(this).parent().toggleClass("expanded");
 			});
 		},
-		_printReservations: function() {
+		_renderDashboard: function() {
 
 			var self = this;
 
 			Zkusebna._request("admin.php", {}, function(data) {
-				self.$wrappers.reservations.html(data.html);
-				$('.tooltip').qtip({
-					content: {
-						attr: 'data-message'
-					},
-					style: {
-						background: 'black',
-						color: '#FFFFFF'
-					},
-					position: {
-						at: 'top center',
-						my: 'bottom center'
-					}
-				});
+				self.$wrappers.approved.html(data.approved);
+				self.$wrappers.unapproved.html(data.unapproved);
+				self.$wrappers.items.html(data.items);
+				Zkusebna._qtips();
+				Zkusebna._expandableHandler();
 			});
 
 		}
@@ -30582,7 +30661,7 @@ $.datetimepicker.setLocale('cs');
 
 						$element.find('.fc-time').html("<small>" + event.start.format('HH:mm') + "-" + event.end.format('HH:mm') + "</small>");
 
-						var message = 'Rezervoval/a: <strong>' + event.name + '</strong> <br>Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
+						var message = '<strong class="block"><span class="block mbs">' + event.title + '</span>' + event.name + '<br>' + event.start.format('D.M. HH:mm') + ' - ' + event.end.format('D.M. HH:mm') + '</strong>';
 
 						$element.qtip({
 							content: message,
@@ -30698,7 +30777,6 @@ $.datetimepicker.setLocale('cs');
 		},
 		updateReservationDate: function() {
 			//checks for collisions within reserved items
-
 			var self = this;
 
 			Zkusebna._request("get-reserved-items.php", this.$form.serialize(),function(data) {
@@ -30829,7 +30907,7 @@ $.datetimepicker.setLocale('cs');
 
 				self.$wrappers.items.html(data.html);
 
-				self._expandableHandler();
+				Zkusebna._expandableHandler();
 				self._reservableHandler();
 			}
 
@@ -30838,7 +30916,7 @@ $.datetimepicker.setLocale('cs');
 
 			var self = this;
 
-			$("ul#item-list .reservable").each(function() {
+			$("ul.item-list .reservable").each(function() {
 
 				if (self.reservedItems.indexOf($(this).attr("data-id")) > -1) {
 					$(this).addClass(Zkusebna._classes.reserved);
@@ -30856,35 +30934,6 @@ $.datetimepicker.setLocale('cs');
 					}
 					else {
 						self.reserve($(this).attr("data-id"), $(this));
-					}
-
-				});
-
-			});
-
-		},
-		_expandableHandler: function() {
-
-			$("ul#item-list .expandable").each(function() {
-
-				if (!$(this).hasClass(Zkusebna._classes.active)) {
-					$("ul", $(this).parent()).removeClass(Zkusebna._classes.active);
-				}
-				else {
-					$("+ ul", this).addClass(Zkusebna._classes.active);
-				}
-
-				$(this).click(function(e) {
-
-					e.stopPropagation();
-
-					if ($(this).hasClass(Zkusebna._classes.active)) {
-						$(this).removeClass(Zkusebna._classes.active);
-						$("." + Zkusebna._classes.active, $(this).parent()).removeClass(Zkusebna._classes.active);
-					}
-					else {
-						$(this).addClass(Zkusebna._classes.active);
-						$("+ ul", this).addClass(Zkusebna._classes.active);
 					}
 
 				});

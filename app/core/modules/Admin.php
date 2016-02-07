@@ -18,7 +18,7 @@ class Admin extends Zkusebna {
 	 * rejects reservation
 	 * @param $reservationId
 	 */
-	public function unapproveReservation($reservationId) {
+	public function deleteReservation($reservationId) {
 		$reservationId = (int)$reservationId;
 		// delete reserved items
 		$query = "DELETE FROM {$this->table_names["r-i"]} WHERE reservation_id = {$reservationId}";
@@ -27,8 +27,15 @@ class Admin extends Zkusebna {
 		$query = "DELETE FROM {$this->table_names["reservations"]} WHERE id = {$reservationId}";
 		$this->sql->query($query);
 	}
-	public function getUnapprovedReservations() {
-		return $this->_getReservarvations("approved = 0");
+	public function renderApprovedReservations() {
+		return $this->_renderReservations($this->_getReservarvations("approved = 1"));
+	}
+	public function renderItems() {
+		$items = new Items();
+		return $items->renderItems("","","");
+	}
+	public function renderUnapprovedReservations() {
+		return $this->_renderReservations($this->_getReservarvations("approved = 0"));
 	}
 
 	private function _getReservarvations($where) {
@@ -51,7 +58,27 @@ WHERE {$where}
 				"image" => $reservation['image']
 			);
 		}
+
 		return $reservations;
+	}
+
+	private function _renderReservations($reservations) {
+		if (count($reservations)) {
+			$output = "<ol>";
+			foreach ($reservations as $id => $reservation) {
+				$output .= "<li data-id='{$id}'><strong class='expandable'>{$reservation["who"]}</strong> <small>" . Zkusebna::parseSQLDate($reservation['date_from']) . " - " . Zkusebna::parseSQLDate($reservation['date_to']) . "</small> <span class='tooltip icon-mobile' data-message='{$reservation["phone"]}'></span><span class='icon-mail tooltip' data-message='{$reservation["email"]}'></span> <i class='approve icon-checkmark tooltip' data-message='Schválit rezervaci'></i><i class='delete icon-close tooltip' data-message='Zamítnout rezervaci'></i> <ul>";
+				foreach ($reservation["items"] as $item) {
+					$output .= "<li>{$item["name"]}</li>";
+				}
+				$output .= "</ul></li>";
+			}
+			$output .= "</ol>";
+		}
+		else {
+			$output = "<p><i>Žádné rezervace</i></p>";
+		}
+
+		return $output;
 	}
 
 }

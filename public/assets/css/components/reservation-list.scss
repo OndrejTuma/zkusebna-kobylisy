@@ -1,0 +1,58 @@
+.reservation-list {
+
+	li {
+		margin: 15px 0;
+
+		&.expanded {
+
+			ul {
+				display: block;
+			}
+
+		}
+
+		i,
+		small,
+		span,
+		strong {
+			@include transition(color .3s);
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		i,
+		span {
+			font-size: 18px;
+			margin: 0 5px;
+		}
+		i {
+			cursor: pointer;
+
+			&:hover {
+				color: $christi;
+			}
+			&.unapprove:hover {
+				color: $fire-engine-red;
+			}
+		}
+		small {
+			margin: 0 5px;
+		}
+		span {
+			cursor: help;
+
+			&:hover {
+				color: $cyan;
+			}
+		}
+		strong {
+			color: $cyan;
+			cursor: pointer;
+			font-size: 18px;
+		}
+		ul {
+			display: none;
+		}
+	}
+
+}

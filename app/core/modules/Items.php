@@ -70,7 +70,7 @@ ORDER BY category, parent_id, i.name";
 			}
 		}
 
-		$output .= "<ul id='item-list' class='" . ($this->preview ? "preview" : "") . "'>";
+		$output .= "<ul class='item-list " . ($this->preview ? "preview" : "") . "'>";
 		foreach ($this->categories as $name => $category) {
 			$output .= "<li class='{$name}'>";
 			$output .= "<strong class='expandable cat " . (!count($category) ? "category-empty" : ($name == "zkusebna" ? " active" : "")) ."'>";
@@ -125,7 +125,7 @@ ORDER BY category, parent_id, i.name";
 		$output = "";
 		if ($item["reservable"] == 1) {
 			if ($this->preview) {
-				$output .= "<strong>{$item["name"]}</strong>";
+				$output .= "<strong><span data-column='name' data-id='{$item["id"]}' class='editable'>{$item["name"]}</span> <span class='price'><span data-column='price' data-id='{$item["id"]}' class='editable'>{$item["price"]}</span>,-</span></strong>";
 			}
 			else {
 				$output .= "<strong class='reservable-item-{$item["id"]} reservable ";
@@ -136,11 +136,11 @@ ORDER BY category, parent_id, i.name";
 					$output .= "' ";
 				}
 				$output .= "data-id='{$item["id"]}'>{$item["name"]}";
-				$output .= "<i class='icon-plus'></i> <span>{$item["price"]},-</span></strong>";
+				$output .= "<i class='icon-plus'></i> <span class='price'>{$item["price"]},-</span></strong>";
 			}
 		}
 		else {
-			$output .= "<strong class='expandable'>{$item["name"]}</strong>";
+			$output .= "<strong class='expandable'><span data-id='{$item["id"]}' data-column='name' class='editable'>{$item["name"]}</span></strong>";
 		}
 		return $output;
 	}

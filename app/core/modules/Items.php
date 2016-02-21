@@ -25,19 +25,41 @@ class Items extends Zkusebna {
 
 		$output = array();
 		foreach ($this->items as $item) {
+			$item["discount"] = isset($this->discount) ? $this->discount : 0;
 			if ($item['reservable']) $output[$item['id']] = $item;
 		}
 		return $output;
 
 	}
 
-	public function renderItems($date_from, $date_to, $email) {
+	public function getSelectPurpose() {
+
+		$output = "<select name=\"purpose\" id=\"purpose\" class=\"born\">";
+		$output.= "<option value=\"\" disabled selected>Účel rezervace</option>";
+
+		$query = "SELECT * FROM {$this->table_names["purpose"]}";
+		$purposes = $this->sql->field_assoc($query);
+		foreach ($purposes as $purpose) {
+			$output.= "<option value=\"{$purpose["id"]}\">{$purpose["title"]}</option>";
+		}
+
+		$output.= "</select>";
+
+		return $output;
+	}
+
+	public function renderItems($date_from, $date_to, $email, $purpose_id, $active_categories = array()) {
 
 		$this->preview = !($date_from && $date_to);
 
 		$this->date_from = $this->_parseDate($date_from);
 		$this->date_to = $this->_parseDate($date_to);
 		$this->email = $email;
+
+		if ($purpose_id > 0) {
+			$discount_row = $this->sql->field_assoc("SELECT discount FROM {$this->table_names["purpose"]} WHERE id = {$purpose_id}");
+			$this->discount = $discount_row ? $discount_row[0]["discount"] : null;
+		}
 
 		if ($this->preview) {
 			$query = "SELECT * FROM {$this->table_names["items"]} ORDER BY category, parent_id, name";
@@ -49,11 +71,10 @@ FROM {$this->table_names["items"]} AS i
 LEFT JOIN
 (
 SELECT c.name, c.email, ri.item_id, date_from, date_to FROM {$this->table_names["reservations"]} AS r
-LEFT JOIN {$this->table_names["community"]} AS c ON r.who = c.id
-LEFT JOIN  {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
+LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
+LEFT JOIN  {$this->table_names["r-i"]} AS ri ON ri.reservation_id = r.id
 WHERE (date_from > '{$this->date_from}' OR date_to > '{$this->date_from}') AND (date_from < '{$this->date_to}' OR date_to < '{$this->date_to}')
-) AS reservation
-ON i.id = reservation.item_id
+) AS reservation ON reservation.item_id = i.id
 ORDER BY category, parent_id, i.name";
 		}
 
@@ -73,7 +94,7 @@ ORDER BY category, parent_id, i.name";
 		$output .= "<ul class='item-list " . ($this->preview ? "preview" : "") . "'>";
 		foreach ($this->categories as $name => $category) {
 			$output .= "<li class='{$name}'>";
-			$output .= "<strong class='expandable cat " . (!count($category) ? "category-empty" : ($name == "zkusebna" ? " active" : "")) ."'>";
+			$output .= "<strong class='expandable cat " . (!count($category) ? "category-empty" : (in_array($name, $active_categories) ? " active" : "")) ."'>";
 			$output .= $this->_renderCategoryName($name);
 			$output .= "</strong>";
 			if (count($category)) {
@@ -85,8 +106,12 @@ ORDER BY category, parent_id, i.name";
 
 		return $output;
 	}
-	
-	
+
+
+
+	private function _getItemPrice($item) {
+		return round($item['price'] * (isset($this->discount) ? (100 - $this->discount) : 100) / 100);
+	}
 	private function _renderCategoryName($category_key) {
 		return isset($this->categories_names[$category_key]) ? $this->categories_names[$category_key] : "<i>{$category_key}</i>";
 	}
@@ -125,7 +150,7 @@ ORDER BY category, parent_id, i.name";
 		$output = "";
 		if ($item["reservable"] == 1) {
 			if ($this->preview) {
-				$output .= "<strong><span data-column='name' data-id='{$item["id"]}' class='editable'>{$item["name"]}</span> <span class='price'><span data-column='price' data-id='{$item["id"]}' class='editable'>{$item["price"]}</span>,-</span></strong>";
+				$output .= "<strong><span data-column='name' data-id='{$item["id"]}' class='editable'>{$item["name"]}</span> <span class='price'><span data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span></strong>";
 			}
 			else {
 				$output .= "<strong class='reservable-item-{$item["id"]} reservable ";
@@ -136,7 +161,7 @@ ORDER BY category, parent_id, i.name";
 					$output .= "' ";
 				}
 				$output .= "data-id='{$item["id"]}'>{$item["name"]}";
-				$output .= "<i class='icon-plus'></i> <span class='price'>{$item["price"]},-</span></strong>";
+				$output .= "<i class='icon-plus'></i> <span class='price'>" . $this->_getItemPrice($item) . ",-</span></strong>";
 			}
 		}
 		else {

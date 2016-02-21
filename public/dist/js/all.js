@@ -30431,6 +30431,7 @@ $.datetimepicker.setLocale('cs');
 		_classes: {
 			active: "active",
 			alreadyReserved: "already-reserved",
+			born: "born",
 			empty: "empty",
 			error: "error",
 			inputHighlight: "bounce animated",
@@ -30441,6 +30442,8 @@ $.datetimepicker.setLocale('cs');
 			ajax: "../../../app/core/ajax/"
 			//ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
+		dateTimeFormat: 'DD.MM.YYYY H:mm',
+		unixDateTimeFormat: 'd.m.Y H:i',
 
 		init: function() {
 
@@ -30454,6 +30457,9 @@ $.datetimepicker.setLocale('cs');
 				this.admin.init();
 			}
 
+		},
+		_copyToClipboard: function(text) {
+			window.prompt("Pro zkopírování zmáčkni postupně: Ctrl+C, Enter", text);
 		},
 		_expandableHandler: function() {
 
@@ -30546,6 +30552,7 @@ $.datetimepicker.setLocale('cs');
 
 			this.$wrappers = {
 				admin: $("#admin"),
+				addPurpose: $("#add-purpose"),
 				approved: $("#approved-reservations"),
 				unapproved: $("#unapproved-reservations"),
 				items: $("#items")
@@ -30554,10 +30561,31 @@ $.datetimepicker.setLocale('cs');
 			this._renderDashboard();
 			this._approveHandler();
 			this._itemsHandler();
+			this._addPurposeHandler();
 			this._reservationsHandler();
 
 		},
 
+		_addPurposeHandler: function() {
+
+			var self = this;
+
+			this.$wrappers.addPurpose.on('submit', function(e) {
+
+				e.preventDefault();
+				Zkusebna._request("admin.php", self.$wrappers.addPurpose.serialize() + "&action=addPurpose", function(data) {
+					if (data.result) {
+						alert("Uloženo!");
+						self.$wrappers.addPurpose.find("input").val("");
+					}
+					else {
+						alert('Došlo k chybě. Zkontrolujte, zda máte vyplněná pole, nebo zda již účel rezervace existuje');
+					}
+				});
+
+			});
+
+		},
 		_approveHandler: function() {
 			var self = this;
 
@@ -30629,6 +30657,14 @@ $.datetimepicker.setLocale('cs');
 				self.$wrappers.approved.html(data.approved);
 				self.$wrappers.unapproved.html(data.unapproved);
 				self.$wrappers.items.html(data.items);
+
+				self.$wrappers.admin.find(".icon-mobile, .icon-mail").on('click', function() {
+					Zkusebna._copyToClipboard($(this).attr('data-message'));
+				});
+				self.$wrappers.admin.find(".archive").on('click', function(e) {
+					e.preventDefault();
+					$(this).parent().parent().addClass("show-archived");
+				});
 				Zkusebna._qtips();
 				Zkusebna._expandableHandler();
 			});
@@ -30658,17 +30694,74 @@ $.datetimepicker.setLocale('cs');
 						right: 'month,agendaWeek,agendaDay'
 					},
 					lang: "cs",
+					events: function(start, end, timezone, callback) {
+						Zkusebna._request(
+							"calendar-events.php",
+							{ date_from: start.format(), date_to: end.format() },
+							function(items) {
+
+								var events = items.reduce(function(stack, item) {
+									if (!stack[item['reservationID']]) {
+										stack[item['reservationID']] = {
+											id: item['reservationID'],
+											start: item['start'],
+											end: item['end'],
+											title: item['name'],
+											categories: {},
+											items: []
+										};
+									}
+									stack[item['reservationID']]['items'].push(item);
+									stack[item['reservationID']]['categories'][item['category']] = true;
+
+									return stack
+								}, []);
+
+								var reservations = [];
+
+								for (var id in events) {
+									if (!events.hasOwnProperty(id)) continue;
+									reservations.push(events[id]);
+								}
+
+								callback(reservations);
+							},
+							null,
+							self.$calendar
+						);
+					},
 					eventClick: function(event) {
 						if (event.title) {
-							var message = (event.image ? '<img src="' + event.image + '" class="eventImage"/>' : '') + 'Rezervoval/a: <strong>' + event.name + '</strong> Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
+							var message;
+							message = event.image ? '<img src="' + event.image + '" class="eventImage"/>' : '';
+							message += 'Rezervoval/a: <strong>' + event.title + '</strong><br>';
+							message += 'Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
+							message += '<h2>Rezervované položky:</h2>';
+							message += '<ul>';
+							event.items.forEach(function(item) {
+								message += '<li class="' + item['category'] + '">' + item.itemName + '</li>';
+							});
+							message += '</ul>';
 							Zkusebna._popup(event.title, message, "event-preview");
 						}
 					},
 					eventRender: function(event, $element) {
 
+						var categories = Object.keys(event.categories),
+							categoriesLength = categories.length;
+
+						$element.addClass("cats-" + categoriesLength + " " + Object.keys(event.categories).join(" "));
+						$element.find('.fc-content').prepend(function() {
+							var output = "<em>";
+							for (var i = 0; i < categoriesLength; i++) {
+								output += '<i class="' + categories[i] + '"></i>';
+							}
+							output += "</em>";
+							return output;
+						});
 						$element.find('.fc-time').html("<small>" + event.start.format('HH:mm') + "-" + event.end.format('HH:mm') + "</small>");
 
-						var message = '<strong class="block"><span class="block mbs">' + event.title + '</span>' + event.name + '<br>' + event.start.format('D.M. HH:mm') + ' - ' + event.end.format('D.M. HH:mm') + '</strong>';
+						var message = '<strong class="block"><span class="block mbs">' + event.title + '</span>' + event.start.format('D.M. HH:mm') + ' - ' + event.end.format('D.M. HH:mm') + '</strong>';
 
 						$element.qtip({
 							content: message,
@@ -30682,41 +30775,9 @@ $.datetimepicker.setLocale('cs');
 							}
 						});
 					},
-					viewRender: function(view) {
-						var date_from = view.start.format(),
-							date_to = view.end.format();
-
-						Zkusebna._request(
-							"calendar-events.php",
-							{ date_from: date_from, date_to: date_to },
-							function(events) {
-								self._renderCalendarEvents(events);
-							},
-							null,
-							self.$calendar
-						);
-
-					},
 					timeFormat: 'H(:mm)'
 				});
 
-			},
-			_renderCalendarEvents: function(events) {
-
-				var self = this;
-
-				events.forEach(function(evt) {
-
-					self.$calendar.fullCalendar( 'renderEvent', {
-						img: evt.image,
-						className: evt.category,
-						title: evt.name,
-						start: evt.date_from,
-						end: evt.date_to,
-						name: evt.reserved_by
-					});
-
-				});
 			}
 
 		}
@@ -30737,13 +30798,16 @@ $.datetimepicker.setLocale('cs');
 				date_to: $('#date_to'),
 				name: $('#name'),
 				phone: $('#phone'),
-				email: $('#email')
+				email: $('#email'),
+				purpose: $("#purpose")
 			};
 			this.reservableItems = {};
 			this.reservedItems = [];
+			this.activeReservation = false;
 
 			this._cart();
 			this._datetimePickers();
+			this._purposeSelect();
 			this._renderItems();
 
 			this.$wrappers.reservedItemsWrapper.mCustomScrollbar({
@@ -30758,31 +30822,38 @@ $.datetimepicker.setLocale('cs');
 		},
 		deleteItems: function(item_ids) {
 
-			var $items = $("");
+			this.reservedItems = this.reservedItems.diff(item_ids);
+
+			if (!this.reservableItems.length) {
+				this.activeReservation = false;
+			}
 
 			for (var i = 0; i < item_ids.length; i++) {
-				$items = $items.add($(".reservable-item-" + item_ids[i]));
+				this.$wrappers.items.find("[data-id=" + item_ids[i] +"]").removeClass(Zkusebna._classes.reserved);
 			}
 
-			this.reservedItems = this.reservedItems.diff(item_ids);
-			this.$wrappers.reservedItems.html(this._renderReservedItems());
+			this._renderReservedItems();
 
-			if ($items && $items.length) {
-				$items.removeClass(Zkusebna._classes.reserved);
-			}
+		},
+		_purposeSelect: function() {
+			var self = this;
 
+			this.$formInputs.purpose.one('change', function() {
+				self.$formInputs.purpose.removeClass(Zkusebna._classes.born);
+			});
+			this.$formInputs.purpose.on('change', this._renderItems.bind(this));
 		},
 		reserve: function(item_id, $item) {
 
 			if (this._validateForm()) {
+				this.activeReservation = true;
 				this.reservedItems.push(item_id);
 				$item.addClass(Zkusebna._classes.reserved);
-
-				this.$wrappers.reservedItems.html(this._renderReservedItems());
+				this._renderReservedItems();
 			}
 
 		},
-		updateReservationDate: function() {
+		updateReservationDate: function($input) {
 			//checks for collisions within reserved items
 			var self = this;
 
@@ -30810,13 +30881,13 @@ $.datetimepicker.setLocale('cs');
 							modal: true
 						});
 						$(".reservation-warning").on("click", "span", function(e) {
+							$.magnificPopup.close();
 							if ($(e.target).hasClass("button")) {
 								self.deleteItems(non_compatible_ids);
 							}
 							else {
-								//TODO: uzivatel musi vybrat jine datum!
+								$input.focus();
 							}
-							$.magnificPopup.close();
 						});
 					}
 
@@ -30848,27 +30919,39 @@ $.datetimepicker.setLocale('cs');
 		 * @private
 		 */
 		_renderReservedItems: function() {
+			var self = this;
+
 			if (!this.reservedItems.length) {
 				this.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
-				return "";
+				setTimeout(function() {
+					if (!self.activeReservation) {
+						self.$wrappers.reservedItems.html("");
+					}
+				}, 700);
+				return;
 			}
 			else {
 				this.$wrappers.reservedItemsWrapper.removeClass(Zkusebna._classes.empty);
 			}
 
-			var output = "<ul>",
-				price = 0;
+			var output = "<ul>";
 
 			for (var i = 0; i < this.reservedItems.length; i++) {
 				output += "<li class='item' class='reservable-item-" + this.reservedItems[i] + "' data-id='" + this.reservedItems[i] + "'>" + this.reservableItems[this.reservedItems[i]].name + "</li>"
-				price += parseInt(this.reservableItems[this.reservedItems[i]].price);
 			}
 
 			output += "</ul>";
-			output += "<div class='price'>" + price + "</div>";
-			output += "<div class='finish'><span class='button--red'>Zrušit</span><span class='button--white'>Potvrdit</span></div>";
+			output += "<div class='price'>" + this._getReservedItemsPrice() + "</div>";
+			output += "<div class='finish'><span class='button--red'>Zrušit</span><span class='button--white'>Odeslat</span></div>";
 
-			return output;
+			this.$wrappers.reservedItems.html(output);
+		},
+		_getReservedItemsPrice: function() {
+			var price = 0;
+			for (var i = 0; i < this.reservedItems.length; i++) {
+				price += Math.round(parseInt(this.reservableItems[this.reservedItems[i]].price) * (100 - parseInt(this.reservableItems[this.reservedItems[i]].discount)) / 100);
+			}
+			return price;
 		},
 		_createReservation: function() {
 
@@ -30879,11 +30962,12 @@ $.datetimepicker.setLocale('cs');
 				ids.push("item_ids[]=" + this.reservedItems[i]);
 			}
 
-			if (!this._validateForm()) return false;
+			if (!this._validateForm() || !this._validateDates()) return false;
 
 			Zkusebna._request("create-reservation.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
 					if (data.result == "collision") {
+						//TODO: to se jako jen smazou bez upozorneni?
 						self.deleteItems(data.collisions);
 					}
 					else {
@@ -30891,6 +30975,7 @@ $.datetimepicker.setLocale('cs');
 						self.$wrappers.reservedItemsWrapper.addClass(Zkusebna._classes.empty);
 						self.$wrappers.reservedItems.html('');
 						self.reservedItems = [];
+						self.activeReservation = false;
 						self._renderItems();
 					}
 				}
@@ -30906,9 +30991,7 @@ $.datetimepicker.setLocale('cs');
 		_renderItems: function() {
 			var self = this;
 
-			Zkusebna._request("items-view.php", this.$form.serialize(), renderCallback);
-
-			function renderCallback(data) {
+			Zkusebna._request("items-view.php", this.$form.serialize(), function(data) {
 
 				self.reservableItems = data.items;
 
@@ -30916,7 +30999,9 @@ $.datetimepicker.setLocale('cs');
 
 				Zkusebna._expandableHandler();
 				self._reservableHandler();
-			}
+				self._renderReservedItems();
+
+			});
 
 		},
 		_reservableHandler: function() {
@@ -30951,50 +31036,64 @@ $.datetimepicker.setLocale('cs');
 		_datetimePickers: function() {
 
 			var self = this,
-				datetimeFormat = 'd.m.Y H:i',
 				pickerOptions = {
-					format: datetimeFormat,
+					format: Zkusebna.unixDateTimeFormat,
+					formatDate: Zkusebna.unixDateTimeFormat,
 					dayOfWeekStart: 1,
 					step: 60,
 					minDate: new Date(),
 					startDate: new Date(),
 					roundTime: 'ceil',
-					//mask:'31.12.9999 23:59',
-					onChangeDateTime: function() {
+					onChangeDateTime: function(dp, $input) {
 						var date_from = self.$formInputs.date_from.val(),
 							date_to = self.$formInputs.date_to.val();
 
-						if (date_from && date_to) {
-							if (self.reservedItems.length) {
-								self.updateReservationDate();
-							}
-							self._renderItems();
+						if (!date_from || !date_to) return;
+
+						if (!self._validateDates()) {
+							$input.focus();
+							return;
 						}
+
+						if (self.reservedItems.length) {
+							self.updateReservationDate($input);
+						}
+						self._renderItems();
 					}
 				};
 
 			pickerOptions.onShow = function(){
-				//this.setOptions({
-				//	maxDate: moment(self.$formInputs.date_to.val(), datetimeFormat).isValid() ? self.$formInputs.date_to.val() : false
-				//});
+				var max = moment(self.$formInputs.date_to.val(), Zkusebna.dateTimeFormat);
+				this.setOptions({
+					maxDate: max.isValid() ? max.format(Zkusebna.dateTimeFormat) : false
+				});
 			};
 			this.$formInputs.date_from.datetimepicker(pickerOptions);
 
 
 			pickerOptions.onShow = function(){
-				//this.setOptions({
-				//	minDate: moment(self.$formInputs.date_from.val(), datetimeFormat).isValid() ? self.$formInputs.date_from.val() : false
-				//});
+				var min = moment(self.$formInputs.date_from.val(), Zkusebna.dateTimeFormat);
+				this.setOptions({
+					minDate: min.isValid() ? min.format(Zkusebna.dateTimeFormat) : false
+				});
 			};
 			this.$formInputs.date_to.datetimepicker(pickerOptions);
 
+		},
+		_validateDates: function() {
+			var date_from = this.$formInputs.date_from.val(),
+				date_to = this.$formInputs.date_to.val(),
+				dateTimeFormat = Zkusebna.dateTimeFormat;
+
+			return date_from != date_to && moment(date_from, dateTimeFormat) < moment(date_to, dateTimeFormat);
 		},
 		_validateForm: function() {
 
 			var isValid = {
 					name: /^.{2,}$/g.test(this.$formInputs.name.val()),
 					phone: /^(\+420 *)?([0-9]{3} *){3}$/g.test(this.$formInputs.phone.val()),
-					email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.$formInputs.email.val())
+					email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.$formInputs.email.val()),
+					purpose: !!this.$formInputs.purpose.val()
 				},
 				formIsValid = true,
 				self = this;

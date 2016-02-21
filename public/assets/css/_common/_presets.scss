@@ -17,7 +17,7 @@
 
 	& > * {
 		display: table-cell;
-		width: 1px;	//makes columns even in width
+		width: 1px; //makes columns even in width
 	}
 
 	&.cols-4 > * {
@@ -28,6 +28,29 @@
 	}
 	&.cols-2 > * {
 		width: 50%;
+	}
+
+	@media #{$mobile} {
+
+		&[class] {
+
+			.pl,
+			.plb,
+			.pr,
+			.prb {
+				padding: 0;
+			}
+			.tar,
+			.tal {
+				text-align: center;
+			}
+
+			> * {
+				display: block;
+				margin-bottom: 1em;
+				width: auto;
+			}
+		}
 	}
 }
 

@@ -9,6 +9,11 @@ $admin = new Admin();
 
 
 switch ($action) {
+	case "addPurpose":
+		$purpose = isset($_POST["purpose"]) ? $_POST["purpose"] : "";
+		$discount = isset($_POST["discount"]) ? $_POST["discount"] : "";
+		$output["result"] = $admin->addPurpose($purpose, $discount);
+		break;
 	case "approve":
 		$reservationId = isset($_POST["reservationId"]) ? $_POST["reservationId"] : "";
 		$admin->approveReservation($reservationId);
@@ -16,10 +21,6 @@ switch ($action) {
 	case "delete":
 		$reservationId = isset($_POST["reservationId"]) ? $_POST["reservationId"] : "";
 		$admin->deleteReservation($reservationId);
-		break;
-	case "approvedReservations":
-		break;
-	case "approvedReservations":
 		break;
 	case "deleteItem":
 		$reservationId = isset($_POST["reservationId"]) ? $_POST["reservationId"] : "";

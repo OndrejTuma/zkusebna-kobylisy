@@ -2,18 +2,67 @@
 	cursor: pointer;
 }
 .fc-event {
+	border: none;
+	color: darken($white, 6%);
 
-	&.nastroje {
-		background-color: $nastroje-color;
-		border-color: $nastroje-color;
+	&.cats-1 i {
+		width: 100%;
 	}
-	&.technika {
-		background-color: $technika-color;
-		border-color: $technika-color;
+	&.cats-2 i {
+		width: 50%;
 	}
-	&.zkusebna {
-		background-color: $zkusebna-color;
-		border-color: $zkusebna-color;
+	&.cats-3 i {
+		width: 33.3333%;
+	}
+
+	em {
+		@include absolute(0, 0, 0, 0);
+		@include square(100%);
+		display: block;
+		font-size: 0;
+		line-height: 0;
+	}
+	i {
+		display: inline-block;
+		height: 100%;
+		position: relative;
+
+		&:nth-child(2):before,
+		&:nth-child(3):before {
+			$border-width: 7px;
+
+			@include absolute(0, -$border-width);
+			@include square(0);
+			border-color: transparent;
+			border-style: solid;
+			border-width: 0 $border-width 14px 0;
+			content: "";
+		}
+		&.nastroje {
+			background-color: $nastroje-color;
+			&:nth-child(2):before,
+			&:nth-child(3):before {
+				border-right-color: $nastroje-color;
+			}
+		}
+		&.technika {
+			background-color: $technika-color;
+			&:nth-child(2):before,
+			&:nth-child(3):before {
+				border-right-color: $technika-color;
+			}
+		}
+		&.zkusebna {
+			background-color: $zkusebna-color;
+			&:nth-child(2):before,
+			&:nth-child(3):before {
+				border-right-color: $zkusebna-color;
+			}
+		}
+	}
+	span {
+		position: relative;
+		padding-left: 5px;
 	}
 
 }
@@ -31,6 +80,7 @@
 			@include animation(spin 1s infinite linear);
 			@include font-icon(spinner);
 			font-size: $font-size;
+			z-index: 9;
 		}
 	}
 

@@ -1,3 +1,46 @@
+#admin {
+
+	.archive {
+		margin-left: 50px;
+	}
+	.archived {
+		@include opacity(0);
+		@include transform(translate3D(0, -20px, 0));
+		@include transition(all .5s);
+		position: absolute;
+		visibility: hidden;
+	}
+	.editable {
+
+		input {
+			height: 27px;
+			margin-top: -5px;
+		}
+
+	}
+	.show-archived {
+
+		.archive {
+			display: none;
+		}
+		.archived {
+			@include opacity(1);
+			@include transform(translate3D(0, 0, 0));
+			position: static;
+			visibility: visible;
+		}
+
+	}
+
+	[data-column="price"] input {
+		text-align: right;
+	}
+
+	input {
+		text-align: left;
+	}
+
+}
 #approved-reservations {
 
 	li i.approve {

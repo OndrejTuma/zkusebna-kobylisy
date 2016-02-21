@@ -39,20 +39,6 @@ class Reservation extends Zkusebna {
 	}
 
 	/**
-	 * checks, if set of item ids has collision within reservation date range and returns collided items
-	 * @param $ids array(int)
-	 * @return array(int) - array of items with collision
-	 */
-	public function hasCollision($ids) {
-		$collisions = array();
-		$reservedItems = $this->getReservedItems($this->date_from, $this->date_to);
-		foreach($reservedItems as $item) {
-			if (in_array($item['id'], $ids)) $collisions[] = $item;
-		}
-		return $collisions;
-	}
-
-	/**
 	 * adds items to reservation
 	 * @param $id array[int] - array of item ids to add
 	 * @return resource
@@ -111,25 +97,17 @@ GROUP BY i.id
 	}
 
 	/**
-	 * return credentials of user who has reserved wanted item at specific time range
-	 * @param $item_id int - wanted item's id
-	 * @param $date_from
-	 * @param $date_to
-	 * @returns array - user credentials
+	 * checks, if set of item ids has collision within reservation date range and returns collided items
+	 * @param $ids array(int)
+	 * @return array(int) - array of items with collision
 	 */
-	public function whoReservedThis($item_id, $date_from, $date_to) {
-		$date_from = $this->_parseDate($date_from);
-		$date_to = $this->_parseDate($date_to);
-
-		$query = "
-SELECT c.name as name, phone, email, date_from, date_to, confirmed
-FROM {$this->table_names["reservations"]} as r
-LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
-LEFT JOIN {$this->table_names["items"]} as i ON i.id = ri.item_id
-LEFT JOIN {$this->table_names["community"]} as c ON c.id = r.who
-WHERE i.id = {$item_id} AND (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')";
-
-		return $this->sql->fetch_row($this->sql->query($query));
+	public function hasCollision($ids) {
+		$collisions = array();
+		$reservedItems = $this->getReservedItems($this->date_from, $this->date_to);
+		foreach($reservedItems as $item) {
+			if (in_array($item['id'], $ids)) $collisions[] = $item;
+		}
+		return $collisions;
 	}
 
 	/**
@@ -154,6 +132,28 @@ WHERE i.id = {$item_id} AND (r.date_from > '{$date_from}' OR r.date_to > '{$date
 		$query = "UPDATE {$this->table_names["reservations"]} SET date_from = '{$this->date_from}', date_to = '{$this->date_to}' WHERE id = {$this->id}";
 
 		return $this->sql->query($query);
+	}
+
+	/**
+	 * return credentials of user who has reserved wanted item at specific time range
+	 * @param $item_id int - wanted item's id
+	 * @param $date_from
+	 * @param $date_to
+	 * @returns array - user credentials
+	 */
+	public function whoReservedThis($item_id, $date_from, $date_to) {
+		$date_from = $this->_parseDate($date_from);
+		$date_to = $this->_parseDate($date_to);
+
+		$query = "
+SELECT c.name as name, phone, email, date_from, date_to, confirmed
+FROM {$this->table_names["reservations"]} as r
+LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
+LEFT JOIN {$this->table_names["items"]} as i ON i.id = ri.item_id
+LEFT JOIN {$this->table_names["community"]} as c ON c.id = r.who
+WHERE i.id = {$item_id} AND (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')";
+
+		return $this->sql->fetch_row($this->sql->query($query));
 	}
 
 }

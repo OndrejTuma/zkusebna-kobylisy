@@ -1,8 +1,51 @@
 .reservation-list {
 
-	li {
-		margin: 15px 0;
+	i,
+	small,
+	span,
+	strong {
+		@include transition(color .3s);
+		display: inline-block;
+		vertical-align: middle;
+	}
 
+	i,
+	span {
+		font-size: 18px;
+		margin: 0 5px;
+	}
+	em {
+		@include absolute(12px, $right: 10px);
+		color: $marigold;
+		display: inline-block;
+		font-size: 1.1em;
+		font-style: normal;
+		font-weight: bold;
+		vertical-align: middle;
+
+		&:after {
+			content: ',-';
+		}
+	}
+	i {
+		cursor: pointer;
+
+		&:hover {
+			color: $christi;
+		}
+		&.unapprove:hover {
+			color: $fire-engine-red;
+		}
+	}
+	li {
+		@include transition(all .3s);
+		margin-bottom: 5px;
+		padding: 10px;
+		position: relative;
+
+		&:hover {
+			background-color: $gallery;
+		}
 		&.expanded {
 
 			ul {
@@ -11,47 +54,31 @@
 
 		}
 
-		i,
-		small,
-		span,
-		strong {
-			@include transition(color .3s);
-			display: inline-block;
-			vertical-align: middle;
-		}
+	}
+	small {
+		margin: 0 5px;
+	}
+	span {
+		cursor: help;
 
-		i,
-		span {
-			font-size: 18px;
-			margin: 0 5px;
-		}
-		i {
-			cursor: pointer;
-
-			&:hover {
-				color: $christi;
-			}
-			&.unapprove:hover {
-				color: $fire-engine-red;
-			}
-		}
-		small {
-			margin: 0 5px;
-		}
-		span {
-			cursor: help;
-
-			&:hover {
-				color: $cyan;
-			}
-		}
-		strong {
+		&:hover {
 			color: $cyan;
-			cursor: pointer;
-			font-size: 18px;
 		}
-		ul {
-			display: none;
+	}
+	strong {
+		color: $cyan;
+		cursor: pointer;
+		font-size: 18px;
+	}
+	ul {
+		display: none;
+	}
+
+
+
+	@media #{$mobile} {
+		strong {
+			display: block;
 		}
 	}
 

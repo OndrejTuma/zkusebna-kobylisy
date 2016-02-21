@@ -5,6 +5,18 @@
 }
 #reserve {
 
+	#purpose {
+		padding-left: 45px;
+
+		&.born {
+			color: $shady-lady;
+
+			option {
+				color: $font-color;
+			}
+		}
+	}
+
 	fieldset.date {
 
 		input {
@@ -15,6 +27,9 @@
 
 }
 #reserved-items-wrapper {
+	@include opacity(1);
+	@include transform(translate3D(0, 0, 0));
+	@include transition(all .5s);
 	background-color: $cyan;
 	color: $white;
 	max-height: 100%;
@@ -26,7 +41,8 @@
 	z-index: 1;
 
 	&.empty {
-		display: none;
+		@include transform(translate3D(500px, 0, 0));
+		@include opacity(0);
 	}
 
 	.finish,
@@ -97,5 +113,12 @@
 		list-style: none;
 		margin: 0;
 		padding: 0;
+	}
+
+
+	@media #{$mobile} {
+
+		max-height: 50%;
+
 	}
 }

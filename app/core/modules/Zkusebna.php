@@ -9,6 +9,7 @@ class Zkusebna {
 			"items" => "zkusebna_items",
 			"community" => "zkusebna_community",
 			"r-i" => "zkusebna_reserved_items",
+			"purpose" => "zkusebna_reservation_purpose"
 		);
 	}
 

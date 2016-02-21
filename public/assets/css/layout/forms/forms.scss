@@ -1,14 +1,6 @@
-.editable {
-
-	&[data-column="price"] input {
-		max-width: 50px;
-	}
-
-	input {
-		height: 27px;
-		margin-top: -5px;
-	}
-
+[data-column="price"] input {
+	max-width: 60px;
+	min-width: 0;
 }
 .error {
 	color: $fire-engine-red;
@@ -19,6 +11,7 @@ button,
 input,
 select,
 textarea {
+	@include placeholder($shady-lady);
 	background: $forms--bg;
 	border: $forms--b;
 	border-radius: $forms--br;
@@ -33,6 +26,10 @@ textarea {
 	&.error {
 		border-color: $fire-engine-red;
 	}
+}
+input,
+select {
+	min-width: 190px;
 }
 button {
 	cursor: pointer;

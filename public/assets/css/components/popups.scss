@@ -1,5 +1,41 @@
 // calendar event click
 .event-preview {
+	line-height: 1.5;
+
+	p,
+	ul {
+		padding-left: 20px;
+	}
+	li {
+		font-size: 10px;
+		font-weight: bold;
+		margin-bottom: 5px;
+		padding-left: 15px;
+		position: relative;
+		text-transform: uppercase;
+
+		&:before {
+			@include absolute(4px, 0);
+			@include square(6px);
+			border-radius: 50%;
+			content: '';
+		}
+		&.nastroje:before {
+			background-color: $nastroje-color;
+		}
+		&.technika:before {
+			background-color: $technika-color;
+		}
+		&.zkusebna:before {
+			background-color: $zkusebna-color;
+		}
+	}
+	p {
+		margin-bottom: 20px;
+	}
+	ul {
+		list-style: none;
+	}
 
 }
 // when date is changed and you are about to lose some items to another reservation

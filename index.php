@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 
 include_once("app/core/inc/bootstrap.php");
 
@@ -10,8 +10,9 @@ $sql = new mysql();
 <html>
 <head>
 	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Zkušebna Kobylisy</title>
-	<link rel="stylesheet" href="<?= ZKUSEBNA_CSS_URL; ?>site.css"/>
+	<link rel="stylesheet" href="<?= ZKUSEBNA_CSS_URL; ?>site.css?21022015"/>
 </head>
 <body>
 <noscript>
@@ -31,6 +32,6 @@ switch ($page) {
 }
 ?>
 
-<script type="text/javascript" src="<?= ZKUSEBNA_JS_URL; ?>all.js"></script>
+<script type="text/javascript" src="<?= ZKUSEBNA_JS_URL; ?>all.js?21022015"></script>
 </body>
 </html>

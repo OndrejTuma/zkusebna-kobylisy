@@ -17,15 +17,25 @@ email VARCHAR(60) NOT NULL,
 PRIMARY KEY (id)
 )engine=InnoDB;
 
+CREATE TABLE zkusebna_reservation_purpose (
+id INT(6) AUTO_INCREMENT,
+title VARCHAR(20) NOT NULL,
+discount INT(3) NOT NULL,
+PRIMARY KEY (id)
+)engine=InnoDB;
+
 CREATE TABLE zkusebna_reservations (
 id INT(6) AUTO_INCREMENT,
 date_from DATETIME NOT NULL,
 date_to DATETIME NOT NULL,
+confirmed tinyint(1) DEFAULT 0,
 approved tinyint(1) DEFAULT 0,
 who INT(6) NOT NULL,
+purpose INT(6) NOT NULL DEFAULT 1,
 timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (id),
-FOREIGN KEY (who) REFERENCES zkusebna_community(id)
+FOREIGN KEY (who) REFERENCES zkusebna_community(id),
+FOREIGN KEY (purpose) REFERENCES zkusebna_reservation_purpose(id)
 )engine=InnoDB;
 
 CREATE TABLE zkusebna_reserved_items (
@@ -35,6 +45,11 @@ PRIMARY KEY (item_id, reservation_id),
 FOREIGN KEY (item_id) REFERENCES zkusebna_items(id),
 FOREIGN KEY (reservation_id) REFERENCES zkusebna_reservations(id)
 )engine=InnoDB;
+
+
+
+
+INSERT INTO zkusebna_reservation_purpose (title,discount) VALUES ('Osobní účely',0), ('Akce farnosti',100);
 
 
 INSERT INTO zkusebna_items (name,category) VALUES ("Zkušebna", 'zkusebna');

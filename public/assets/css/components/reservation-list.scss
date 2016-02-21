@@ -14,6 +14,10 @@
 		font-size: 18px;
 		margin: 0 5px;
 	}
+	b {
+		font-style: italic;
+		font-weight: normal;
+	}
 	em {
 		@include absolute(12px, $right: 10px);
 		color: $marigold;
@@ -33,7 +37,8 @@
 		&:hover {
 			color: $christi;
 		}
-		&.unapprove:hover {
+		&.delete:hover,
+		&.delete-item:hover {
 			color: $fire-engine-red;
 		}
 	}
@@ -52,6 +57,13 @@
 				display: block;
 			}
 
+		}
+
+		li {
+			padding: 0;
+		}
+		ul {
+			margin-top: 1.5em;
 		}
 
 	}

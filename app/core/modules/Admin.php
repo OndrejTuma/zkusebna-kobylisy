@@ -111,7 +111,7 @@ LIMIT {$limit}
 			}
 		}
 		else {
-			$output = "<p><i>Žádné rezervace</i></p>";
+			$output = "<p><b>Žádné rezervace</b></p>";
 		}
 
 		return $output;

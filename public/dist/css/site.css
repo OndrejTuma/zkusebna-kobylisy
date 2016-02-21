@@ -6368,7 +6368,7 @@ h1, h2, h3, h4, h5, h6,
   display: block;
   font-family: Arial;
   font-weight: normal;
-  margin: 0 0 1em; }
+  margin: 1em 0; }
   @media only screen and (max-width: 768px) {
     h1, h2, h3, h4, h5, h6,
     .h1, .h2, .h3, .h4, .h5, .h6 {
@@ -7059,6 +7059,10 @@ noscript {
   font-size: 18px;
   margin: 0 5px; }
 
+.reservation-list b {
+  font-style: italic;
+  font-weight: normal; }
+
 .reservation-list em {
   position: absolute;
   top: 12px;
@@ -7078,7 +7082,7 @@ noscript {
   cursor: pointer; }
   .reservation-list i:hover {
     color: #67a712; }
-  .reservation-list i.unapprove:hover {
+  .reservation-list i.delete:hover, .reservation-list i.delete-item:hover {
     color: #cc2229; }
 
 .reservation-list li {
@@ -7099,6 +7103,10 @@ noscript {
     background-color: #f0f0f0; }
   .reservation-list li.expanded ul {
     display: block; }
+  .reservation-list li li {
+    padding: 0; }
+  .reservation-list li ul {
+    margin-top: 1.5em; }
 
 .reservation-list small {
   margin: 0 5px; }

@@ -147,7 +147,7 @@ GROUP BY i.id
 		$date_to = $this->_parseDate($date_to);
 
 		$query = "
-SELECT c.name as name, phone, email, date_from, date_to, confirmed
+SELECT c.name as name, phone, email, date_from, date_to
 FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
 LEFT JOIN {$this->table_names["items"]} as i ON i.id = ri.item_id

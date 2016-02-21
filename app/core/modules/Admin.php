@@ -53,7 +53,7 @@ class Admin extends Zkusebna {
 
 	private function _getReservarvations($where, $limit = 500) {
 		$query = "
-SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, email, phone, image, date_from, date_to, (date_to < NOW()) as archived, price, discount FROM {$this->table_names["reservations"]} as r
+SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, email, phone, image, date_from, date_to, (date_to < NOW()) as archived, price, discount, title as purpose FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
 LEFT JOIN {$this->table_names["items"]} as i ON i.id = ri.item_id
 LEFT JOIN {$this->table_names["community"]} as c ON c.id = r.who
@@ -70,6 +70,10 @@ LIMIT {$limit}
 			$reservations[$reservation['id']]["date_from"] = $reservation['date_from'];
 			$reservations[$reservation['id']]["date_to"] = $reservation['date_to'];
 			$reservations[$reservation['id']]["archived"] = $reservation['archived'];
+			$reservations[$reservation['id']]["purpose"] = array(
+				"title" => $reservation['purpose'],
+				"discount" => $reservation['discount']
+			);
 			$reservations[$reservation['id']]["items"][] = array(
 				"id" => $reservation['item_id'],
 				"name" => $reservation['item_name'],
@@ -99,10 +103,10 @@ LIMIT {$limit}
 				$output .="<ul>";
 				foreach ($reservation["items"] as $item) {
 					$price += $item['price'];
-					$output .= "<li>{$item["name"]} <i data-item='{$item["id"]}' class='delete-item icon-close tooltip' data-message='Zamítnout položku'></i></li>";
+					$output .= "<li>{$item["name"]} <i data-item='{$item["id"]}' class='delete-item icon-close tooltip' data-message='Zamítnout položku'></i> <em>{$item['price']}</em></li>";
 				}
 				$output .= "</ul>";
-				$output .= "<em>{$price}</em>";
+				$output .= "<em class='tooltip' data-message='Účel rezervace: <strong>{$reservation["purpose"]["title"]}</strong><br>Plošná sleva: <strong>{$reservation["purpose"]["discount"]}%</strong>'>{$price}</em>";
 				$output .= "</li>";
 			}
 			$output .= "</ol>";

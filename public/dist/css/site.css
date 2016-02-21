@@ -7105,6 +7105,9 @@ noscript {
     display: block; }
   .reservation-list li li {
     padding: 0; }
+    .reservation-list li li em {
+      font-size: .9em;
+      right: 0; }
   .reservation-list li ul {
     margin-top: 1.5em; }
 

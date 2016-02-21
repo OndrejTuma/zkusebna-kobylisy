@@ -557,6 +557,7 @@ $.datetimepicker.setLocale('cs');
 			Zkusebna._request("create-reservation.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
 					if (data.result == "collision") {
+						console.log(':( mažeme', data.collisions);
 						//TODO: to se jako jen smazou bez upozorneni?
 						self.deleteItems(data.collisions);
 					}

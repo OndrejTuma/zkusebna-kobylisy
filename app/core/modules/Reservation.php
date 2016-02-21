@@ -12,10 +12,11 @@ class Reservation extends Zkusebna {
 		$this->id = 0;
 	}
 
-	public function makeReservation($date_from, $date_to, $who) {
+	public function makeReservation($date_from, $date_to, $who, $purpose_id) {
 		$this->date_from = $this->_parseDate($date_from);
 		$this->date_to = $this->_parseDate($date_to);
 		$this->who = $who;
+		$this->purpose_id = $purpose_id;
 		$this->id = $this->_createReservationIfNotExists();
 	}
 
@@ -29,7 +30,7 @@ class Reservation extends Zkusebna {
 		$reservation = $this->sql->fetch_row($this->sql->query($query));
 
 		if (!$reservation) {
-			$query = "INSERT INTO {$this->table_names["reservations"]} (date_from, date_to, who) VALUES ('{$this->date_from}', '{$this->date_to}', '{$this->who}')";
+			$query = "INSERT INTO {$this->table_names["reservations"]} (date_from, date_to, who, purpose) VALUES ('{$this->date_from}', '{$this->date_to}', '{$this->who}', {$this->purpose_id})";
 			$this->sql->query($query);
 			return $this->sql->insert_id();
 		}

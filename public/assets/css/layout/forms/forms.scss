@@ -38,10 +38,15 @@ fieldset {
 	border: none;
 	margin: $margin--big auto;
 }
-form {
+form {}
+select {
+	&.born {
+		color: $shady-lady;
 
-
-
+		option {
+			color: $font-color;
+		}
+	}
 }
 textarea {
 

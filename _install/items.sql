@@ -24,6 +24,14 @@ discount INT(3) NOT NULL,
 PRIMARY KEY (id)
 )engine=InnoDB;
 
+CREATE TABLE zkusebna_reservation_repeat (
+id INT(6) AUTO_INCREMENT,
+type ENUM('WEEKLY','WEEKLY_2','MONTHLY') DEFAULT 'WEEKLY',
+repeat_from DATETIME NOT NULL,
+repeat_to DATETIME NOT NULL,
+PRIMARY KEY (id)
+)engine=InnoDB;
+
 CREATE TABLE zkusebna_reservations (
 id INT(6) AUTO_INCREMENT,
 date_from DATETIME NOT NULL,
@@ -31,10 +39,12 @@ date_to DATETIME NOT NULL,
 approved tinyint(1) DEFAULT 0,
 who INT(6) NOT NULL,
 purpose INT(6) NOT NULL DEFAULT 1,
+repetition INT(6) NOT NULL,
 timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (id),
 FOREIGN KEY (who) REFERENCES zkusebna_community(id),
 FOREIGN KEY (purpose) REFERENCES zkusebna_reservation_purpose(id)
+FOREIGN KEY (repeat) REFERENCES zkusebna_reservation_repeat(id)
 )engine=InnoDB;
 
 CREATE TABLE zkusebna_reserved_items (
@@ -43,6 +53,16 @@ reservation_id INT(6) NOT NULL,
 PRIMARY KEY (item_id, reservation_id),
 FOREIGN KEY (item_id) REFERENCES zkusebna_items(id),
 FOREIGN KEY (reservation_id) REFERENCES zkusebna_reservations(id)
+)engine=InnoDB;
+
+CREATE TABLE zkusebna_admin (
+id INT(6) AUTO_INCREMENT,
+name VARCHAR(10) NOT NULL,
+email VARCHAR(32) NOT NULL,
+passwd VARCHAR(40) NOT NULL,
+hash VARCHAR(100) NOT NULL,
+login_time VARCHAR(100) NOT NULL,
+PRIMARY KEY (id)
 )engine=InnoDB;
 
 

@@ -2,15 +2,43 @@
 
 class Zkusebna {
 
+	public $table_names = array(
+		"reservations" => "zkusebna_reservations",
+		"items" => "zkusebna_items",
+		"community" => "zkusebna_community",
+		"r-i" => "zkusebna_reserved_items",
+		"purpose" => "zkusebna_reservation_purpose",
+		"admin" => "zkusebna_admin"
+	);
+
 	function __construct() {
 		$this->sql = new mysql();
-		$this->table_names = array(
-			"reservations" => "zkusebna_reservations",
-			"items" => "zkusebna_items",
-			"community" => "zkusebna_community",
-			"r-i" => "zkusebna_reserved_items",
-			"purpose" => "zkusebna_reservation_purpose"
-		);
+	}
+
+	public static function sendMail($recipient, $subject, $body) {
+		$mail = new PHPMailer();
+		$mail->setFrom(Admin::getEmail(), ZKUSEBNA_MAILING_FROM);
+		$mail->addAddress($recipient);
+		$mail->isHTML(true);
+		$mail->Subject = $subject;
+		$mail->Body    = $body;
+		$mail->AltBody = strip_tags($body);
+
+		if(!$mail->send()) {
+			$textLog = new logger(ZKUSEBNA_LOGS_URL);
+			$textLog->log("Nepodařilo se odeslat email: " . $mail->ErrorInfo);
+		}
+	}
+
+	/**
+	 * Parse date from MySQL table to human readable format
+	 * @param $date
+	 * @return bool|string
+	 */
+	public static function parseSQLDate($date) {
+
+		return date("j.n. G:i", strtotime($date));
+
 	}
 
 	/**
@@ -47,12 +75,6 @@ class Zkusebna {
 
 		$query = "UPDATE {$this->table_names["items"]} SET {$column} = '{$val}' WHERE id = $item_id";
 		return $this->sql->query($query);
-
-	}
-
-	public static function parseSQLDate($date) {
-
-		return date("j.n. G:i", strtotime($date));
 
 	}
 

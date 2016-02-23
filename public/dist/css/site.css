@@ -6318,6 +6318,11 @@ fieldset {
   border: none;
   margin: 2em auto; }
 
+select.born {
+  color: #a6a6a6; }
+  select.born option {
+    color: #404040; }
+
 textarea {
   height: auto;
   min-height: 50px; }
@@ -6396,6 +6401,11 @@ img {
   max-width: 100%; }
   a img {
     border: none; }
+
+ol.no-style,
+ul.no-style {
+  list-style: none;
+  padding-left: 0; }
 
 p {
   margin: 0 0 1em; }
@@ -6512,12 +6522,9 @@ a.button--white:hover {
 #items-wrapper.loading {
   opacity: .5; }
 
-#reserve #purpose {
+#reserve #purpose,
+#reserve #repeat {
   padding-left: 45px; }
-  #reserve #purpose.born {
-    color: #a6a6a6; }
-    #reserve #purpose.born option {
-      color: #404040; }
 
 #reserve fieldset.date input {
   font-size: 20px; }

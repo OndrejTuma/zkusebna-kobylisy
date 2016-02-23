@@ -43,10 +43,25 @@ else {
 		);
 	}
 	elseif ($reservation->addItems($item_ids)) {
+
+		Zkusebna::sendMail($email, 'Rekapitulace rezervace', '
+<h3>Dobrý den</h3>
+<p>Vypadá to, že jste si v Kobyliské zkušebně rezervoval nějaké věci. Pojďme si to zrekapitulovat</p>
+<h4>Rezervoval/a:</h4>
+<dl>
+<dt>Jméno:</dt>
+<dd>{$name}</dd>
+<dt>Email:</dt>
+<dd>{$email}</dd>
+<dt>Telefon:</dt>
+<dd>{$phone}</dd>
+</dl>
+<p>Pokud nevíte, o čem je řeč, napište administrátorovi stránek</p>
+');
 		$output = array(
 			"result" => "success",
-			"heading" => "Rezervace je potvrzená",
-			"message" => "Nyná čeká na schválení administrátorem. Až se tak stane, pošleme vám zprávu na uvedený email"
+			"heading" => "Rezervace je odeslaná",
+			"message" => "A právě čeká na schválení administrátorem. Až se tak stane, pošleme vám zprávu na uvedený email. Zatím si můžete v emailové schránce zrekapitulovat rezervaci."
 		);
 	}
 	else {

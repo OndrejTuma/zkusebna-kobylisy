@@ -30457,6 +30457,15 @@ $.datetimepicker.setLocale('cs');
 				this.admin.init();
 			}
 
+			$("select").each(function() {
+				var $elm = $(this);
+
+				$elm.addClass(Zkusebna._classes.born);
+				$elm.one('change', function() {
+					$elm.removeClass(Zkusebna._classes.born);
+				});
+			});
+
 		},
 		_copyToClipboard: function(text) {
 			window.prompt("Pro zkopírování zmáčkni postupně: Ctrl+C, Enter", text);
@@ -30836,11 +30845,6 @@ $.datetimepicker.setLocale('cs');
 
 		},
 		_purposeSelect: function() {
-			var self = this;
-
-			this.$formInputs.purpose.one('change', function() {
-				self.$formInputs.purpose.removeClass(Zkusebna._classes.born);
-			});
 			this.$formInputs.purpose.on('change', this._renderItems.bind(this));
 		},
 		reserve: function(item_id, $item) {

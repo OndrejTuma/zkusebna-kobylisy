@@ -5,16 +5,9 @@
 }
 #reserve {
 
-	#purpose {
+	#purpose,
+	#repeat {
 		padding-left: 45px;
-
-		&.born {
-			color: $shady-lady;
-
-			option {
-				color: $font-color;
-			}
-		}
 	}
 
 	fieldset.date {

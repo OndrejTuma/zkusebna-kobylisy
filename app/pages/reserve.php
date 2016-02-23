@@ -1,3 +1,7 @@
+<?php
+$admin = new AuthAdmin();
+?>
+
 <main id="reserve" class="wrapper">
 
 	<a class="button" href="<?= ZKUSEBNA_APACHE_ROOT_URL ?>">Zpět</a>
@@ -39,6 +43,27 @@
 				</li>
 			</ul>
 		</fieldset>
+		<?php if($admin->is_logged()): ?>
+			<fieldset class="repeat">
+				<legend>Opakování</legend>
+				<ul class="table cols-3 pt">
+					<li class="tar prb">
+						<select name="repeat" id="repeat">
+							<option disabled selected>Vyberte četnost</option>
+							<option value="weekly">Jednou týdně</option>
+							<option value="weekly2">Jednou za 14 dní</option>
+							<option value="monthly">Jednou za měsíc</option>
+						</select>
+					</li>
+					<li class="tac">
+						<input type="text" name="repeat_from" placeholder="Opakovat od"/>
+					</li>
+					<li class="tal plb">
+						<input type="text" name="repeat_to" placeholder="Opakovat do"/>
+					</li>
+				</ul>
+			</fieldset>
+		<?php endif; ?>
 	</form>
 	<h1>Přehled</h1>
 

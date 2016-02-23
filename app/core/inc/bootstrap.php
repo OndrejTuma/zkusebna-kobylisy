@@ -23,6 +23,8 @@ define("ZKUSEBNA_IMAGES_URL", ZKUSEBNA_APACHE_ROOT_URL . "public/dist/images/");
 define("ZKUSEBNA_CSS_URL", ZKUSEBNA_APACHE_ROOT_URL . "public/dist/css/");
 define("ZKUSEBNA_JS_URL", ZKUSEBNA_APACHE_ROOT_URL . "public/dist/js/");
 
+define("ZKUSEBNA_MAILING_FROM", "Zkušebna Kobylisy");
+
 include_once(ZKUSEBNA_MODULES_URL . "logger.php");
 
 ?>

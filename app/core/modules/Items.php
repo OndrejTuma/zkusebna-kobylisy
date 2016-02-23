@@ -2,6 +2,8 @@
 
 class Items extends Zkusebna {
 
+	private $discount;
+
 	function __construct() {
 		parent::__construct();
 		$this->categories = array(
@@ -34,7 +36,7 @@ class Items extends Zkusebna {
 
 	public function getSelectPurpose() {
 
-		$output = "<select name=\"purpose\" id=\"purpose\" class=\"born\">";
+		$output = "<select name=\"purpose\" id=\"purpose\">";
 		$output.= "<option value=\"\" disabled selected>Účel rezervace</option>";
 
 		$query = "SELECT * FROM {$this->table_names["purpose"]}";
@@ -110,7 +112,7 @@ ORDER BY category, parent_id, i.name";
 
 
 	private function _getItemPrice($item) {
-		return round($item['price'] * (isset($this->discount) ? (100 - $this->discount) : 100) / 100);
+		return isset($this->discount) ? round($item['price'] * (100 - $this->discount) / 100) : $item['price'];
 	}
 	private function _renderCategoryName($category_key) {
 		return isset($this->categories_names[$category_key]) ? $this->categories_names[$category_key] : "<i>{$category_key}</i>";
@@ -150,7 +152,9 @@ ORDER BY category, parent_id, i.name";
 		$output = "";
 		if ($item["reservable"] == 1) {
 			if ($this->preview) {
-				$output .= "<strong><span data-column='name' data-id='{$item["id"]}' class='editable'>{$item["name"]}</span> <span class='price'><span data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span></strong>";
+				$output .= "<strong><span data-column='name' data-id='{$item["id"]}' class='editable'>{$item["name"]}</span> ";
+				$output .= isset($this->discount) ? "<span class='price'><span data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span>" : "";
+				$output .= "</strong>";
 			}
 			else {
 				$output .= "<strong class='reservable-item-{$item["id"]} reservable ";
@@ -161,7 +165,9 @@ ORDER BY category, parent_id, i.name";
 					$output .= "' ";
 				}
 				$output .= "data-id='{$item["id"]}'>{$item["name"]}";
-				$output .= "<i class='icon-plus'></i> <span class='price'>" . $this->_getItemPrice($item) . ",-</span></strong>";
+				$output .= "<i class='icon-plus'></i> ";
+				$output .= isset($this->discount) ? "<span class='price'>" . $this->_getItemPrice($item) . ",-</span>" : "";
+				$output .= "</strong>";
 			}
 		}
 		else {

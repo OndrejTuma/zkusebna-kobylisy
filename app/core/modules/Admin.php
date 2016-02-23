@@ -6,6 +6,15 @@ class Admin extends Zkusebna {
 		parent::__construct();
 	}
 
+	/**
+	 * get admin's email
+	 */
+	public static function getEmail() {
+		$sql = new sql_table("zkusebna_admin");
+		$admin = $sql->get("name = 'admin'");
+		return $admin[0]["email"];
+	}
+
 	public function addPurpose($purpose, $discount) {
 		$query = "SELECT title FROM {$this->table_names["purpose"]} WHERE title = '{$purpose}'";
 		if (!$this->sql->num_rows($query) && $purpose && $discount) {
@@ -45,7 +54,7 @@ class Admin extends Zkusebna {
 	}
 	public function renderItems() {
 		$items = new Items();
-		return $items->renderItems("","","","");
+		return $items->renderItems("","","",1);
 	}
 	public function renderUnapprovedReservations() {
 		return $this->_renderReservations($this->_getReservarvations("approved = 0"));

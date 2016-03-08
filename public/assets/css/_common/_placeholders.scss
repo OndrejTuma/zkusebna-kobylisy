@@ -1,0 +1,4 @@
+%spinner {
+	@include font-icon(spinner);
+	@include animation(spin 1s infinite linear);
+}

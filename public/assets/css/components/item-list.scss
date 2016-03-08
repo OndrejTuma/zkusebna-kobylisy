@@ -14,7 +14,7 @@ ul.item-list {
 		&:after {
 			@include absolute(15px, $right: 10px);
 			@include font-icon(chevron-down);
-			@include transform(rotate(0));
+			@include transform(rotate(0deg));
 			@include transition(transform .3s);
 		}
 		&.active:after {
@@ -75,8 +75,7 @@ ul.item-list {
 			opacity: .6;
 
 			i.icon-plus:before {
-				@include font-icon(spinner, $content-only: 1);
-				@include animation(spin 1s infinite linear);
+				@extend %spinner;
 			}
 		}
 		&.reserved {

@@ -42,6 +42,7 @@ switch ($action) {
 
 $output["unapproved"] = $admin->renderUnapprovedReservations();
 $output["approved"] = $admin->renderApprovedReservations();
+$output["repeated"] = $admin->renderRepeatedReservations();
 $output["items"] = $admin->renderItems();
 
 

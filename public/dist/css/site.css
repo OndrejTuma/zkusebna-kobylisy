@@ -3797,7 +3797,7 @@ The `sprites` mixin generates identical output to the CSS template
   font-style: normal; }
 
 .icons-props, [class^="icon-"]:before,
-[class*=" icon-"]:before, input[type=checkbox] + label:after, #reserved-items-wrapper .price:after, #reserved-items-wrapper li.item:after, .loading .fc-view-container:before, ul.item-list .expandable:after {
+[class*=" icon-"]:before, input[type=checkbox] + label:after, #reserved-items-wrapper .price:after, #reserved-items-wrapper li.item:after, ul.item-list .expandable:after, #reserved-items-wrapper li.item.loading:after, .loading .fc-view-container:before, ul.item-list .reservable.loading i.icon-plus:before, .reservation-list i.loading:before {
   font-family: "zkusebna";
   speak: none;
   font-style: normal;
@@ -6216,7 +6216,7 @@ The `sprites` mixin generates identical output to the CSS template
 .icon-chevron-left:before {
   content: "\e900"; }
 
-.icon-spinner:before, #reserved-items-wrapper li.item.loading:after, .loading .fc-view-container:before, ul.item-list .reservable.loading i.icon-plus:before {
+.icon-spinner:before, #reserved-items-wrapper li.item.loading:after, .loading .fc-view-container:before, ul.item-list .reservable.loading i.icon-plus:before, .reservation-list i.loading:before {
   content: "\e901"; }
 
 .icon-plus:before {
@@ -6513,7 +6513,8 @@ a.button--white:hover {
 #admin input {
   text-align: left; }
 
-#approved-reservations li i.approve {
+#approved-reservations li i.approve,
+#repeated-reservations li i.approve {
   display: none; }
 
 #items li ul {
@@ -6642,9 +6643,6 @@ a.button--white:hover {
         right: 0; }
       #reserved-items-wrapper li.item.loading {
         opacity: .5; }
-        #reserved-items-wrapper li.item.loading:after {
-          animation: spin 1s infinite linear;
-          -webkit-animation: spin 1s infinite linear; }
   #reserved-items-wrapper ul {
     list-style: none;
     margin: 0;
@@ -6728,8 +6726,6 @@ a.button--white:hover {
       position: absolute;
       top: 50%;
       margin-top: -25px;
-      animation: spin 1s infinite linear;
-      -webkit-animation: spin 1s infinite linear;
       font-size: 50px;
       z-index: 9; }
 
@@ -6766,11 +6762,11 @@ ul.item-list {
       left: auto;
       bottom: auto;
       right: 10px;
-      -webkit-transform: rotate(0);
-      -moz-transform: rotate(0);
-      -ms-transform: rotate(0);
-      -o-transform: rotate(0);
-      transform: rotate(0);
+      -webkit-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
       -webkit-transform-origin: 50% 50%;
       -moz-transform-origin: 50% 50%;
       -ms-transform-origin: 50% 50%;
@@ -6848,9 +6844,6 @@ ul.item-list {
       background-color: transparent;
       color: #404040;
       opacity: .6; }
-      ul.item-list .reservable.loading i.icon-plus:before {
-        animation: spin 1s infinite linear;
-        -webkit-animation: spin 1s infinite linear; }
     ul.item-list .reservable.reserved:hover {
       color: #cc2229; }
     ul.item-list .reservable.reserved i {
@@ -7091,6 +7084,8 @@ noscript {
     color: #67a712; }
   .reservation-list i.delete:hover, .reservation-list i.delete-item:hover {
     color: #cc2229; }
+  .reservation-list i.loading {
+    opacity: .5; }
 
 .reservation-list li {
   -webkit-transition: all 0.3s;
@@ -7178,6 +7173,10 @@ body {
 
 .bg--white {
   background-color: #fff; }
+
+#reserved-items-wrapper li.item.loading:after, .loading .fc-view-container:before, ul.item-list .reservable.loading i.icon-plus:before, .reservation-list i.loading:before {
+  animation: spin 1s infinite linear;
+  -webkit-animation: spin 1s infinite linear; }
 
 .block {
   display: block; }

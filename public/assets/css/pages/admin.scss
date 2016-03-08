@@ -41,7 +41,9 @@
 	}
 
 }
-#approved-reservations {
+
+#approved-reservations,
+#repeated-reservations {
 
 	li i.approve {
 		display: none;

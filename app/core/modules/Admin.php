@@ -4,6 +4,8 @@ class Admin extends Zkusebna {
 
 	function __construct() {
 		parent::__construct();
+		$this->sql_table = new sql_table($this->table_names['admin']);
+		$this->sql_reservation = new sql_table($this->table_names['reservations']);
 	}
 
 	/**
@@ -38,8 +40,12 @@ class Admin extends Zkusebna {
 	 */
 	public function deleteReservation($reservationId) {
 		$reservationId = (int)$reservationId;
+		$reservation = $this->sql_reservation->get("id = {$reservationId}");
 		// delete reserved items
 		$query = "DELETE FROM {$this->table_names["r-i"]} WHERE reservation_id = {$reservationId}";
+		$this->sql->query($query);
+		// delete repetition
+		$query = "DELETE FROM {$this->table_names["r-r"]} WHERE id = {$reservation[0]['repetition']}";
 		$this->sql->query($query);
 		// delete reservation
 		$query = "DELETE FROM {$this->table_names["reservations"]} WHERE id = {$reservationId}";
@@ -50,14 +56,17 @@ class Admin extends Zkusebna {
 		return $this->sql->query($query);
 	}
 	public function renderApprovedReservations() {
-		return $this->_renderReservations($this->_getReservarvations("approved = 1"));
+		return $this->_renderReservations($this->_getReservarvations("repetition = 0 AND approved = 1"));
 	}
 	public function renderItems() {
 		$items = new Items();
 		return $items->renderItems("","","",1);
 	}
+	public function renderRepeatedReservations() {
+		return $this->_renderReservations($this->_getReservarvations("repetition > 1"));
+	}
 	public function renderUnapprovedReservations() {
-		return $this->_renderReservations($this->_getReservarvations("approved = 0"));
+		return $this->_renderReservations($this->_getReservarvations("repetition = 0 AND approved = 0"));
 	}
 
 	private function _getReservarvations($where, $limit = 500) {
@@ -107,8 +116,8 @@ LIMIT {$limit}
 				$output .= "<small>" . Zkusebna::parseSQLDate($reservation['date_from']) . " - " . Zkusebna::parseSQLDate($reservation['date_to']) . "</small> ";
 				$output .= "<span class='tooltip icon-mobile' data-message='{$reservation["phone"]}'></span>";
 				$output .="<span class='icon-mail tooltip' data-message='{$reservation["email"]}'></span> ";
-				$output .="<i class='approve icon-checkmark tooltip' data-message='Schválit rezervaci'></i>";
-				$output .="<i class='delete icon-close tooltip' data-message='Zamítnout rezervaci'></i> ";
+				$output .="<i class='approve icon-checkmark'></i>";
+				$output .="<i class='delete icon-close'></i> ";
 				$output .="<ul>";
 				foreach ($reservation["items"] as $item) {
 					$price += $item['price'];

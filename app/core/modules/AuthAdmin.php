@@ -59,11 +59,9 @@ class AuthAdmin {
 	}
 
 	/**
-	* nastaví typ pro uchovávání stavu přihlášení (povolené jsou hodnoty cookie a session pro příslušný typ)
-	* defaultně nastaveno ukládání do cookies
-	* @return string typ
+	* @return string typ přihlášení
 	*/
-	public function getType($type) {
+	public function getType() {
 		return $this->type;
 	}
 
@@ -88,6 +86,7 @@ class AuthAdmin {
 		if ($forever) {
 			$this->forever = true;
 		}
+
 		$this->name = mysql_real_escape_string($name);
 
 		$admin = $this->get_admin_by_name($this->name);
@@ -110,9 +109,9 @@ class AuthAdmin {
 					}
 					else {
 						$_SESSION[SESSION_NAME] = $this->hash;
-					}	
+					}
 				}
-				
+
 				$this->admin = $this->get_current_admin();
 
 				return true;

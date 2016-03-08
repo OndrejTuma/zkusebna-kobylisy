@@ -41,6 +41,13 @@
 		&.delete-item:hover {
 			color: $fire-engine-red;
 		}
+		&.loading {
+			opacity: .5;
+
+			&:before {
+				@extend %spinner;
+			}
+		}
 	}
 	li {
 		@include transition(all .3s);

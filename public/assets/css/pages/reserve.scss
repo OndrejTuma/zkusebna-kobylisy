@@ -96,8 +96,7 @@
 			&.loading {
 				opacity: .5;
 				&:after {
-					@include font-icon(spinner, $content-only: 1);
-					@include animation(spin 1s infinite linear);
+					@extend %spinner;
 				}
 			}
 		}

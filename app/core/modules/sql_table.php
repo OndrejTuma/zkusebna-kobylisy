@@ -17,6 +17,7 @@ class sql_table extends mysql {
 	 * @param string	$table_name	název tabulky
 	 */
 	function __construct($table_name){
+		parent::__construct();
 		$this->table_name = $table_name;
 	}
 

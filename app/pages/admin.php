@@ -14,12 +14,17 @@
 	}
 
 	if ($admin->is_logged()): ?>
-		<p class="tar"><a href="?page=admin&logout" class="button">Odhlásit</a></p>
-		<h2>Rezervace ke schválení</h2>
+		<p class="fl"><a href="?page=reserve" class="button">Rezervace</a></p>
+		<p class="fr"><a href="?page=admin&logout" class="button--red">Odhlásit</a></p>
+
+		<h2 class="clear">Rezervace ke schválení</h2>
 		<div id="unapproved-reservations" class="reservation-list"></div>
 
 		<h2>Schválené rezervace</h2>
 		<div id="approved-reservations" class="reservation-list"></div>
+
+		<h2>Opakované rezervace</h2>
+		<div id="repeated-reservations" class="reservation-list"></div>
 
 		<h2>Přidat účel rezervace</h2>
 		<form method="post" id="add-purpose">

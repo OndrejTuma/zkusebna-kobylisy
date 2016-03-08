@@ -54,8 +54,8 @@ class Items extends Zkusebna {
 
 		$this->preview = !($date_from && $date_to);
 
-		$this->date_from = $this->_parseDate($date_from);
-		$this->date_to = $this->_parseDate($date_to);
+		$this->date_from = parent::_parseDate($date_from);
+		$this->date_to = parent::_parseDate($date_to);
 		$this->email = $email;
 
 		if ($purpose_id > 0) {

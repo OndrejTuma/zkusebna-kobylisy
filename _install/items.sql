@@ -44,7 +44,7 @@ timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (id),
 FOREIGN KEY (who) REFERENCES zkusebna_community(id),
 FOREIGN KEY (purpose) REFERENCES zkusebna_reservation_purpose(id)
-FOREIGN KEY (repeat) REFERENCES zkusebna_reservation_repeat(id)
+FOREIGN KEY (repetition) REFERENCES zkusebna_reservation_repeat(id)
 )engine=InnoDB;
 
 CREATE TABLE zkusebna_reserved_items (

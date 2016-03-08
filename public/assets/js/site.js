@@ -32,8 +32,13 @@ $.datetimepicker.setLocale('cs');
 			ajax: "../../../app/core/ajax/"
 			//ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
-		dateTimeFormat: 'DD.MM.YYYY H:mm',
-		unixDateTimeFormat: 'd.m.Y H:i',
+		_dateFormats: {
+			dateTime: 'DD.MM.YYYY H:mm',
+			date: 'DD.MM.YYYY',
+			unixDateTime: 'd.m.Y H:i',
+			unixDate: 'd.m.Y'
+		},
+
 
 		init: function() {
 
@@ -154,6 +159,7 @@ $.datetimepicker.setLocale('cs');
 				addPurpose: $("#add-purpose"),
 				approved: $("#approved-reservations"),
 				unapproved: $("#unapproved-reservations"),
+				repeated: $("#repeated-reservations"),
 				items: $("#items")
 			};
 
@@ -197,12 +203,9 @@ $.datetimepicker.setLocale('cs');
 
 				if (action == "deleteItem") data.itemId = $(this).attr("data-item");
 
-				Zkusebna._request("admin.php", data, function(data) {
-					self.$wrappers.approved.html(data.approved);
-					self.$wrappers.unapproved.html(data.unapproved);
-					Zkusebna._qtips();
-					Zkusebna._expandableHandler();
-				});
+				Zkusebna._request("admin.php", data, self._repaintDashboard.bind(self),
+				null,
+				$(this));
 			});
 
 		},
@@ -253,21 +256,27 @@ $.datetimepicker.setLocale('cs');
 			var self = this;
 
 			Zkusebna._request("admin.php", {}, function(data) {
-				self.$wrappers.approved.html(data.approved);
-				self.$wrappers.unapproved.html(data.unapproved);
 				self.$wrappers.items.html(data.items);
+				self._repaintDashboard(data);
 
 				self.$wrappers.admin.find(".icon-mobile, .icon-mail").on('click', function() {
 					Zkusebna._copyToClipboard($(this).attr('data-message'));
 				});
-				self.$wrappers.admin.find(".archive").on('click', function(e) {
-					e.preventDefault();
-					$(this).parent().parent().addClass("show-archived");
-				});
-				Zkusebna._qtips();
-				Zkusebna._expandableHandler();
+
+
 			});
 
+		},
+		_repaintDashboard: function(data) {
+			this.$wrappers.approved.html(data.approved);
+			this.$wrappers.unapproved.html(data.unapproved);
+			this.$wrappers.repeated.html(data.repeated);
+			this.$wrappers.admin.find(".archive").on('click', function(e) {
+				e.preventDefault();
+				$(this).parent().parent().addClass("show-archived");
+			});
+			Zkusebna._qtips();
+			Zkusebna._expandableHandler();
 		}
 
 	};
@@ -298,7 +307,7 @@ $.datetimepicker.setLocale('cs');
 							"calendar-events.php",
 							{ date_from: start.format(), date_to: end.format() },
 							function(items) {
-
+console.log(items);
 								var events = items.reduce(function(stack, item) {
 									if (!stack[item['reservationID']]) {
 										stack[item['reservationID']] = {
@@ -398,7 +407,9 @@ $.datetimepicker.setLocale('cs');
 				name: $('#name'),
 				phone: $('#phone'),
 				email: $('#email'),
-				purpose: $("#purpose")
+				purpose: $("#purpose"),
+				repeat_from: $('#repeat_from')//,
+				//repeat_to: $('#repeat_to')
 			};
 			this.reservableItems = {};
 			this.reservedItems = [];
@@ -556,14 +567,13 @@ $.datetimepicker.setLocale('cs');
 				ids.push("item_ids[]=" + this.reservedItems[i]);
 			}
 
-			if (!this._validateForm() || !this._validateDates()) return false;
+			if (!this._validateForm() || !this._validateDates(this.$formInputs.date_from)) return false;
 
 			Zkusebna._request("create-reservation.php", this.$form.serialize() + "&" + ids.join("&"),
 				function(data) {
 					if (data.result == "collision") {
-						console.log(':( mažeme', data.collisions);
-						//TODO: to se jako jen smazou bez upozorneni?
 						self.deleteItems(data.collisions);
+						Zkusebna._popup(data.heading, data.message, "event-preview");
 					}
 					else {
 						Zkusebna._popup(data.heading, data.message);
@@ -632,20 +642,21 @@ $.datetimepicker.setLocale('cs');
 
 			var self = this,
 				pickerOptions = {
-					format: Zkusebna.unixDateTimeFormat,
-					formatDate: Zkusebna.unixDateTimeFormat,
+					format: Zkusebna._dateFormats.unixDateTime,
+					formatDate: Zkusebna._dateFormats.unixDateTime,
 					dayOfWeekStart: 1,
 					step: 60,
 					minDate: new Date(),
 					startDate: new Date(),
 					roundTime: 'ceil',
 					onChangeDateTime: function(dp, $input) {
-						var date_from = self.$formInputs.date_from.val(),
-							date_to = self.$formInputs.date_to.val();
+						var date1 = $input.val(),
+							date2 = $($input.attr('data-connected-to')).val();
 
-						if (!date_from || !date_to) return;
-
-						if (!self._validateDates()) {
+						if (!date1 || !date2) {
+							return;
+						}
+						if (!self._validateDates($input)) {
 							$input.focus();
 							return;
 						}
@@ -656,31 +667,36 @@ $.datetimepicker.setLocale('cs');
 						self._renderItems();
 					}
 				};
+			$(".datetimepicker:not([data-type])").datetimepicker(pickerOptions);
 
-			pickerOptions.onShow = function(){
-				var max = moment(self.$formInputs.date_to.val(), Zkusebna.dateTimeFormat);
-				this.setOptions({
-					maxDate: max.isValid() ? max.format(Zkusebna.dateTimeFormat) : false
-				});
-			};
-			this.$formInputs.date_from.datetimepicker(pickerOptions);
-
-
-			pickerOptions.onShow = function(){
-				var min = moment(self.$formInputs.date_from.val(), Zkusebna.dateTimeFormat);
-				this.setOptions({
-					minDate: min.isValid() ? min.format(Zkusebna.dateTimeFormat) : false
-				});
-			};
-			this.$formInputs.date_to.datetimepicker(pickerOptions);
+			var datePickerOptions = $.extend(true, {}, pickerOptions);
+			datePickerOptions.format = Zkusebna._dateFormats.unixDate;
+			datePickerOptions.formatDate = Zkusebna._dateFormats.unixDate;
+			datePickerOptions.timepicker = false;
+			$(".datetimepicker[data-type='date']").datetimepicker(datePickerOptions);
 
 		},
-		_validateDates: function() {
-			var date_from = this.$formInputs.date_from.val(),
-				date_to = this.$formInputs.date_to.val(),
-				dateTimeFormat = Zkusebna.dateTimeFormat;
+		_validateDates: function($inputs) {
+			var date_from,
+				date_to,
+				is_valid = true;
 
-			return date_from != date_to && moment(date_from, dateTimeFormat) < moment(date_to, dateTimeFormat);
+			$inputs.each(function() {
+				var dateFormat = ($(this).attr("data-type")=="date") ? Zkusebna._dateFormats.date : Zkusebna._dateFormats.dateTime;
+				if ($(this).attr("data-date-type")=="from") {
+					date_from = $(this).val();
+					date_to = $($(this).attr("data-connected-to")).val();
+				}
+				else {
+					date_from = $($(this).attr("data-connected-to")).val();
+					date_to = $(this).val();
+				}
+				if (!date_from || !date_to || date_from == date_to || moment(date_from, dateFormat) >= moment(date_to, dateFormat)) {
+					is_valid = false;
+				}
+			});
+
+			return is_valid;
 		},
 		_validateForm: function() {
 

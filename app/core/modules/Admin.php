@@ -63,7 +63,7 @@ class Admin extends Zkusebna {
 		return $items->renderItems("","","",1);
 	}
 	public function renderRepeatedReservations() {
-		return $this->_renderReservations($this->_getReservarvations("repetition > 1"));
+		return $this->_renderReservations($this->_getReservarvations("repetition > 1"), true);
 	}
 	public function renderUnapprovedReservations() {
 		return $this->_renderReservations($this->_getReservarvations("repetition = 0 AND approved = 0"));
@@ -71,11 +71,12 @@ class Admin extends Zkusebna {
 
 	private function _getReservarvations($where, $limit = 500) {
 		$query = "
-SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, email, phone, image, date_from, date_to, (date_to < NOW()) as archived, price, discount, title as purpose FROM {$this->table_names["reservations"]} as r
+SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, email, phone, image, date_from, date_to, (date_to < NOW()) as archived, price, discount, title as purpose, repeat_to FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
 LEFT JOIN {$this->table_names["items"]} as i ON i.id = ri.item_id
 LEFT JOIN {$this->table_names["community"]} as c ON c.id = r.who
 LEFT JOIN {$this->table_names["purpose"]} as p ON p.id = r.purpose
+LEFT JOIN {$this->table_names["r-r"]} as rr ON rr.id = r.repetition
 WHERE {$where}
 ORDER BY date_to DESC
 LIMIT {$limit}
@@ -88,6 +89,7 @@ LIMIT {$limit}
 			$reservations[$reservation['id']]["date_from"] = $reservation['date_from'];
 			$reservations[$reservation['id']]["date_to"] = $reservation['date_to'];
 			$reservations[$reservation['id']]["archived"] = $reservation['archived'];
+			$reservations[$reservation['id']]["repeat_to"] = $reservation['repeat_to'];
 			$reservations[$reservation['id']]["purpose"] = array(
 				"title" => $reservation['purpose'],
 				"discount" => $reservation['discount']
@@ -103,7 +105,7 @@ LIMIT {$limit}
 		return $reservations;
 	}
 
-	private function _renderReservations($reservations) {
+	private function _renderReservations($reservations, $repeated = false) {
 		if (count($reservations)) {
 			$has_archived_reservations = false;
 			$output = "<ol>";
@@ -113,7 +115,7 @@ LIMIT {$limit}
 					$has_archived_reservations = true;
 				}
 				$output .= "<li data-id='{$id}' class='" . ($reservation["archived"] ? "archived" : "") . "'><strong class='expandable'>{$reservation["who"]}</strong> ";
-				$output .= "<small>" . Zkusebna::parseSQLDate($reservation['date_from']) . " - " . Zkusebna::parseSQLDate($reservation['date_to']) . "</small> ";
+				$output .= "<small>" . Zkusebna::parseSQLDate($reservation['date_from']) . " - " . Zkusebna::parseSQLDate($reservation[$repeated ? 'repeat_to' : 'date_to']) . "</small> ";
 				$output .= "<span class='tooltip icon-mobile' data-message='{$reservation["phone"]}'></span>";
 				$output .="<span class='icon-mail tooltip' data-message='{$reservation["email"]}'></span> ";
 				$output .="<i class='approve icon-checkmark'></i>";

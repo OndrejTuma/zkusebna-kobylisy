@@ -33,10 +33,14 @@ $.datetimepicker.setLocale('cs');
 			//ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
 		_dateFormats: {
-			dateTime: 'DD.MM.YYYY H:mm',
-			date: 'DD.MM.YYYY',
-			unixDateTime: 'd.m.Y H:i',
-			unixDate: 'd.m.Y'
+			//dateTime: 'DD.MM.YYYY H:mm',
+			dateTime: 'd.m.Y H:i',
+			//date: 'DD.MM.YYYY',
+			date: 'd.m.Y',
+			//unixDateTime: 'd.m.Y H:i',
+			unixDateTime: 'DD.MM.YYYY H:mm',
+			//unixDate: 'd.m.Y',
+			unixDate: 'DD.MM.YYYY'
 		},
 
 
@@ -307,7 +311,6 @@ $.datetimepicker.setLocale('cs');
 							"calendar-events.php",
 							{ date_from: start.format(), date_to: end.format() },
 							function(items) {
-console.log(items);
 								var events = items.reduce(function(stack, item) {
 									if (!stack[item['reservationID']]) {
 										stack[item['reservationID']] = {
@@ -354,7 +357,6 @@ console.log(items);
 						}
 					},
 					eventRender: function(event, $element) {
-
 						var categories = Object.keys(event.categories),
 							categoriesLength = categories.length;
 
@@ -639,7 +641,6 @@ console.log(items);
 
 		},
 		_datetimePickers: function() {
-
 			var self = this,
 				pickerOptions = {
 					format: Zkusebna._dateFormats.unixDateTime,

@@ -55,6 +55,7 @@ else {
 	}
 
 	$reservation->createReservation($reservation_params);
+	//reservation is created anyway, so there is only after-check for collisions to notify the user about it
 	$collisions = $reservation->hasCollision($item_ids);
 
 	if ($collisions) {

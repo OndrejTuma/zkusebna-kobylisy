@@ -18,36 +18,44 @@ class Zkusebna {
 
 	/**
 	 * $repeat_from parameter is considered equal to $date_from
-	 * @param $event array - reserved item
-	 * @param $repeat_from
-	 * @param $repeat_to
-	 * @param $period ['WEEKLY', 'WEEKLY_2', 'MONTHLY'] - perioda opakování
+	 * @param $reservation array - reserved item
+	 * @param $date_from
 	 * @param $date_to
-	 * @return DatePeriod
+	 * @return array
 	 */
-	public static function getRepeatedReservation($event) {
+	public static function getRepeatedReservation($reservation, $date_from, $date_to) {
 		$period_types = Reservation::getRepeatUnixTypes();
-		$repeat_to = $event["repeat_to"];
-		$period = $event["repeat_type"];
+		$repeat_to = $reservation["repeat_to"];
+		$period = $reservation["repeat_type"];
 		
 		if (!isset($period_types[$period])) {
 			return false;
 		}
 
 		$repeat_end = new DateTime($repeat_to);
-		$date_begin = new DateTime($event["start"]);
-		$date_end = new DateTime($event["end"]);
+		$date_begin = new DateTime($reservation["start"]);
+		$date_end = new DateTime($reservation["end"]);
 		$interval = new DateInterval($period_types[$period]);
 		$date_sub = $date_begin->diff($date_end);
 
-		$date_period = new DatePeriod($date_begin, $interval, $repeat_end, DatePeriod::EXCLUDE_START_DATE);
+		//$date_period = new DatePeriod($date_begin, $interval, $repeat_end, DatePeriod::EXCLUDE_START_DATE);
+		$date_period = new DatePeriod($date_begin, $interval, $repeat_end);
 
 		$repeated_reservations = array();
+		$i = 999;
 		foreach ($date_period as $date) {
-			$new_event = $event;
-			$new_event["start"] = Zkusebna::_parseDate($date->format('Y-m-d H:i:s'));
-			$new_event["end"] = Zkusebna::_parseDate($date->add($date_sub)->format('Y-m-d H:i:s'));
-			array_push($repeated_reservations, $new_event);
+			$start_date = Zkusebna::_parseDate($date->format('Y-m-d H:i:s'));
+			$end_date = Zkusebna::_parseDate($date->add($date_sub)->format('Y-m-d H:i:s'));
+			if ($start_date > $date_from && $end_date < $date_to) {
+				//var_dump("\\/ ================= VYHOVUJE ================= \\/");
+				$new_reservation = $reservation;
+				$new_reservation["reservationID"] = $new_reservation["reservationID"] * $i;	//fake reservation ID
+				$new_reservation["start"] = $start_date;
+				$new_reservation["end"] = $end_date;
+				array_push($repeated_reservations, $new_reservation);
+			}
+			$i++;
+			//var_dump($start_date, $end_date, $date_from, $date_to, $reservation['id'], $date_begin->format('Y-m-d H:i:s'), $repeat_end->format('Y-m-d H:i:s'), $period_types[$period], "===========================================================");
 		}
 
 		return $repeated_reservations;

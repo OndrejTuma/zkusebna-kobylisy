@@ -113,23 +113,25 @@ class Reservation extends Zkusebna {
 		$date_to = parent::_parseDate($date_to);
 
 		$query = "
-SELECT i.id as id, i.name as name, image, price, category, parent_id FROM {$this->table_names["reservations"]} as r
+SELECT i.id as id, i.name as itemName, c.name as name, image as img, price, category, parent_id, date_from as start, date_to as end, r.id as reservationID FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
 WHERE repetition = 0 AND (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')
 GROUP BY i.id
 ";
+		//var_dump($query);
 		$reserved_items = $this->sql->field_assoc($query);
 		$repeated_reserved_items = $this->_getRepeatedReservedItems($date_from, $date_to);
-
+//var_dump($repeated_reserved_items);
 		return array_merge($reserved_items, $repeated_reserved_items);
 
 	}
 
 	private function _getRepeatedReservedItems($date_from, $date_to) {
+		//gets all repeated reservations from current date range
 		$query = "
-SELECT i.id as id, i.name as name, image, price, category, parent_id   FROM {$this->table_names["reservations"]} as r
+SELECT i.id as id, i.name as itemName, c.name as name, image as img, price, category, parent_id, date_from as start, date_to as end, repeat_from, repeat_to, rr.type as repeat_type, r.id as reservationID FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
@@ -137,7 +139,13 @@ LEFT JOIN {$this->table_names["r-r"]} AS rr ON rr.id = r.repetition
 WHERE repetition > 0 AND (rr.repeat_from > '{$date_from}' OR rr.repeat_to > '{$date_from}') AND (rr.repeat_from < '{$date_to}' OR rr.repeat_to < '{$date_to}')
 GROUP BY i.id
 ";
-		return $this->sql->field_assoc($query);
+		//var_dump($query);
+		$output = array();
+		foreach ($this->sql->field_assoc($query) as $reservation) {
+			//var_dump($this->getRepeatedReservation($reservation, $date_from, $date_to));
+			$output = array_merge($output, $this->getRepeatedReservation($reservation, $date_from, $date_to));
+		}
+		return $output;
 	}
 
 	/**

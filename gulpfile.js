@@ -75,7 +75,8 @@ gulp.task('scripts', function() {
 		.pipe(gulp.dest(paths.jsDist))
 		//.pipe(rename('all.min.js'))
 		//.pipe(uglify().on('error', gutil.log))
-		//.pipe(gulp.dest(paths.jsDist));
+		//.pipe(gulp.dest(paths.jsDist))
+		.pipe(browserSync.stream());
 });
 // Build production scripts
 gulp.task('scripts-build', function() {
@@ -84,8 +85,6 @@ gulp.task('scripts-build', function() {
 		.pipe(uglify().on('error', gutil.log))
 		.pipe(gulp.dest(paths.jsDist));
 });
-// Reloading browser after scripts are done
-gulp.task('scripts_watch', ['scripts'], browserSync.reload);
 
 // Optimize css
 gulp.task('csso', function () {
@@ -103,7 +102,7 @@ gulp.task('watch', function() {
 		proxy: "zkusebna-kobylisy.tt"
 	});
 
-	gulp.watch(paths.jsAssets + "**/*.js", ['scripts_watch']);
+	gulp.watch(paths.jsAssets + "**/*.js", ['scripts']);
 	gulp.watch(paths.cssAssets + "**/*.scss", ['sass']);
 	gulp.watch(paths.imagesAssets + "sprites/*.png", ['sprites']);
 	gulp.watch([paths.imagesAssets + "**/*", "!" + paths.imagesAssets + "{sprites,sprites/**}"], ['imagemin']);

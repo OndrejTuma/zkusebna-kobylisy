@@ -49,7 +49,7 @@ class Zkusebna {
 			if ($start_date > $date_from && $end_date < $date_to) {
 				//var_dump("\\/ ================= VYHOVUJE ================= \\/");
 				$new_reservation = $reservation;
-				$new_reservation["reservationID"] = $new_reservation["reservationID"] * $i;	//fake reservation ID
+				$new_reservation["reservationID"] = $new_reservation["reservationID"] * $i;	//fake new reservation ID
 				$new_reservation["start"] = $start_date;
 				$new_reservation["end"] = $end_date;
 				array_push($repeated_reservations, $new_reservation);

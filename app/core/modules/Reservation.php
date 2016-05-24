@@ -118,7 +118,6 @@ LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
 WHERE repetition = 0 AND (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')
-GROUP BY i.id
 ";
 		//var_dump($query);
 		$reserved_items = $this->sql->field_assoc($query);
@@ -137,7 +136,6 @@ LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
 LEFT JOIN {$this->table_names["r-r"]} AS rr ON rr.id = r.repetition
 WHERE repetition > 0 AND (rr.repeat_from > '{$date_from}' OR rr.repeat_to > '{$date_from}') AND (rr.repeat_from < '{$date_to}' OR rr.repeat_to < '{$date_to}')
-GROUP BY i.id
 ";
 		//var_dump($query);
 		$output = array();

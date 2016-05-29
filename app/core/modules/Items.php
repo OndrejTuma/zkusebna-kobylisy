@@ -65,24 +65,30 @@ class Items extends Zkusebna {
 
 		if ($this->preview) {
 			$query = "SELECT * FROM {$this->table_names["items"]} ORDER BY category, parent_id, name";
+			$this->items = $this->sql->field_assoc($query);
 		}
 		else {
-			$query = "
-SELECT i.id AS id, i.name AS name, image, price, category, parent_id, reservable, reservation.name AS reserved_by, email, date_from, date_to
-FROM {$this->table_names["items"]} AS i
-LEFT JOIN
-(
-SELECT c.name, c.email, ri.item_id, date_from, date_to FROM {$this->table_names["reservations"]} AS r
-LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
-LEFT JOIN  {$this->table_names["r-i"]} AS ri ON ri.reservation_id = r.id
-WHERE (date_from > '{$this->date_from}' OR date_to > '{$this->date_from}') AND (date_from < '{$this->date_to}' OR date_to < '{$this->date_to}')
-) AS reservation ON reservation.item_id = i.id
-ORDER BY category, parent_id, i.name";
+//			$query = "
+//SELECT i.id AS id, i.name AS name, image, price, category, parent_id, reservable, reservation.name AS reserved_by, email, date_from, date_to
+//FROM {$this->table_names["items"]} AS i
+//LEFT JOIN
+//(
+//SELECT c.name, c.email, ri.item_id, date_from, date_to FROM {$this->table_names["reservations"]} AS r
+//LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
+//LEFT JOIN  {$this->table_names["r-i"]} AS ri ON ri.reservation_id = r.id
+//WHERE (date_from > '{$this->date_from}' OR date_to > '{$this->date_from}') AND (date_from < '{$this->date_to}' OR date_to < '{$this->date_to}')
+//) AS reservation ON reservation.item_id = i.id
+//ORDER BY category, parent_id, i.name";
+			$query = "SELECT id, name as itemName, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} ORDER BY category, parent_id, name";
+			$this->items = $this->sql->field_assoc($query);
+			$reservation = new Reservation();
+			$reservedItems = $reservation->getReservedItems($date_from, $date_to);
+			$this->items = array_merge($this->items, $reservedItems);
 		}
 
 		$output = $this->preview ? "" : "";
 
-		$this->items = $this->sql->field_assoc($query);
+//		var_dump($this->items);
 
 		foreach ($this->items as $item) {
 			if ($item["parent_id"]) {
@@ -152,26 +158,26 @@ ORDER BY category, parent_id, i.name";
 		$output = "";
 		if ($item["reservable"] == 1) {
 			if ($this->preview) {
-				$output .= "<strong><span data-column='name' data-id='{$item["id"]}' class='editable'>{$item["name"]}</span> ";
+				$output .= "<strong><span data-column='name' data-id='{$item["id"]}' class='editable'>{$item["itemName"]}</span> ";
 				$output .= isset($this->discount) ? "<span class='price'><span data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span>" : "";
 				$output .= "</strong>";
 			}
 			else {
 				$output .= "<strong class='reservable-item-{$item["id"]} reservable ";
-				if ($item["reserved_by"] != null) {
-					$output .= "already-reserved' data-name='{$item["reserved_by"]}' data-date-from='" . Zkusebna::parseSQLDate($item["date_from"]) . "' data-date-to='" . Zkusebna::parseSQLDate($item["date_to"]) . "'";
+				if (isset($item["reserved_by"]) && $item["reserved_by"]) {
+					$output .= "already-reserved' data-name='{$item["reserved_by"]}' data-date-from='" . Zkusebna::parseSQLDate($item["start"]) . "' data-date-to='" . Zkusebna::parseSQLDate($item["end"]) . "'";
 				}
 				else {
 					$output .= "' ";
 				}
-				$output .= "data-id='{$item["id"]}'>{$item["name"]}";
+				$output .= "data-id='{$item["id"]}'>{$item["itemName"]}";
 				$output .= "<i class='icon-plus'></i> ";
 				$output .= isset($this->discount) ? "<span class='price'>" . $this->_getItemPrice($item) . ",-</span>" : "";
 				$output .= "</strong>";
 			}
 		}
 		else {
-			$output .= "<strong class='expandable'><span data-id='{$item["id"]}' data-column='name' class='editable'>{$item["name"]}</span></strong>";
+			$output .= "<strong class='expandable'><span data-id='{$item["id"]}' data-column='name' class='editable'>{$item["itemName"]}</span></strong>";
 		}
 		return $output;
 	}

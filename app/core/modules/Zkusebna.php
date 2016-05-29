@@ -17,8 +17,9 @@ class Zkusebna {
 	}
 
 	/**
+	 * Creates mirrors of repeated reservations
 	 * $repeat_from parameter is considered equal to $date_from
-	 * @param $reservation array - reserved item
+	 * @param $reservation array - reserved item (required fields: ['repeat_to','repeat_type','start','end'])
 	 * @param $date_from
 	 * @param $date_to
 	 * @return array
@@ -47,7 +48,7 @@ class Zkusebna {
 			$start_date = Zkusebna::_parseDate($date->format('Y-m-d H:i:s'));
 			$end_date = Zkusebna::_parseDate($date->add($date_sub)->format('Y-m-d H:i:s'));
 			if ($start_date > $date_from && $end_date < $date_to) {
-				//var_dump("\\/ ================= VYHOVUJE ================= \\/");
+//				var_dump("\\/ ================= VYHOVUJE ================= \\/");
 				$new_reservation = $reservation;
 				$new_reservation["reservationID"] = $new_reservation["reservationID"] * $i;	//fake new reservation ID
 				$new_reservation["start"] = $start_date;
@@ -55,7 +56,7 @@ class Zkusebna {
 				array_push($repeated_reservations, $new_reservation);
 			}
 			$i++;
-			//var_dump($start_date, $end_date, $date_from, $date_to, $reservation['id'], $date_begin->format('Y-m-d H:i:s'), $repeat_end->format('Y-m-d H:i:s'), $period_types[$period], "===========================================================");
+//			var_dump($start_date, $end_date, $date_from, $date_to, $reservation['id'], $date_begin->format('Y-m-d H:i:s'), $repeat_end->format('Y-m-d H:i:s'), $period_types[$period], "===========================================================");
 		}
 
 		return $repeated_reservations;

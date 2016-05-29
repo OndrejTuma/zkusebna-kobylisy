@@ -38,7 +38,7 @@ $.datetimepicker.setLocale('cs');
 			//date: 'DD.MM.YYYY',
 			date: 'd.m.Y',
 			//unixDateTime: 'd.m.Y H:i',
-			unixDateTime: 'DD.MM.YYYY H:mm',
+			unixDateTime: 'DD.MM.YYYY HH:mm',
 			//unixDate: 'd.m.Y',
 			unixDate: 'DD.MM.YYYY'
 		},
@@ -544,7 +544,7 @@ $.datetimepicker.setLocale('cs');
 			var output = "<ul>";
 
 			for (var i = 0; i < this.reservedItems.length; i++) {
-				output += "<li class='item' class='reservable-item-" + this.reservedItems[i] + "' data-id='" + this.reservedItems[i] + "'>" + this.reservableItems[this.reservedItems[i]].name + "</li>"
+				output += "<li class='item' class='reservable-item-" + this.reservedItems[i] + "' data-id='" + this.reservedItems[i] + "'>" + this.reservableItems[this.reservedItems[i]].itemName + "</li>"
 			}
 
 			output += "</ul>";
@@ -642,9 +642,11 @@ $.datetimepicker.setLocale('cs');
 		},
 		_datetimePickers: function() {
 			var self = this,
+				dateFormat = Zkusebna._dateFormats.date,
+				dateTimeFormat = Zkusebna._dateFormats.dateTime,
 				pickerOptions = {
-					format: Zkusebna._dateFormats.unixDateTime,
-					formatDate: Zkusebna._dateFormats.unixDateTime,
+					format: dateTimeFormat,
+					formatDate: dateTimeFormat,
 					dayOfWeekStart: 1,
 					step: 60,
 					minDate: new Date(),
@@ -671,8 +673,8 @@ $.datetimepicker.setLocale('cs');
 			$(".datetimepicker:not([data-type])").datetimepicker(pickerOptions);
 
 			var datePickerOptions = $.extend(true, {}, pickerOptions);
-			datePickerOptions.format = Zkusebna._dateFormats.unixDate;
-			datePickerOptions.formatDate = Zkusebna._dateFormats.unixDate;
+			datePickerOptions.format = dateFormat;
+			datePickerOptions.formatDate = dateFormat;
 			datePickerOptions.timepicker = false;
 			$(".datetimepicker[data-type='date']").datetimepicker(datePickerOptions);
 
@@ -683,7 +685,7 @@ $.datetimepicker.setLocale('cs');
 				is_valid = true;
 
 			$inputs.each(function() {
-				var dateFormat = ($(this).attr("data-type")=="date") ? Zkusebna._dateFormats.date : Zkusebna._dateFormats.dateTime;
+				var dateFormat = ($(this).attr("data-type")=="date") ? Zkusebna._dateFormats.unixDate : Zkusebna._dateFormats.unixDateTime;
 				if ($(this).attr("data-date-type")=="from") {
 					date_from = $(this).val();
 					date_to = $($(this).attr("data-connected-to")).val();

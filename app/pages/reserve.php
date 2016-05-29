@@ -18,11 +18,11 @@ $admin = new AuthAdmin();
 			<legend>Zvolte termín vypůjčení</legend>
 			<ul class="table cols-2 pt mbn">
 				<li class="tar pr">
-					<input type="text" name="date_from" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to" readonly placeholder="Datum a čas výpůjčky" value="29.02.2016 08:00"/>
+					<input type="text" name="date_from" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="29.02.2016 08:00"/>
 <!--					<input type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" readonly placeholder="Datum a čas výpůjčky"/>-->
 				</li>
 				<li class="tal pl">
-					<input type="text" name="date_to" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from" readonly placeholder="Datum a čas navrácení" value="29.02.2016 12:00"/>
+					<input type="text" name="date_to" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="29.02.2016 12:00"/>
 <!--					<input type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" readonly placeholder="Datum a čas navrácení"/>-->
 				</li>
 			</ul>

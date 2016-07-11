@@ -141,6 +141,22 @@ LIMIT {$limit}
 		return $output;
 	}
 
+	public function renderPurposes() {
+		$query = "SELECT id, title, discount FROM {$this->table_names["purpose"]} ORDER BY title";
+
+		$output = "<ol class='reservation-list'>";
+		foreach ($this->sql->field_assoc($query) as $purpose) {
+			$output .= "<li>";
+			$output .= "<strong data-table='purpose' data-id='{$purpose['id']}' data-column='title' class='editable'>{$purpose['title']}</strong>";
+			$output .= "<em data-table='purpose' data-id='{$purpose['id']}' data-column='discount' class='editable'>{$purpose['discount']}</em>";
+			$output .= "<i data-table='purpose' data-id='{$purpose['id']}' data-parent='li' class='deletable icon-close'></i>";
+			$output .= "</li>";
+		}
+		$output .= "</ol>";
+
+		return $output;
+	}
+
 }
 
 ?>

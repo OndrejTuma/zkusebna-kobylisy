@@ -124,13 +124,32 @@ class Zkusebna {
 
 	/**
 	 * update item's info
-	 * @param $item_id int - item id
-	 * @param $changeSet array(column => val) - array of changes to be made
+	 * @param $table string - table alias
+	 * @param $item_id int - id of row to edit
+	 * @param $column string - name of column to edit
+	 * @param $val string - new value
 	 * @return resource
 	 */
-	public function updateItem($item_id, $column, $val) {
+	public function updateItem($table, $item_id, $column, $val) {
 
-		$query = "UPDATE {$this->table_names["items"]} SET {$column} = '{$val}' WHERE id = $item_id";
+		if (!isset($this->table_names[$table])) return false;
+
+		$query = "UPDATE {$this->table_names[$table]} SET {$column} = '{$val}' WHERE id = $item_id";
+		return $this->sql->query($query);
+
+	}
+
+	/**
+	 * delete any row from $this->table_names list of tables (pretty risky, i know, but saves time)
+	 * @param $table string - table alias
+	 * @param $item_id int - id of row to delete
+	 * @return resource
+	 */
+	public function deleteItem($table, $item_id) {
+
+		if (!isset($this->table_names[$table])) return false;
+
+		$query = "DELETE FROM {$this->table_names[$table]} WHERE id = $item_id";
 		return $this->sql->query($query);
 
 	}

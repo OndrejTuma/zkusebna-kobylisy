@@ -4528,7 +4528,6 @@ Date.prototype.dateFormat = function( format ){
 $.datetimepicker.setLocale('cs');
 
 
-
 (function($, window, document){
 
 
@@ -4679,6 +4678,7 @@ $.datetimepicker.setLocale('cs');
 			this.$wrappers = {
 				admin: $("#admin"),
 				addPurpose: $("#add-purpose"),
+				editPurpose: $("#edit-purpose"),
 				approved: $("#approved-reservations"),
 				unapproved: $("#unapproved-reservations"),
 				repeated: $("#repeated-reservations"),
@@ -4687,6 +4687,7 @@ $.datetimepicker.setLocale('cs');
 
 			this._renderDashboard();
 			this._approveHandler();
+			this._deleteHandler();
 			this._itemsHandler();
 			this._addPurposeHandler();
 			this._reservationsHandler();
@@ -4716,8 +4717,23 @@ $.datetimepicker.setLocale('cs');
 		_approveHandler: function() {
 			var self = this;
 
-			this.$wrappers.admin.on("click", "i", function() {
-				var action = $(this).hasClass("approve") ? "approve" : ($(this).hasClass("delete") ? "delete" : "deleteItem"),
+			this.$wrappers.admin.on("click", ".approve", function() {
+				var data = {
+					action: "approve",
+					reservationId: $(this).parents("[data-id]").attr("data-id")
+				};
+
+				Zkusebna._request("admin.php", data, self._repaintDashboard.bind(self),
+				null,
+				$(this));
+			});
+
+		},
+		_deleteHandler: function() {
+			var self = this;
+
+			this.$wrappers.admin.on("click", ".delete, .delete-item", function() {
+				var action = $(this).hasClass("delete") ? "delete" : "deleteItem",
 					data = {
 						action: action,
 						reservationId: $(this).parents("[data-id]").attr("data-id")
@@ -4726,46 +4742,91 @@ $.datetimepicker.setLocale('cs');
 				if (action == "deleteItem") data.itemId = $(this).attr("data-item");
 
 				Zkusebna._request("admin.php", data, self._repaintDashboard.bind(self),
-				null,
-				$(this));
+					null,
+					$(this));
 			});
-
 		},
 		_itemsHandler: function() {
-			this.$wrappers.items.on("click", ".editable", function() {
+			this.$wrappers.admin.on("click", ".editable", function() {
+
+				if (typeof this.isActive == "undefined") {
+					this.isActive = true;
+				}
+				if (this.isActive == false) {
+					this.isActive = true;
+				}
 
 				var $node = $(this),
-					val = $(this).text(),
+					node_val = $(this).text(),
+					node_width = $(this).width(),
+					table = $(this).attr("data-table"),
 					item_id = $(this).attr("data-id"),
 					input_id = "temp_editable_item",
 					column = $(this).attr("data-column"),
-					data = {
+					post_data = {
 						action: "updateItem",
-						"item-id": item_id,
+						table: table,
+						itemId: item_id,
 						column: column
 					},
-					self = this;
+					self = this,
+					saveValue = function() {
+						post_data.val = $("#" + input_id).val();
+						Zkusebna._request("admin.php", post_data, function(res) {
+							if (res.result == "failure") {
+								$node.find("input").addClass(Zkusebna._classes.error + " " + Zkusebna._classes.inputHighlight);
 
-				$(this).toggleClass(Zkusebna._classes.active);
+								setTimeout(function(){
+									$("#" + input_id).removeClass(Zkusebna._classes.inputHighlight);
+								}, 1000);
+							}
+							else {
+								self.isActive = false;
+								$node.html(post_data.val).removeClass(Zkusebna._classes.active);
+							}
+						});
+					};
 
-				if ($(this).hasClass(Zkusebna._classes.active)) {
-					$(this).html("<input type='text' value='" + val + "' id='" + input_id + "'>");
+				if (this.isActive) {
+					$(this).addClass(Zkusebna._classes.active);
+					$(this).html("<input type='text' value='" + node_val + "' id='" + input_id + "' style='width: " + (node_width + 20) + "px;'><span class='icon-checkmark save'></span><span class='icon-close close'></span>");
 				}
-				$("#" + input_id).select().focus().on('blur', function() {
-					data.val = $(this).val();
-					Zkusebna._request("admin.php", data, function(res) {
-						if (res.result == "failure") {
-							$node.find("input").addClass(Zkusebna._classes.error + " " + Zkusebna._classes.inputHighlight);
 
-							setTimeout(function(){
-								$("#" + input_id).removeClass(Zkusebna._classes.inputHighlight);
-							}, 1000);
+				$(this).find(".close").on("click", function(){
+					self.isActive = false;
+					$node.removeClass(Zkusebna._classes.active).html(node_val);
+				});
+				$(this).find(".save").on("click", saveValue);
+				$("#" + input_id).select().focus().on('blur', saveValue);
+			});
+
+			this.$wrappers.admin.on("click", ".deletable", function() {
+				var $node = $(this),
+					table = $(this).attr("data-table"),
+					item_id = $(this).attr("data-id"),
+					item_parent_selector = $(this).attr("data-parent"),
+					post_data = {
+						action: "deleteIt",
+						table: table,
+						itemId: item_id
+					};
+
+				if (confirm("Jste si jisti?")) {
+					Zkusebna._request("admin.php", post_data, function(data) {
+						if (data.result == "failure") {
+							alert(data.message);
 						}
 						else {
-							$node.removeClass(Zkusebna._classes.active).html(data.val);
+							$node.parents(item_parent_selector).fadeOut({
+								duration: 500,
+								easing: 'linear',
+								complete: function() {
+									$(this).remove();
+								}
+							});
 						}
 					});
-				});
+				}
 			});
 		},
 		_reservationsHandler: function() {
@@ -4779,12 +4840,12 @@ $.datetimepicker.setLocale('cs');
 
 			Zkusebna._request("admin.php", {}, function(data) {
 				self.$wrappers.items.html(data.items);
+				self.$wrappers.editPurpose.html(data.purpose);
 				self._repaintDashboard(data);
 
 				self.$wrappers.admin.find(".icon-mobile, .icon-mail").on('click', function() {
 					Zkusebna._copyToClipboard($(this).attr('data-message'));
 				});
-
 
 			});
 

@@ -1,0 +1,36 @@
+.editable {
+	@include transition(opacity .3s);
+	cursor: url("#{$images-url}cursor-edit.ico"), crosshair !important;
+	display: inline-block;
+	opacity: 1;
+
+	&:hover {
+		opacity: .5;
+	}
+	&.active {
+		cursor: default !important;
+		opacity: 1;
+	}
+
+	.close {
+		&:hover {
+			color: $fire-engine-red;
+		}
+	}
+	.save {
+		&:hover {
+			color: $christi;
+		}
+	}
+
+	input {
+		min-width: 0;
+		text-align: center !important;
+	}
+	span {
+		font-size: 18px !important;
+		color: $cyan;
+		cursor: pointer !important;
+		margin: 0 3px !important;
+	}
+}

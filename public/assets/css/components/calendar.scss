@@ -2,6 +2,8 @@
 	cursor: pointer;
 }
 .fc-event {
+	$event-height: 20px;
+
 	border: none;
 	color: darken($white, 6%);
 
@@ -13,6 +15,10 @@
 	}
 	&.cats-3 i {
 		width: 33.3333%;
+	}
+
+	.fc-content {
+		line-height: $event-height;
 	}
 
 	em {
@@ -35,7 +41,7 @@
 			@include square(0);
 			border-color: transparent;
 			border-style: solid;
-			border-width: 0 $border-width 14px 0;
+			border-width: 0 $border-width $event-height 0;
 			content: "";
 		}
 		&.nastroje {

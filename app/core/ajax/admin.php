@@ -28,13 +28,24 @@ switch ($action) {
 		$admin->deleteReservationItem($itemId, $reservationId);
 		break;
 	case "updateItem":
+		$table = isset($_POST["table"]) ? $_POST["table"] : "";
 		$itemId = isset($_POST["itemId"]) ? $_POST["itemId"] : "";
 		$column = isset($_POST["column"]) ? $_POST["column"] : "";
 		$val = isset($_POST["val"]) ? $_POST["val"] : "";
 		if (trim($val) === "") {
 			$output["result"] = "failure";
 		}
-		$admin->updateItem($itemId, $column, $val);
+		else {
+			$admin->updateItem($table, $itemId, $column, $val);
+		}
+		break;
+	case "deleteIt":
+		$table = isset($_POST["table"]) ? $_POST["table"] : "";
+		$itemId = isset($_POST["itemId"]) ? (int)$_POST["itemId"] : "";
+		if (!$admin->deleteItem($table, $itemId)) {
+			$output["result"] = "failure";
+			$output["message"] = "Chyba, položku se nepodařilo smazat.";
+		}
 		break;
 	default:
 }
@@ -43,6 +54,7 @@ switch ($action) {
 $output["unapproved"] = $admin->renderUnapprovedReservations();
 $output["approved"] = $admin->renderApprovedReservations();
 $output["repeated"] = $admin->renderRepeatedReservations();
+$output["purpose"] = $admin->renderPurposes();
 $output["items"] = $admin->renderItems();
 
 

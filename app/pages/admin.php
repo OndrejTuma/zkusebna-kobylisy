@@ -26,11 +26,12 @@
 		<h2>Opakované rezervace</h2>
 		<div id="repeated-reservations" class="reservation-list"></div>
 
-		<h2>Přidat účel rezervace</h2>
+		<h2 class="help tooltip dib" data-message="Slouží k odlišení rezervací na farní, osobní a jiné účely. Účel může poskytnout procentuální slevu na všechny položky">Účel rezervace</h2>
 		<form method="post" id="add-purpose">
+			<h3>Přidat nový</h3>
 			<ul class="table cols-3">
 				<li class="tar pr">
-					<input type="text" name="purpose" placeholder="Popis"/>
+					<input type="text" name="purpose" placeholder="Název"/>
 				</li>
 				<li class="tac" data-column="price">
 					<input type="text" name="discount" placeholder="Sleva" class="mrs"/>%
@@ -40,9 +41,12 @@
 				</li>
 			</ul>
 		</form>
+		<h3>Upravit existující</h3>
+		<div id="edit-purpose"></div>
 
 		<h2>Správa položek</h2>
 		<div id="items"></div>
+
 	<?php else: ?>
 		<form action="?page=admin" method="post" class="tac">
 			<fieldset>

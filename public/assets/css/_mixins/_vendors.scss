@@ -10,7 +10,9 @@
 
 @mixin transition($props: all .3s, $delay: 0) {
 	@include vendors(transition, $props);
-	@include vendors(transition-delay, $delay);
+	@if $delay > 0 {
+		@include vendors(transition-delay, $delay);
+	}
 }
 
 @mixin transform($props, $origin: 50% 50%) {

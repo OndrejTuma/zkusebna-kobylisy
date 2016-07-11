@@ -64,7 +64,7 @@ class Items extends Zkusebna {
 		}
 
 		if ($this->preview) {
-			$query = "SELECT * FROM {$this->table_names["items"]} ORDER BY category, parent_id, name";
+			$query = "SELECT id, name as itemName, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} ORDER BY category, parent_id, name";
 			$this->items = $this->sql->field_assoc($query);
 		}
 		else {
@@ -158,8 +158,8 @@ class Items extends Zkusebna {
 		$output = "";
 		if ($item["reservable"] == 1) {
 			if ($this->preview) {
-				$output .= "<strong><span data-column='name' data-id='{$item["id"]}' class='editable'>{$item["itemName"]}</span> ";
-				$output .= isset($this->discount) ? "<span class='price'><span data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span>" : "";
+				$output .= "<strong><span data-table='items' data-column='name' data-id='{$item["id"]}' class='editable'>{$item["itemName"]}</span> ";
+				$output .= isset($this->discount) ? "<span class='price'><span data-table='items' data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span>" : "";
 				$output .= "</strong>";
 			}
 			else {
@@ -177,7 +177,7 @@ class Items extends Zkusebna {
 			}
 		}
 		else {
-			$output .= "<strong class='expandable'><span data-id='{$item["id"]}' data-column='name' class='editable'>{$item["itemName"]}</span></strong>";
+			$output .= "<strong class='expandable'><span data-id='{$item["id"]}' data-table='items' data-column='name' class='editable'>{$item["itemName"]}</span></strong>";
 		}
 		return $output;
 	}

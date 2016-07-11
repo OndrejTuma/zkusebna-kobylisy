@@ -32,17 +32,28 @@ repeat_to DATETIME NOT NULL,
 PRIMARY KEY (id)
 )engine=InnoDB;
 
+CREATE TABLE zkusebna_admin (
+id INT(6) AUTO_INCREMENT,
+name VARCHAR(10) NOT NULL,
+email VARCHAR(32) NOT NULL,
+passwd VARCHAR(40) NOT NULL,
+hash VARCHAR(100) NOT NULL,
+login_time VARCHAR(100) NOT NULL,
+PRIMARY KEY (id)
+)engine=InnoDB;
+
 CREATE TABLE zkusebna_reservations (
 id INT(6) AUTO_INCREMENT,
 date_from DATETIME NOT NULL,
 date_to DATETIME NOT NULL,
 approved tinyint(1) DEFAULT 0,
 who INT(6) NOT NULL,
+purpose INT(6) NOT NULL DEFAULT 1,
 repetition INT(6) NOT NULL,
 timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (id),
 FOREIGN KEY (who) REFERENCES zkusebna_community(id),
-FOREIGN KEY (purpose) REFERENCES zkusebna_reservation_purpose(id)
+FOREIGN KEY (purpose) REFERENCES zkusebna_reservation_purpose(id),
 FOREIGN KEY (repetition) REFERENCES zkusebna_reservation_repeat(id)
 )engine=InnoDB;
 
@@ -54,19 +65,12 @@ FOREIGN KEY (item_id) REFERENCES zkusebna_items(id),
 FOREIGN KEY (reservation_id) REFERENCES zkusebna_reservations(id)
 )engine=InnoDB;
 
-CREATE TABLE zkusebna_admin (
-id INT(6) AUTO_INCREMENT,
-name VARCHAR(10) NOT NULL,
-email VARCHAR(32) NOT NULL,
-passwd VARCHAR(40) NOT NULL,
-hash VARCHAR(100) NOT NULL,
-login_time VARCHAR(100) NOT NULL,
-PRIMARY KEY (id)
-)engine=InnoDB;
 
 
 
 
+
+INSERT INTO zkusebna_admin (name,email,passwd) VALUES ('admin','ondr@centrum.cz',md5('heslo'));
 INSERT INTO zkusebna_reservation_purpose (title,discount) VALUES ('Osobní účely',0), ('Akce farnosti',100);
 
 

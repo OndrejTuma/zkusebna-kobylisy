@@ -59,7 +59,6 @@ class Reservation extends Zkusebna {
 				$query = "INSERT INTO {$this->table_names["reservations"]} (date_from, date_to, who, purpose) VALUES ('{$this->date_from}', '{$this->date_to}', '{$this->who}', {$this->purpose_id})";
 				$this->sql->query($query);
 			}
-
 			return $this->sql->insert_id();
 		}
 
@@ -73,6 +72,7 @@ class Reservation extends Zkusebna {
 	 * @return resource
 	 */
 	public function addItems($ids) {
+
 		$query = "INSERT INTO {$this->table_names["r-i"]} (item_id, reservation_id) VALUES ";
 		foreach ($ids as $id) {
 			$query .= "(" . (int)$id . ", {$this->id}),";
@@ -117,7 +117,7 @@ SELECT i.id as id, i.name as itemName, c.name as name, image as img, price, cate
 LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
-WHERE repetition = 0 AND (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')
+WHERE repetition IS NULL AND (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')
 ";
 		$reserved_items = $this->sql->field_assoc($query);
 		$repeated_reserved_items = $this->_getRepeatedReservedItems($date_from, $date_to);

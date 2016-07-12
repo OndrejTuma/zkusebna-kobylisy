@@ -63,7 +63,7 @@ class Admin extends Zkusebna {
 		return $items->renderItems("","","",1);
 	}
 	public function renderRepeatedReservations() {
-		return $this->_renderReservations($this->_getReservarvations("repetition > 1"), true);
+		return $this->_renderReservations($this->_getReservarvations("repetition > 0"), true);
 	}
 	public function renderUnapprovedReservations() {
 		return $this->_renderReservations($this->_getReservarvations("repetition = 0 AND approved = 0"));

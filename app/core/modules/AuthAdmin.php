@@ -132,8 +132,12 @@ class AuthAdmin {
 	*/
 	public function out(){
 		$this->sql_relace->update(array($this->COL_HASH=>""),"id={$this->admin['id']}");
-		setcookie(SESSION_NAME,$this->hash,time()-DURATION_OF_INACTIVITY);
-		unset($_SESSION[SESSION_NAME],$_COOKIE[SESSION_NAME],$this->admin);
+		if ($this->type=="cookie") {
+			setcookie(SESSION_NAME, $this->hash, time() - DURATION_OF_INACTIVITY);
+		}
+		else {
+			unset($_SESSION[SESSION_NAME],$_COOKIE[SESSION_NAME],$this->admin);
+		}
 	}
 
 	/**

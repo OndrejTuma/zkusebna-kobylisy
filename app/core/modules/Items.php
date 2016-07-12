@@ -158,7 +158,7 @@ class Items extends Zkusebna {
 		$output = "";
 		if ($item["reservable"] == 1) {
 			if ($this->preview) {
-				$output .= "<strong><span data-table='items' data-column='name' data-id='{$item["id"]}' class='editable'>{$item["itemName"]}</span> ";
+				$output .= "<strong><span data-table='items' data-column='name' data-id='{$item["id"]}'>{$item["itemName"]}</span> ";
 				$output .= isset($this->discount) ? "<span class='price'><span data-table='items' data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span>" : "";
 				$output .= "</strong>";
 			}
@@ -177,7 +177,7 @@ class Items extends Zkusebna {
 			}
 		}
 		else {
-			$output .= "<strong class='expandable'><span data-id='{$item["id"]}' data-table='items' data-column='name' class='editable'>{$item["itemName"]}</span></strong>";
+			$output .= "<strong class='expandable'><span data-id='{$item["id"]}' data-table='items' data-column='name'>{$item["itemName"]}</span></strong>";
 		}
 		return $output;
 	}

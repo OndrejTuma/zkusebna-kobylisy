@@ -56,7 +56,7 @@ class Admin extends Zkusebna {
 		return $this->sql->query($query);
 	}
 	public function renderApprovedReservations() {
-		return $this->_renderReservations($this->_getReservarvations("repetition = 0 AND approved = 1"));
+		return $this->_renderReservations($this->_getReservarvations("repetition IS NULL AND approved = 1"));
 	}
 	public function renderItems() {
 		$items = new Items();
@@ -66,7 +66,7 @@ class Admin extends Zkusebna {
 		return $this->_renderReservations($this->_getReservarvations("repetition > 0"), true);
 	}
 	public function renderUnapprovedReservations() {
-		return $this->_renderReservations($this->_getReservarvations("repetition = 0 AND approved = 0"));
+		return $this->_renderReservations($this->_getReservarvations("repetition IS NULL AND approved = 0"));
 	}
 
 	private function _getReservarvations($where, $limit = 500) {

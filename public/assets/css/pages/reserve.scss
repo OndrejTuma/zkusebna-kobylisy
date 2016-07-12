@@ -2,6 +2,14 @@
 	&.loading {
 		opacity: .5;
 	}
+
+	.editable {
+		cursor: inherit !important;
+
+		&:hover {
+			opacity: 1;
+		}
+	}
 }
 #reserve {
 

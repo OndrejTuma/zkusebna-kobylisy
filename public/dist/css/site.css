@@ -6518,6 +6518,11 @@ a.button--white:hover {
 #items-wrapper.loading {
   opacity: .5; }
 
+#items-wrapper .editable {
+  cursor: inherit !important; }
+  #items-wrapper .editable:hover {
+    opacity: 1; }
+
 #reserve #purpose,
 #reserve #repeat {
   padding-left: 45px; }

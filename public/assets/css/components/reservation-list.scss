@@ -38,6 +38,7 @@
 			color: $christi;
 		}
 		&.delete:hover,
+		&.deletable:hover,
 		&.delete-item:hover {
 			color: $fire-engine-red;
 		}

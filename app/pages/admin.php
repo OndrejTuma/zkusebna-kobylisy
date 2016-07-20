@@ -18,13 +18,13 @@
 		<p class="fr"><a href="?page=admin&logout" class="button--red">Odhlásit</a></p>
 
 		<h2 class="clear">Rezervace ke schválení</h2>
-		<div id="unapproved-reservations" class="reservation-list"></div>
+		<div id="unapproved-reservations" class="reservation-list editable-list"></div>
 
 		<h2>Schválené rezervace</h2>
-		<div id="approved-reservations" class="reservation-list"></div>
+		<div id="approved-reservations" class="reservation-list editable-list"></div>
 
 		<h2>Opakované rezervace</h2>
-		<div id="repeated-reservations" class="reservation-list"></div>
+		<div id="repeated-reservations" class="reservation-list editable-list"></div>
 
 		<h2 class="help tooltip dib" data-message="Slouží k odlišení rezervací na farní, osobní a jiné účely. Účel může poskytnout procentuální slevu na všechny položky">Účel rezervace</h2>
 		<form method="post" id="add-purpose">
@@ -45,7 +45,17 @@
 		<div id="edit-purpose"></div>
 
 		<h2>Správa položek</h2>
-		<div id="items"></div>
+		<form method="post" id="add-item" enctype="multipart/form-data">
+			<h3>Přidat novou položku</h3>
+			<input type="text" name="name" placeholder="Název"/>
+			<input type="text" name="price" placeholder="Cena"/>
+			<input type="file" name="image" placeholder="Obrázek"/>
+			<progress></progress>
+			<button type="submit">Uložit</button>
+			<span class="close icon-close"></span>
+		</form>
+		<h3>Upravit existující</h3>
+		<div id="items" class="editable-list"></div>
 
 	<?php else: ?>
 		<form action="?page=admin" method="post" class="tac">

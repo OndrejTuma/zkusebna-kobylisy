@@ -99,6 +99,13 @@ ul.item-list {
 			vertical-align: top;
 		}
 	}
+	.select-all {
+		color: $white;
+		font-weight: 400;
+		font-size: $font-size;
+		padding: 0 10px;
+		text-transform: lowercase;
+	}
 	.subcategories {
 		margin: $margin--big 0 $margin--big $margin--big;
 
@@ -124,6 +131,27 @@ ul.item-list {
 		border-left: 1px dashed $gray;
 	}
 
+	i {
+		@include transition(color .3s);
+		cursor: pointer;
+		display: inline-block;
+		font-size: 18px;
+		margin-left: 5px;
+
+		&.add-new-item {
+			font-size: 12px;
+			vertical-align: top;
+
+			&:hover {
+				color: $christi;
+			}
+		}
+		&.deletable {
+			&:hover {
+				color: $fire-engine-red;
+			}
+		}
+	}
 	li {
 
 		$darken-by: 5%;

@@ -17,9 +17,20 @@ class Admin extends Zkusebna {
 		return $admin[0]["email"];
 	}
 
+	public function addItem($name, $image, $price, $category, $parent_id) {
+		$query = "SELECT name FROM {$this->table_names["items"]} WHERE parent_id = '{$parent_id}' AND name = '{$name}'";
+		$rows = $this->sql->num_rows($query);
+		if (!$rows && !empty($name) && !empty($category) && $price >= 0) {
+			$query = "INSERT INTO {$this->table_names["items"]} (name,image,price,category,parent_id) VALUES ('{$name}','{$image}','{$price}','{$category}','{$parent_id}')";
+			return $this->sql->query($query);
+		}
+		return false;
+	}
+
 	public function addPurpose($purpose, $discount) {
 		$query = "SELECT title FROM {$this->table_names["purpose"]} WHERE title = '{$purpose}'";
-		if (!$this->sql->num_rows($query) && $purpose && $discount) {
+		$rows = $this->sql->num_rows($query);
+		if (!$rows && !empty($purpose) && $discount >= 0) {
 			$query = "INSERT INTO {$this->table_names["purpose"]} (title,discount) VALUES ('{$purpose}'," . (int)$discount . ")";
 			return $this->sql->query($query);
 		}
@@ -60,7 +71,7 @@ class Admin extends Zkusebna {
 	}
 	public function renderItems() {
 		$items = new Items();
-		return $items->renderItems("","","",1);
+		return $items->renderItems("","","",1,array(),true);
 	}
 	public function renderRepeatedReservations() {
 		return $this->_renderReservations($this->_getReservarvations("repetition > 0"), true);
@@ -144,7 +155,7 @@ LIMIT {$limit}
 	public function renderPurposes() {
 		$query = "SELECT id, title, discount FROM {$this->table_names["purpose"]} ORDER BY title";
 
-		$output = "<ol class='reservation-list'>";
+		$output = "<ol class='reservation-list editable-list'>";
 		foreach ($this->sql->field_assoc($query) as $purpose) {
 			$output .= "<li>";
 			$output .= "<strong data-table='purpose' data-id='{$purpose['id']}' data-column='title' class='editable'>{$purpose['title']}</strong>";

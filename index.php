@@ -32,6 +32,6 @@ switch ($page) {
 }
 ?>
 
-<script type="text/javascript" src="<?= ZKUSEBNA_JS_URL; ?>all.js?21022015"></script>
+<script type="text/javascript" src="<?= ZKUSEBNA_JS_URL; ?>all.js?<?= time() ?>"></script>
 </body>
 </html>

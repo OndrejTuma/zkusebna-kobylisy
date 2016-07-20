@@ -81,7 +81,9 @@ $.datetimepicker.setLocale('cs');
 					$("+ ul", this).addClass(self._classes.active);
 				}
 
-				$(this).click(function() {
+				$(this).click(function(e) {
+					//adding or deleting item shouldn't trigger expanding
+					if ($(e.target).hasClass("trigger")) return;
 
 					if ($(this).hasClass(self._classes.active)) {
 						$(this).removeClass(self._classes.active);
@@ -159,6 +161,7 @@ $.datetimepicker.setLocale('cs');
 
 			this.$wrappers = {
 				admin: $("#admin"),
+				addItem: $("#add-item"),
 				addPurpose: $("#add-purpose"),
 				editPurpose: $("#edit-purpose"),
 				approved: $("#approved-reservations"),
@@ -167,6 +170,7 @@ $.datetimepicker.setLocale('cs');
 				items: $("#items")
 			};
 
+			this._addItemHandler();
 			this._renderDashboard();
 			this._approveHandler();
 			this._deleteHandler();
@@ -176,6 +180,86 @@ $.datetimepicker.setLocale('cs');
 
 		},
 
+		_addItemHandler: function() {
+
+			var self = this,
+				$form = this.$wrappers.addItem;
+
+			$form.remove();
+
+			this.$wrappers.items.on('click', '.add-new-item', function(e) {
+
+				e.preventDefault();
+				var category = $(this).data('category'),
+					parent_id = $(this).next('i.deletable').attr('data-id'),
+					$target = $(e.target);
+
+				$form.find('h3').text('ID kategorie: ' + category);
+
+				$('body').append($form.fadeIn().css({
+					top: $target.offset().top,
+					left: $target.offset().left
+				}));
+				$form.on('click', '.close', function() {
+					$(this).parents('form').fadeOut(function() {
+						$(this).remove();
+					})
+				}).on('submit', function(e) {
+					e.preventDefault();
+
+					var formData = new FormData($form[0]);
+					if (parent_id) {
+						formData.append("parent_id", parent_id);
+					}
+					formData.append("category", category);
+					formData.append("action", "addItem");
+
+					$.ajax({
+						url: Zkusebna._urls.ajax + 'admin.php',
+						type: 'POST',
+						xhr: function() {  // Custom XMLHttpRequest
+							var myXhr = $.ajaxSettings.xhr();
+							if(myXhr.upload){ // Check if upload property exists
+								myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+							}
+							return myXhr;
+						},
+						beforeSend: function() {
+							$form.addClass('progress');
+						},
+						success: function(data) {
+							$form.removeClass('progress');
+							if (data.result) {
+								alert("Uloženo!");
+								$form.fadeOut(function() {
+									$(this).remove();
+								});
+							}
+							else {
+								alert(data.errorMessage || 'Došlo k chybě. Zkontrolujte, zda máte vyplněná pole, nebo zda již položka existuje');
+							}
+						},
+						error: function(data) {
+							$form.removeClass('progress');
+							alert(data.errorMessage || 'Došlo k chybě. Zkontrolujte, zda máte vyplněná pole, nebo zda již položka existuje');
+						},
+						data: formData,
+						//Options to tell jQuery not to process data or worry about content-type.
+						cache: false,
+						contentType: false,
+						processData: false
+					});
+					function progressHandlingFunction(e){
+						if(e.lengthComputable){
+							$form.find('progress').attr({value:e.loaded,max:e.total});
+						}
+					}
+
+				});
+
+			});
+
+		},
 		_addPurposeHandler: function() {
 
 			var self = this;
@@ -231,6 +315,8 @@ $.datetimepicker.setLocale('cs');
 		_itemsHandler: function() {
 			this.$wrappers.admin.on("click", ".editable", function() {
 
+				if (this.isActive) return;
+
 				if (typeof this.isActive == "undefined") {
 					this.isActive = true;
 				}
@@ -239,11 +325,11 @@ $.datetimepicker.setLocale('cs');
 				}
 
 				var $node = $(this),
-					node_val = $(this).text(),
-					node_width = $(this).width(),
 					table = $(this).attr("data-table"),
 					item_id = $(this).attr("data-id"),
 					input_id = "temp_editable_item",
+					$input = $("#" + input_id),
+					input_width = $input.outerWidth(),
 					column = $(this).attr("data-column"),
 					post_data = {
 						action: "updateItem",
@@ -252,37 +338,47 @@ $.datetimepicker.setLocale('cs');
 						column: column
 					},
 					self = this,
-					saveValue = function() {
-						post_data.val = $("#" + input_id).val();
+					saveValue = function(e) {
+						e.stopPropagation();
+						var $input = $("#" + input_id);
+
+						post_data.val = $input.val();
 						Zkusebna._request("admin.php", post_data, function(res) {
 							if (res.result == "failure") {
 								$node.find("input").addClass(Zkusebna._classes.error + " " + Zkusebna._classes.inputHighlight);
 
 								setTimeout(function(){
-									$("#" + input_id).removeClass(Zkusebna._classes.inputHighlight);
+									$input.removeClass(Zkusebna._classes.inputHighlight);
 								}, 1000);
 							}
 							else {
 								self.isActive = false;
-								$node.html(post_data.val).removeClass(Zkusebna._classes.active);
+								$editableForm.fadeOut(function(){
+									$node.removeClass(Zkusebna._classes.active).html(post_data.val);
+									self.inputDefault = post_data.val;
+								});
 							}
 						});
 					};
+				this.inputDefault = this.inputDefault || $(this).text();
+				var $editableForm = $("<span class='editable-wrapper'><input type='text' value='" + this.inputDefault + "' id='" + input_id + "' style='width: " + (input_width) + "px;'><span class='icon-checkmark save'></span><span class='icon-close close'></span></span>");
 
-				if (this.isActive) {
-					$(this).addClass(Zkusebna._classes.active);
-					$(this).html("<input type='text' value='" + node_val + "' id='" + input_id + "' style='width: " + (node_width + 20) + "px;'><span class='icon-checkmark save'></span><span class='icon-close close'></span>");
-				}
+				$(this).addClass(Zkusebna._classes.active);
+				$(this).html('').append($editableForm.fadeIn());
 
-				$(this).find(".close").on("click", function(){
+				$(this).find(".close").on("click", function(e){
+					e.stopPropagation();
 					self.isActive = false;
-					$node.removeClass(Zkusebna._classes.active).html(node_val);
+					$editableForm.fadeOut(function(){
+						$node.removeClass(Zkusebna._classes.active).html(self.inputDefault);
+					});
 				});
 				$(this).find(".save").on("click", saveValue);
-				$("#" + input_id).select().focus().on('blur', saveValue);
+				$("#" + input_id).select().focus();
 			});
 
-			this.$wrappers.admin.on("click", ".deletable", function() {
+			this.$wrappers.admin.on("click", ".deletable", function(e) {
+				e.stopImmediatePropagation();
 				var $node = $(this),
 					table = $(this).attr("data-table"),
 					item_id = $(this).attr("data-id"),
@@ -471,8 +567,7 @@ $.datetimepicker.setLocale('cs');
 				phone: $('#phone'),
 				email: $('#email'),
 				purpose: $("#purpose"),
-				repeat_from: $('#repeat_from')//,
-				//repeat_to: $('#repeat_to')
+				repeat_from: $('#repeat_from')
 			};
 			this.reservableItems = {};
 			this.reservedItems = [];
@@ -482,6 +577,7 @@ $.datetimepicker.setLocale('cs');
 			this._datetimePickers();
 			this._purposeSelect();
 			this._renderItems();
+			this._selectAll();
 
 			this.$wrappers.reservedItemsWrapper.mCustomScrollbar({
 				scrollInertia: 80
@@ -510,6 +606,11 @@ $.datetimepicker.setLocale('cs');
 		},
 		_purposeSelect: function() {
 			this.$formInputs.purpose.on('change', this._renderItems.bind(this));
+		},
+		_selectAll: function() {
+			this.$wrappers.items.on('click','.select-all', function() {
+				$(this).parents("li:first").find('.reservable').trigger('click');
+			});
 		},
 		reserve: function(item_id, $item) {
 
@@ -713,7 +814,7 @@ $.datetimepicker.setLocale('cs');
 					minDate: new Date(),
 					startDate: new Date(),
 					roundTime: 'ceil',
-					onChangeDateTime: function(dp, $input) {
+					onClose: function(dp, $input) {
 						var date1 = $input.val(),
 							date2 = $($input.attr('data-connected-to')).val();
 

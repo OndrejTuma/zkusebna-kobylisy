@@ -6482,6 +6482,9 @@ a.button--white:hover {
   height: 27px;
   margin-top: -5px; }
 
+#admin .select-all {
+  display: none; }
+
 #admin .show-archived .archive {
   display: none; }
 
@@ -6512,6 +6515,51 @@ a.button--white:hover {
 #repeated-reservations li i.approve {
   display: none; }
 
+#add-item {
+  background: #fff;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  display: none;
+  padding: 2em;
+  position: absolute;
+  text-align: center;
+  width: 300px; }
+  #add-item.progress progress {
+    opacity: 1; }
+  #add-item .close {
+    position: absolute;
+    top: 10px;
+    left: auto;
+    bottom: auto;
+    right: 10px;
+    -webkit-transition: color 0.3s;
+    -moz-transition: color 0.3s;
+    -ms-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    transition: color 0.3s;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.5);
+    cursor: pointer; }
+    #add-item .close:hover {
+      color: #000; }
+  #add-item input,
+  #add-item progress {
+    display: block;
+    margin: 1em auto;
+    width: 100%; }
+  #add-item h3 {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    bottom: auto;
+    right: auto; }
+  #add-item progress {
+    -webkit-transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s;
+    -ms-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    transition: opacity 0.5s;
+    opacity: 0; }
+
 #items li ul {
   display: block; }
 
@@ -6526,6 +6574,10 @@ a.button--white:hover {
 #reserve #purpose,
 #reserve #repeat {
   padding-left: 45px; }
+
+#reserve .add-new-item,
+#reserve .deletable {
+  display: none; }
 
 #reserve fieldset.date input {
   font-size: 20px; }
@@ -6872,6 +6924,12 @@ ul.item-list {
       display: inline-block;
       margin: 0 0 0 10px;
       vertical-align: top; }
+  ul.item-list .select-all {
+    color: #fff;
+    font-weight: 400;
+    font-size: 13px;
+    padding: 0 10px;
+    text-transform: lowercase; }
   ul.item-list .subcategories {
     margin: 2em 0 2em 2em; }
     ul.item-list .subcategories .expandable:before {
@@ -6901,6 +6959,23 @@ ul.item-list {
     right: auto;
     content: "";
     border-left: 1px dashed #808080; }
+  ul.item-list i {
+    -webkit-transition: color 0.3s;
+    -moz-transition: color 0.3s;
+    -ms-transition: color 0.3s;
+    -o-transition: color 0.3s;
+    transition: color 0.3s;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 18px;
+    margin-left: 5px; }
+    ul.item-list i.add-new-item {
+      font-size: 12px;
+      vertical-align: top; }
+      ul.item-list i.add-new-item:hover {
+        color: #67a712; }
+    ul.item-list i.deletable:hover {
+      color: #cc2229; }
   ul.item-list li {
     position: relative; }
     ul.item-list li.zkusebna strong.expandable {
@@ -7065,7 +7140,7 @@ noscript {
   cursor: pointer; }
   .reservation-list i:hover {
     color: #67a712; }
-  .reservation-list i.delete:hover, .reservation-list i.delete-item:hover {
+  .reservation-list i.delete:hover, .reservation-list i.deletable:hover, .reservation-list i.delete-item:hover {
     color: #cc2229; }
   .reservation-list i.loading {
     opacity: .5; }

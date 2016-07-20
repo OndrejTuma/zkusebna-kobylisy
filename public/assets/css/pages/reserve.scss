@@ -18,6 +18,11 @@
 		padding-left: 45px;
 	}
 
+	.add-new-item,
+	.deletable {
+		display: none;
+	}
+
 	fieldset.date {
 
 		input {

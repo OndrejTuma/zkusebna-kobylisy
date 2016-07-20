@@ -1,6 +1,6 @@
 input[type=checkbox] {
 
-	$dot-size: 12px;
+	$dot-size: 16px;
 
 	position: absolute;
 	visibility: hidden;
@@ -8,24 +8,26 @@ input[type=checkbox] {
 	& + label {
 
 		cursor: pointer;
-		font-size: 10px;
-		padding-left: 15px;
+		padding-left: 20px;
 		position: relative;
 
 		&:after,
 		&:before {
-			@include absolute-middle($dot-size);
 			@include square($dot-size);
 			left: 0;
+			position: absolute;
+			top: 1px;
 		}
 
 		&:after {
 			@include font-icon(cross);
+			@include transform(scale(0));
+			@include transition();
 			color: $base-color;
 			font-size: $font-size-tiny;
-			line-height: 12px;
+			line-height: $dot-size;
+			opacity: 0;
 			text-align: center;
-			visibility: hidden;
 		}
 		&:before {
 			background-color: $mercury;
@@ -37,7 +39,8 @@ input[type=checkbox] {
 	&:checked + label {
 
 		&:after {
-			visibility: visible;
+			@include transform(scale(1));
+			opacity: 1;
 		}
 
 	}

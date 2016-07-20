@@ -17,11 +17,11 @@ class Admin extends Zkusebna {
 		return $admin[0]["email"];
 	}
 
-	public function addItem($name, $image, $price, $category, $parent_id) {
+	public function addItem($name, $image, $price, $reservable, $category, $parent_id) {
 		$query = "SELECT name FROM {$this->table_names["items"]} WHERE parent_id = '{$parent_id}' AND name = '{$name}'";
 		$rows = $this->sql->num_rows($query);
 		if (!$rows && !empty($name) && !empty($category) && $price >= 0) {
-			$query = "INSERT INTO {$this->table_names["items"]} (name,image,price,category,parent_id) VALUES ('{$name}','{$image}','{$price}','{$category}','{$parent_id}')";
+			$query = "INSERT INTO {$this->table_names["items"]} (name,image,price,reservable,category,parent_id) VALUES ('{$name}','{$image}','{$price}','{$reservable}','{$category}','{$parent_id}')";
 			return $this->sql->query($query);
 		}
 		return false;

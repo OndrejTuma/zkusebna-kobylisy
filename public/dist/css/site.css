@@ -6230,28 +6230,51 @@ input[type=checkbox] {
   visibility: hidden; }
   input[type=checkbox] + label {
     cursor: pointer;
-    font-size: 10px;
-    padding-left: 15px;
+    padding-left: 20px;
     position: relative; }
     input[type=checkbox] + label:after, input[type=checkbox] + label:before {
+      height: 16px;
+      width: 16px;
+      left: 0;
       position: absolute;
-      top: 50%;
-      margin-top: -6px;
-      height: 12px;
-      width: 12px;
-      left: 0; }
+      top: 1px; }
     input[type=checkbox] + label:after {
+      -webkit-transform: scale(0);
+      -moz-transform: scale(0);
+      -ms-transform: scale(0);
+      -o-transform: scale(0);
+      transform: scale(0);
+      -webkit-transform-origin: 50% 50%;
+      -moz-transform-origin: 50% 50%;
+      -ms-transform-origin: 50% 50%;
+      -o-transform-origin: 50% 50%;
+      transform-origin: 50% 50%;
+      -webkit-transition: all 0.3s;
+      -moz-transition: all 0.3s;
+      -ms-transition: all 0.3s;
+      -o-transition: all 0.3s;
+      transition: all 0.3s;
       color: #404040;
       font-size: 7px;
-      line-height: 12px;
-      text-align: center;
-      visibility: hidden; }
+      line-height: 16px;
+      opacity: 0;
+      text-align: center; }
     input[type=checkbox] + label:before {
       background-color: #e4e4e4;
       border-radius: 50%;
       content: ""; }
   input[type=checkbox]:checked + label:after {
-    visibility: visible; }
+    -webkit-transform: scale(1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+    -webkit-transform-origin: 50% 50%;
+    -moz-transform-origin: 50% 50%;
+    -ms-transform-origin: 50% 50%;
+    -o-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+    opacity: 1; }
   input[type=checkbox].delete:checked + label {
     color: #cc2229; }
     input[type=checkbox].delete:checked + label:after {

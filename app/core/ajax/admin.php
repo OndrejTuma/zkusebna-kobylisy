@@ -17,12 +17,13 @@ switch ($action) {
 	case "addItem":
 		$name = isset($_POST["name"]) ? $_POST["name"] : "";
 		$price = isset($_POST["price"]) ? $_POST["price"] : "";
+		$reservable = isset($_POST["reservable"]) ? 1 : 0;
 		$category = isset($_POST["category"]) ? $_POST["category"] : "";
 		$image = isset($_FILES["image"]) ? $_FILES["image"] : "";
 		$parent_id = isset($_POST["parent_id"]) ? $_POST["parent_id"] : "";
 
 		if (empty($image["name"])) {
-			$output["result"] = $admin->addItem($name, "", $price, $category, $parent_id);
+			$output["result"] = $admin->addItem($name, "", $price, $reservable, $category, $parent_id);
 			if (!$output["result"]) {
 				$output["errorMessage"] = "Nepodařilo se přidat položku do databáze";
 			}
@@ -64,7 +65,7 @@ switch ($action) {
 // if everything is ok, try to upload file
 			} else {
 				if (move_uploaded_file($image["tmp_name"], $target_file)) {
-					$output["result"] = $admin->addItem($name, $image["name"], $price, $category, $parent_id);
+					$output["result"] = $admin->addItem($name, $image["name"], $price, $reservable, $category, $parent_id);
 					if (!$output["result"]) {
 						$output["errorMessage"] = "Nepodařilo se přidat položku do databáze";
 					}

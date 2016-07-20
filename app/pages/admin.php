@@ -50,6 +50,10 @@
 			<input type="text" name="name" placeholder="Název"/>
 			<input type="text" name="price" placeholder="Cena"/>
 			<input type="file" name="image" placeholder="Obrázek"/>
+			<div class="input">
+				<input id="item-reservable" type="checkbox" name="reservable" checked="checked"/>
+				<label for="item-reservable">Rezervovatelná <small>(nerezervovatelná položka bude braná jako podkategorie)</small></label>
+			</div>
 			<progress></progress>
 			<button type="submit">Uložit</button>
 			<span class="close icon-close"></span>

@@ -101,6 +101,7 @@ class Items extends Zkusebna
 				$this->categories[$item["category"]][$item["id"]] = $item;
 			}
 		}
+//		var_dump($this->categories);
 
 		$output .= "<ul class='item-list " . ($this->preview ? "preview" : "") . "'>";
 		foreach ($this->categories as $name => $category) {

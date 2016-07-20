@@ -6949,10 +6949,13 @@ ul.item-list {
       vertical-align: top; }
   ul.item-list .select-all {
     color: #fff;
+    display: none;
     font-weight: 400;
     font-size: 13px;
     padding: 0 10px;
     text-transform: lowercase; }
+    .admin-logged ul.item-list .select-all {
+      display: inline-block; }
   ul.item-list .subcategories {
     margin: 2em 0 2em 2em; }
     ul.item-list .subcategories .expandable:before {

@@ -4,6 +4,7 @@ session_start();
 include_once("app/core/inc/bootstrap.php");
 
 $sql = new mysql();
+$auth = new AuthAdmin();
 
 ?>
 <!DOCTYPE html>
@@ -14,7 +15,7 @@ $sql = new mysql();
 	<title>Zkušebna Kobylisy</title>
 	<link rel="stylesheet" href="<?= ZKUSEBNA_CSS_URL; ?>site.css?21022015"/>
 </head>
-<body>
+<body<?= $auth->is_logged() ? ' class="admin-logged"' : '' ?>>
 <noscript>
 	<p>Bez javascriptu se na této stránce nepohnete</p>
 </noscript>

@@ -101,10 +101,15 @@ ul.item-list {
 	}
 	.select-all {
 		color: $white;
+		display: none;
 		font-weight: 400;
 		font-size: $font-size;
 		padding: 0 10px;
 		text-transform: lowercase;
+
+		.admin-logged & {
+			display: inline-block;
+		}
 	}
 	.subcategories {
 		margin: $margin--big 0 $margin--big $margin--big;

@@ -1,9 +1,23 @@
+body,
+html {
+	height: 100%;
+}
+
 body {
-	background-color: $bg-color;
+	@include background("bg.png", 0 0 / auto 100% no-repeat $bg-color fixed);
 	font-family: $font-family, Arial, sans-serif;
 	color: $base-color;
 	font-size: $font-size;
 	margin: 0;
+	padding: 1px;
+
+	&:before {
+		@include absolute(0, 0, 0, 0);
+		background-color: rgba($white, .9);
+		content: '';
+		position: fixed;
+		z-index: -1;
+	}
 }
 
 * {

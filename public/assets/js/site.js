@@ -406,6 +406,55 @@ $.datetimepicker.setLocale('cs');
 					});
 				}
 			});
+
+			this.$wrappers.admin.on("click", ".toggleable", function(e) {
+				e.stopImmediatePropagation();
+				var $node = $(this),
+					table = $(this).attr("data-table"),
+					item_id = $(this).attr("data-id"),
+					column = $(this).attr("data-column"),
+					post_data = {
+						action: "toggleIt",
+						table: table,
+						itemId: item_id,
+						column: column
+					};
+
+				Zkusebna._request("admin.php", post_data, function(data) {
+					if (data.result == "failure") {
+						alert(data.message);
+					}
+					else {
+						var toggle0Class = $node.attr('data-toggle-0-class'),
+							toggle1Class = $node.attr('data-toggle-1-class'),
+							toggle0message = $node.attr('data-toggle-0-message'),
+							toggle1message = $node.attr('data-toggle-1-message');
+
+						if (data.toggleResult) {
+							if (toggle0Class) {
+								$node.removeClass(toggle0Class);
+							}
+							if (toggle1Class) {
+								$node.addClass(toggle1Class);
+							}
+							if (toggle1message) {
+								$node.qtip('option', 'content.text', toggle1message);
+							}
+						}
+						else {
+							if (toggle1Class) {
+								$node.removeClass(toggle1Class);
+							}
+							if (toggle0Class) {
+								$node.addClass(toggle0Class);
+							}
+							if (toggle0message) {
+								$node.qtip('option', 'content.text', toggle0message);
+							}
+						}
+					}
+				});
+			});
 		},
 		_reservationsHandler: function() {
 			this.$wrappers.admin.on("click", ".expandable", function() {
@@ -421,9 +470,18 @@ $.datetimepicker.setLocale('cs');
 				self.$wrappers.editPurpose.html(data.purpose);
 				self._repaintDashboard(data);
 
-				self.$wrappers.admin.find(".icon-mobile, .icon-mail").on('click', function() {
-					Zkusebna._copyToClipboard($(this).attr('data-message'));
+				var clipboard = new Clipboard('.icon-mobile, .icon-mail');
+				clipboard.on('success', function(e) {
+					var $node = $(e.trigger);
+					$node.qtip('option', 'content.text', 'Zkopírováno!');
+					setTimeout(function(){
+						$node.qtip('option', 'content.text', $node.attr('data-message'));
+					}, 2000);
+					//e.clearSelection();
 				});
+				//self.$wrappers.admin.find(".icon-mobile, .icon-mail").on('click', function() {
+				//	Zkusebna._copyToClipboard($(this).attr('data-message'));
+				//});
 
 			});
 
@@ -474,7 +532,8 @@ $.datetimepicker.setLocale('cs');
 											id: item['reservationID'],
 											start: item['start'],
 											end: item['end'],
-											title: item['name'],
+											title: item['reservation_name'] || item['name'],
+											reservedBy: item['name'],
 											categories: {},
 											items: []
 										};
@@ -502,7 +561,7 @@ $.datetimepicker.setLocale('cs');
 						if (event.title) {
 							var message;
 							message = event.image ? '<img src="' + event.image + '" class="eventImage"/>' : '';
-							message += 'Rezervoval/a: <strong>' + event.title + '</strong><br>';
+							message += 'Rezervoval/a: <strong>' + event.reservedBy + '</strong><br>';
 							message += 'Rezervace: <strong>' + event.start.format('D.M. HH:mm') + '</strong> - <strong>' + event.end.format('D.M. HH:mm') + '</strong>';
 							message += '<h2>Rezervované položky:</h2>';
 							message += '<ul>';
@@ -561,6 +620,7 @@ $.datetimepicker.setLocale('cs');
 			};
 			this.$form = $('#form__reserve');
 			this.$formInputs = {
+				reservation_name: $('#reservation_name'),
 				date_from: $('#date_from'),
 				date_to: $('#date_to'),
 				name: $('#name'),
@@ -622,6 +682,20 @@ $.datetimepicker.setLocale('cs');
 			}
 
 		},
+		checkRepeatedReservations: function($input,$date_from,$date_to) {
+			var item_ids = [];
+			$('#reserved-items li').each(function(){
+				item_ids.push(parseInt($(this).attr('data-id')));
+			});
+			Zkusebna._request("check-repeated-reservations.php", this.$form.serialize() + "&item_ids="+item_ids.join(','),function(data) {
+
+					console.log(data);
+
+				},
+				null,
+				this.$wrappers.items
+			);
+		},
 		updateReservationDate: function($input) {
 			//checks for collisions within reserved items
 			var self = this;
@@ -660,7 +734,7 @@ $.datetimepicker.setLocale('cs');
 						});
 					}
 
-					self._renderItems();
+					//self._renderItems();
 
 				},
 				null,
@@ -815,21 +889,28 @@ $.datetimepicker.setLocale('cs');
 					startDate: new Date(),
 					roundTime: 'ceil',
 					onClose: function(dp, $input) {
-						var date1 = $input.val(),
-							date2 = $($input.attr('data-connected-to')).val();
 
-						if (!date1 || !date2) {
-							return;
-						}
-						if (!self._validateDates($input)) {
-							$input.focus();
-							return;
+						if ($input.attr('data-role') == "render") {
+							var date1 = $input.val(),
+								date2 = $($input.attr('data-connected-to')).val();
+
+							if (!date1 || !date2) {
+								return;
+							}
+							if (!self._validateDates($input)) {
+								$input.focus();
+								return;
+							}
+
+							if (self.reservedItems.length) {
+								self.updateReservationDate($input);
+							}
+							self._renderItems();
 						}
 
-						if (self.reservedItems.length) {
-							self.updateReservationDate($input);
-						}
-						self._renderItems();
+						//if ($input.attr('data-role') == "check") {
+						//	self.checkRepeatedReservations($input, $('#date_from'), $('#date_to'));
+						//}
 					}
 				};
 			$(".datetimepicker:not([data-type])").datetimepicker(pickerOptions);
@@ -866,6 +947,7 @@ $.datetimepicker.setLocale('cs');
 		_validateForm: function() {
 
 			var isValid = {
+					reservation_name: /^.{2,}$/g.test(this.$formInputs.reservation_name.val()),
 					name: /^.{2,}$/g.test(this.$formInputs.name.val()),
 					phone: /^(\+420 *)?([0-9]{3} *){3}$/g.test(this.$formInputs.phone.val()),
 					email: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(this.$formInputs.email.val()),

@@ -18,31 +18,35 @@ $admin = new AuthAdmin();
 			<legend>Zvolte termín vypůjčení</legend>
 			<ul class="table cols-2 pt mbn">
 				<li class="tar pr">
-					<input type="text" name="date_from" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="30.07.2016 08:00"/>
-<!--					<input class="datetimepicker" type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" placeholder="Datum a čas výpůjčky"/>-->
+<!--					<input type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="30.08.2016 08:00"/>-->
+					<input class="datetimepicker" data-role="render" type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" placeholder="Datum a čas výpůjčky"/>
 				</li>
 				<li class="tal pl">
-					<input type="text" name="date_to" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="30.07.2016 12:00"/>
-<!--					<input class="datetimepicker" type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" placeholder="Datum a čas navrácení"/>-->
+<!--					<input type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="30.08.2016 12:00"/>-->
+					<input class="datetimepicker" data-role="render" type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" placeholder="Datum a čas navrácení"/>
 				</li>
 			</ul>
 		</fieldset>
 		<fieldset class="contact">
 			<legend>Vyplňte kontaktní údaje</legend>
-			<ul class="table cols-4 pt">
-				<li class="tar prb">
-					<input type="text" name="name" id="name" placeholder="Celé jméno" value="Jafa Kree"/>
-<!--					<input type="text" name="name" id="name" placeholder="Celé jméno"/>-->
+			<ul class="inline-blocks tac pt">
+				<li>
+<!--					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název rezervace" value="Mejdan!"/>-->
+					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název rezervace" />
 				</li>
-				<li class="tac">
-					<input type="text" name="phone" id="phone" placeholder="Telefon" value="123123123"/>
-<!--					<input type="text" name="phone" id="phone" placeholder="Telefon"/>-->
+				<li>
+<!--					<input type="text" name="name" id="name" placeholder="Celé jméno" value="Jafa Kree"/>-->
+					<input type="text" name="name" id="name" placeholder="Celé jméno"/>
 				</li>
-				<li class="tac">
-					<input type="email" name="email" id="email" placeholder="Email" value="ondr@centrum.cz"/>
-<!--					<input type="email" name="email" id="email" placeholder="Email"/>-->
+				<li>
+<!--					<input type="text" name="phone" id="phone" placeholder="Telefon" value="123123123"/>-->
+					<input type="text" name="phone" id="phone" placeholder="Telefon"/>
 				</li>
-				<li class="tal plb">
+				<li>
+<!--					<input type="email" name="email" id="email" placeholder="Email" value="ondr@centrum.cz"/>-->
+					<input type="email" name="email" id="email" placeholder="Email"/>
+				</li>
+				<li>
 					<?php
 						$items = new Items();
 						print $items->getSelectPurpose();
@@ -63,8 +67,8 @@ $admin = new AuthAdmin();
 						</select>
 					</li>
 					<li class="tal plb">
-<!--						<input class="datetimepicker" type="text" name="repeat_to" id="repeat_to" data-type="date" placeholder="Opakovat do" value="29.04.2016"/>-->
-						<input class="datetimepicker" type="text" name="repeat_to" id="repeat_to" data-type="date" data-date-type="to" data-connected-to="#repeat_from" placeholder="Opakovat do"/>
+<!--						<input class="datetimepicker" data-role="check" type="text" name="repeat_to" id="repeat_to" data-type="date" placeholder="Opakovat do" value="29.04.2016"/>-->
+						<input class="datetimepicker" data-role="check" type="text" name="repeat_to" id="repeat_to" data-type="date" data-date-type="to" data-connected-to="#repeat_from" placeholder="Opakovat do"/>
 					</li>
 				</ul>
 			</fieldset>

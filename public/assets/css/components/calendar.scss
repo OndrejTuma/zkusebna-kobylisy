@@ -19,6 +19,7 @@
 
 	.fc-content {
 		line-height: $event-height;
+		min-height: 1em;
 	}
 
 	em {
@@ -69,6 +70,14 @@
 	span {
 		position: relative;
 		padding-left: 5px;
+	}
+
+
+	@media #{$mobile} {
+		.fc-time,
+		.fc-title {
+			display: none;
+		}
 	}
 
 }

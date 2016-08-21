@@ -32,6 +32,7 @@ class Reservation extends Zkusebna {
 	}
 
 	public function createReservation($params) {
+		$this->reservation_name = $params["reservation_name"];
 		$this->date_from = $params["date_from"];
 		$this->date_to = $params["date_to"];
 		$this->who = $params["who"];
@@ -52,11 +53,11 @@ class Reservation extends Zkusebna {
 			if (isset($params["repeat_type"])) {
 				$query = "INSERT INTO {$this->table_names["r-r"]} (type, repeat_from, repeat_to) VALUES ('{$params["repeat_type"]}', '{$params["repeat_from"]}', '{$params["repeat_to"]}')";
 				$this->sql->query($query);
-				$query = "INSERT INTO {$this->table_names["reservations"]} (date_from, date_to, who, purpose, repetition, approved) VALUES ('{$this->date_from}', '{$this->date_to}', '{$this->who}', {$this->purpose_id}, " . $this->sql->insert_id() . ", 1)";
+				$query = "INSERT INTO {$this->table_names["reservations"]} (name, date_from, date_to, who, purpose, repetition, approved) VALUES ('{$this->reservation_name}', '{$this->date_from}', '{$this->date_to}', '{$this->who}', {$this->purpose_id}, " . $this->sql->insert_id() . ", 1)";
 				$this->sql->query($query);
 			}
 			else {
-				$query = "INSERT INTO {$this->table_names["reservations"]} (date_from, date_to, who, purpose) VALUES ('{$this->date_from}', '{$this->date_to}', '{$this->who}', {$this->purpose_id})";
+				$query = "INSERT INTO {$this->table_names["reservations"]} (name, date_from, date_to, who, purpose) VALUES ('{$this->reservation_name}', '{$this->date_from}', '{$this->date_to}', '{$this->who}', {$this->purpose_id})";
 				$this->sql->query($query);
 			}
 			return $this->sql->insert_id();
@@ -101,6 +102,28 @@ class Reservation extends Zkusebna {
 		return $this->id;
 	}
 
+	public function getReservationById($id) {
+		$query = "
+SELECT r.name as reservation_name, c.name as name, email, phone, date_from, date_to, repetition FROM {$this->table_names["reservations"]} as r
+LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
+WHERE r.id = {$id}";
+		$reservation = $this->sql->field_assoc($query);
+		return isset($reservation[0]) ? $reservation[0] : false;
+	}
+
+	public function getReservationItems($reservation_id) {
+		$query = "
+SELECT item_id FROM {$this->table_names["reservations"]} as r
+LEFT JOIN {$this->table_names["r-i"]} AS ri ON ri.reservation_id = r.id
+WHERE r.id = {$reservation_id}";
+		$q = $this->sql->query($query);
+		$field = array();
+		while($res = $this->sql->fetch_assoc($q)){
+			$field[] = $res['item_id'];
+		}
+		return $field;
+	}
+
 	/**
 	 * Gets reserved items in specific date range
 	 * @param $date_from
@@ -113,7 +136,7 @@ class Reservation extends Zkusebna {
 		$date_to = parent::_parseDate($date_to);
 
 		$query = "
-SELECT i.id as id, i.name as itemName, c.name as name, image as img, price, category, parent_id, reservable, c.name AS reserved_by, email, date_from as start, date_to as end, r.id as reservationID FROM {$this->table_names["reservations"]} as r
+SELECT i.id as id, i.name as itemName, c.name as name, r.name as reservation_name, image as img, price, category, parent_id, reservable, c.name AS reserved_by, email, date_from as start, date_to as end, r.id as reservationID FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
@@ -128,7 +151,7 @@ WHERE repetition IS NULL AND (r.date_from > '{$date_from}' OR r.date_to > '{$dat
 	private function _getRepeatedReservedItems($date_from, $date_to) {
 		//gets all repeated reservations from current date range
 		$query = "
-SELECT i.id as id, i.name as itemName, c.name as name, image as img, price, category, parent_id, reservable, c.name AS reserved_by, email, date_from as start, date_to as end, repeat_from, repeat_to, rr.type as repeat_type, r.id as reservationID FROM {$this->table_names["reservations"]} as r
+SELECT i.id as id, i.name as itemName, c.name as name, r.name as reservation_name, image as img, price, category, parent_id, reservable, c.name AS reserved_by, email, date_from as start, date_to as end, repeat_from, repeat_to, rr.type as repeat_type, r.id as reservationID FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who

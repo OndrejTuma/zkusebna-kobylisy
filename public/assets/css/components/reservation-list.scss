@@ -1,5 +1,37 @@
 .reservation-list {
 
+	&.percentage {
+		em:after {
+			content: '%';
+		}
+	}
+
+	.payed {
+		cursor: pointer !important;
+
+		&.red {
+			color: $fire-engine-red;
+
+			&:hover {
+				color: $christi;
+			}
+		}
+		&.green {
+			color: $christi;
+
+			&:hover {
+				color: $fire-engine-red;
+			}
+		}
+	}
+	.tooltip {
+		cursor: help;
+
+		&:hover {
+			color: $cyan;
+		}
+	}
+
 	i,
 	small,
 	span,
@@ -84,11 +116,7 @@
 		margin: 0 5px;
 	}
 	span {
-		cursor: help;
 
-		&:hover {
-			color: $cyan;
-		}
 	}
 	strong {
 		color: $cyan;

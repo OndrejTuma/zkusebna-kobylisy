@@ -4,6 +4,7 @@ header('Content-Type: application/json');
 
 include_once("../inc/bootstrap.php");
 
+$reservation_name = isset($_POST["reservation_name"]) ? $_POST["reservation_name"] : "";
 $date_from = isset($_POST["date_from"]) ? Zkusebna::_parseDate($_POST["date_from"]) : "";
 $date_to = isset($_POST["date_to"]) ? Zkusebna::_parseDate($_POST["date_to"]) : "";
 $email = isset($_POST["email"]) ? $_POST["email"] : "";
@@ -34,6 +35,7 @@ else {
 	$person = new Person($email, $name, $phone);
 	$reservation = new Reservation();
 	$reservation_params = array(
+		"reservation_name" => $reservation_name,
 		"date_from" => $date_from,
 		"date_to" => $date_to,
 		"who" => $person->getID(),
@@ -63,7 +65,7 @@ else {
 			"result" => "collision",
 			"collisions" => array_map(function($item){ return $item['id']; }, $collisions),
 			"heading" => "Rezervaci se nepodařilo potvrdit",
-			"message" => "Vypadá to, že vás někdo předbehl u těchto položek: <ul>" . implode(", ", array_map(function($item){ return "<li class='{$item['category']}'>{$item['name']}</li>"; }, $collisions)) . "</ul>Tyto položky byly odstraněny z rezervace."
+			"message" => "Vypadá to, že vás někdo předbehl u těchto položek: <ul>" . implode(", ", array_map(function($item){ return "<li class='{$item['category']}'>{$item['itemName']}</li>"; }, $collisions)) . "</ul>Tyto položky byly odstraněny z rezervace."
 		);
 	}
 	elseif ($reservation->addItems($item_ids)) {
@@ -76,19 +78,50 @@ else {
 			);
 		}
 		else {
+			$items = new Items();
+			$items = $items->getItemsById($item_ids);
+			array_walk($items, function(&$item) { $item = $item["name"]; });
 			Zkusebna::sendMail($email, 'Rekapitulace rezervace', "
-<h3>Dobrý den</h3>
-<p>Vypadá to, že jste si v Kobyliské zkušebně rezervoval nějaké věci. Pojďme si to zrekapitulovat</p>
-<h4>Rezervoval/a:</h4>
-<dl>
-<dt>Jméno:</dt>
-<dd>{$name}</dd>
-<dt>Email:</dt>
-<dd>{$email}</dd>
-<dt>Telefon:</dt>
-<dd>{$phone}</dd>
-</dl>
-<p>Pokud nevíte, o čem je řeč, napište administrátorovi stránek</p>
+<table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
+	<tbody>
+	<tr>
+		<td>
+			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Dobrý den,</h2>
+			<p>toto je předběžná rekapitulace rezervace <strong>{$reservation_name}</strong> v Kobyliské zkušebně.</p>
+			<p style=\"text-align: center; margin: 50px auto;\"><strong style=\"color: #cc2229;\">Čeká na schválení!</strong></p>
+			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
+				<tbody>
+				<tr>
+					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Datum:</td>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".Zkusebna::parseSQLDate($date_from)." - ".Zkusebna::parseSQLDate(date_to)."</th>
+				</tr>
+				<tr>
+					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Jméno:</td>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$name}</th>
+				</tr>
+				<tr>
+					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Email:</td>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$email}</th>
+				</tr>
+				<tr>
+					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Telefon:</td>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$phone}</th>
+				</tr>
+				<tr>
+					<td style=\"text-align: right; vertical-align: top; border-bottom: 1px dashed #000; padding: 10px;\">Rezervované položky:</td>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">
+						<ul style=\"margin: 0; padding: 0 0 0 15px;\">
+							<li>".implode("</li><li>", $items)."</li>
+						</ul>
+					</th>
+				</tr>
+				</tbody>
+			</table>
+			<p>Pokud to není vaše rezervace, napište to koordinátorovi zkušebny.</p>
+		</td>
+	</tr>
+	</tbody>
+</table>
 ");
 			$output = array(
 				"result" => "success",

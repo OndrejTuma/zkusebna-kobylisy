@@ -7,3 +7,15 @@ ul {
 	}
 
 }
+
+ul {
+
+	&.inline-blocks {
+		& > li {
+			display: inline-block;
+			margin: 0 $margin--small $margin--default;
+			vertical-align: middle;
+		}
+	}
+
+}

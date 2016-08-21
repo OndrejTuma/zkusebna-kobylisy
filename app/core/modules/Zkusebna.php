@@ -154,6 +154,25 @@ class Zkusebna {
 
 	}
 
+	/**
+	 * toggle any column (0/1) from $this->table_names list of tables (pretty risky, i know, but saves time)
+	 * @param $table string - table alias
+	 * @param $item_id int - id of row to toggle
+	 * @return mixed result after toggle (0/1) or false
+	 */
+	public function toggleItem($table, $item_id, $column) {
+
+		if (!isset($this->table_names[$table])) return false;
+
+		$query = "SELECT {$column} FROM {$this->table_names[$table]} WHERE id = $item_id";
+		$res = $this->sql->field_assoc($query);
+		$toggleResult = (int)$res[0]["payed"] === 0 ? 1 : 0;
+
+		$query = "UPDATE {$this->table_names[$table]} SET {$column} = {$toggleResult} WHERE id = {$item_id}";
+
+		return $this->sql->query($query) ? $toggleResult : false;
+	}
+
 
 
 	protected function _isReserved($item_id, $date_from, $date_to) {

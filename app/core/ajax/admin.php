@@ -114,6 +114,19 @@ switch ($action) {
 			$output["message"] = "Chyba, položku se nepodařilo smazat.";
 		}
 		break;
+	case "toggleIt":
+		$table = isset($_POST["table"]) ? $_POST["table"] : "";
+		$itemId = isset($_POST["itemId"]) ? (int)$_POST["itemId"] : "";
+		$column = isset($_POST["column"]) ? $_POST["column"] : "";
+		$toggleResult = $admin->toggleItem($table, $itemId, $column);
+		if ($toggleResult === false) {
+			$output["result"] = "failure";
+			$output["message"] = "Chyba, položku se nepodařilo upravit.";
+		}
+		else {
+			$output["toggleResult"] = $toggleResult;
+		}
+		break;
 	default:
 }
 

@@ -44,12 +44,14 @@ PRIMARY KEY (id)
 
 CREATE TABLE zkusebna_reservations (
 id INT(6) AUTO_INCREMENT,
+name VARCHAR(40) NOT NULL,
 date_from DATETIME NOT NULL,
 date_to DATETIME NOT NULL,
 approved tinyint(1) DEFAULT 0,
 who INT(6) NOT NULL,
 purpose INT(6) NOT NULL DEFAULT 1,
 repetition INT(6),
+payed tinyint(1) DEFAULT 0,
 timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY (id),
 FOREIGN KEY (who) REFERENCES zkusebna_community(id),
@@ -60,6 +62,7 @@ FOREIGN KEY (repetition) REFERENCES zkusebna_reservation_repeat(id)
 CREATE TABLE zkusebna_reserved_items (
 item_id INT(6) NOT NULL,
 reservation_id INT(6) NOT NULL,
+active INT(1) DEFAULT 1,
 PRIMARY KEY (item_id, reservation_id),
 FOREIGN KEY (item_id) REFERENCES zkusebna_items(id),
 FOREIGN KEY (reservation_id) REFERENCES zkusebna_reservations(id)

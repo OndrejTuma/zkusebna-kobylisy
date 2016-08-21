@@ -37,6 +37,15 @@ class Items extends Zkusebna
 
 	}
 
+	/**
+	 * @param $item_ids array of item ids
+	 * @return array item names
+	 */
+	public function getItemsById($item_ids) {
+		$query = "SELECT * FROM {$this->table_names["items"]} WHERE id IN (" . implode(",", $item_ids) . ")";
+		return $this->sql->field_assoc($query);
+	}
+
 	public function getSelectPurpose()
 	{
 

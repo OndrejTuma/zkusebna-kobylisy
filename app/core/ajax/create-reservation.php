@@ -65,7 +65,7 @@ else {
 			"result" => "collision",
 			"collisions" => array_map(function($item){ return $item['id']; }, $collisions),
 			"heading" => "Rezervaci se nepodařilo potvrdit",
-			"message" => "Vypadá to, že vás někdo předbehl u těchto položek: <ul>" . implode(", ", array_map(function($item){ return "<li class='{$item['category']}'>{$item['itemName']}</li>"; }, $collisions)) . "</ul>Tyto položky byly odstraněny z rezervace."
+			"message" => "Vypadá to, že vás někdo předbehl u těchto položek: <ul>" . implode("", array_map(function($item){ return "<li class='{$item['category']}'>{$item['itemName']}</li>"; }, $collisions)) . "</ul>Tyto položky byly odstraněny z rezervace."
 		);
 	}
 	elseif ($reservation->addItems($item_ids)) {
@@ -93,7 +93,7 @@ else {
 				<tbody>
 				<tr>
 					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Datum:</td>
-					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".Zkusebna::parseSQLDate($date_from)." - ".Zkusebna::parseSQLDate(date_to)."</th>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".Zkusebna::parseSQLDate($date_from)." - ".Zkusebna::parseSQLDate($date_to)."</th>
 				</tr>
 				<tr>
 					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Jméno:</td>

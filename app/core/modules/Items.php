@@ -52,7 +52,7 @@ class Items extends Zkusebna
 		$output = "<select name=\"purpose\" id=\"purpose\">";
 		$output .= "<option value=\"\" disabled selected>Účel rezervace</option>";
 
-		$query = "SELECT * FROM {$this->table_names["purpose"]}";
+		$query = "SELECT * FROM {$this->table_names["purpose"]} ORDER BY title ASC";
 		$purposes = $this->sql->field_assoc($query);
 		foreach ($purposes as $purpose) {
 			$output .= "<option value=\"{$purpose["id"]}\">{$purpose["title"]}</option>";
@@ -72,28 +72,18 @@ class Items extends Zkusebna
 		$this->email = $email;
 		$this->is_admin = $is_admin;
 
-		if ($purpose_id > 0) {
+		if ($is_admin) {
+			$this->discount = 0;
+		}
+		elseif ($purpose_id > 0) {
 			$discount_row = $this->sql->field_assoc("SELECT discount FROM {$this->table_names["purpose"]} WHERE id = {$purpose_id}");
 			$this->discount = $discount_row ? $discount_row[0]["discount"] : null;
 		}
 
-		if ($this->preview) {
-			$query = "SELECT id, name as itemName, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} ORDER BY category, parent_id, name";
-			$this->items = $this->sql->field_assoc($query);
-		} else {
-//			$query = "
-//SELECT i.id AS id, i.name AS name, image, price, category, parent_id, reservable, reservation.name AS reserved_by, email, date_from, date_to
-//FROM {$this->table_names["items"]} AS i
-//LEFT JOIN
-//(
-//SELECT c.name, c.email, ri.item_id, date_from, date_to FROM {$this->table_names["reservations"]} AS r
-//LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
-//LEFT JOIN  {$this->table_names["r-i"]} AS ri ON ri.reservation_id = r.id
-//WHERE (date_from > '{$this->date_from}' OR date_to > '{$this->date_from}') AND (date_from < '{$this->date_to}' OR date_to < '{$this->date_to}')
-//) AS reservation ON reservation.item_id = i.id
-//ORDER BY category, parent_id, i.name";
-			$query = "SELECT id, name as itemName, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} ORDER BY category, parent_id, name";
-			$this->items = $this->sql->field_assoc($query);
+		$query = "SELECT id, name as itemName, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} ORDER BY parent_id, itemName";
+		$this->items = $this->sql->field_assoc($query);
+
+		if (!$this->preview) {
 			$reservation = new Reservation();
 			$reservedItems = $reservation->getReservedItems($date_from, $date_to);
 			$this->items = array_merge($this->items, $reservedItems);

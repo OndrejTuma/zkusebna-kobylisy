@@ -1,6 +1,6 @@
 CREATE TABLE zkusebna_items (
 id INT(6) AUTO_INCREMENT,
-name VARCHAR(30) NOT NULL,
+name VARCHAR(100) NOT NULL,
 image VARCHAR(60) NOT NULL,
 price INT(4) DEFAULT 0,
 reservable tinyint(1) DEFAULT 1,
@@ -19,7 +19,7 @@ PRIMARY KEY (id)
 
 CREATE TABLE zkusebna_reservation_purpose (
 id INT(6) AUTO_INCREMENT,
-title VARCHAR(20) NOT NULL,
+title VARCHAR(40) NOT NULL,
 discount INT(3) NOT NULL,
 PRIMARY KEY (id)
 )engine=InnoDB;

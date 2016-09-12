@@ -56,6 +56,7 @@ class Admin extends Zkusebna {
 		<td>
 			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Dobrý den,</h2>
 			<p>Vaše rezervace <strong style=\"color: #67a712;\">{$reservation["reservation_name"]}</strong> byla právě schválena.</p>
+			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>
 				<tr>
@@ -84,7 +85,6 @@ class Admin extends Zkusebna {
 				</tr>
 				</tbody>
 			</table>
-			<p>Pokud to není vaše rezervace, napište to koordinátorovi zkušebny.</p>
 		</td>
 	</tr>
 	</tbody>
@@ -97,7 +97,7 @@ class Admin extends Zkusebna {
 	 * rejects reservation
 	 * @param $reservationId
 	 */
-	public function deleteReservation($reservationId) {
+	public function deleteReservation($reservationId, $reason = "") {
 		$reservationId = (int)$reservationId;
 		$Reservation = new Reservation();
 		$reservation = $Reservation->getReservationById($reservationId);
@@ -125,7 +125,9 @@ class Admin extends Zkusebna {
 	<tr>
 		<td>
 			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Dobrý den,</h2>
-			<p>Vaše rezervace <strong style=\"color: #cc2229;\">{$reservation["reservation_name"]}</strong> byla právě zcela nebo částečně zamítnuta.</p>
+			<p>Vaše rezervace <strong style=\"color: #cc2229;\">{$reservation["reservation_name"]}</strong> byla právě zamítnuta.</p>
+			".($reason ? "<h4 style='margin: 30px 0; text-align: center;'>$reason</h4>" : "")."
+			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>
 				<tr>
@@ -154,8 +156,6 @@ class Admin extends Zkusebna {
 				</tr>
 				</tbody>
 			</table>
-			<p>Důvody zamítnutí vám napíše koordinátor zkušebny v samostatném emailu.</p>
-			<p>Pokud to není vaše rezervace, napište to koordinátorovi zkušebny.</p>
 		</td>
 	</tr>
 	</tbody>
@@ -182,7 +182,7 @@ class Admin extends Zkusebna {
 
 	private function _getReservarvations($where, $limit = 500) {
 		$query = "
-SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, r.name as reservation_name, email, phone, image, payed, date_from, date_to, (date_to < NOW()) as archived, price, discount, title as purpose, repeat_to FROM {$this->table_names["reservations"]} as r
+SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, r.name as reservation_name, purpose as purpose_id, email, phone, image, payed, date_from, date_to, (date_to < NOW()) as archived, price, discount, title as purpose, repeat_to FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
 LEFT JOIN {$this->table_names["items"]} as i ON i.id = ri.item_id
 LEFT JOIN {$this->table_names["community"]} as c ON c.id = r.who
@@ -204,6 +204,7 @@ LIMIT {$limit}
 			$reservations[$reservation['id']]["archived"] = $reservation['archived'];
 			$reservations[$reservation['id']]["repeat_to"] = $reservation['repeat_to'];
 			$reservations[$reservation['id']]["purpose"] = array(
+				"id" => $reservation['purpose_id'],
 				"title" => $reservation['purpose'],
 				"discount" => $reservation['discount']
 			);
@@ -242,13 +243,14 @@ LIMIT {$limit}
 				$output .= "<span class='tooltip icon-mobile' data-message='{$reservation["phone"]}' data-clipboard-text='{$reservation["phone"]}'></span>";
 				$output .="<span class='icon-mail tooltip' data-message='{$reservation["email"]}' data-clipboard-text='{$reservation["email"]}'></span> ";
 				$output .="<i class='approve icon-checkmark'></i>";
+				$output .="<i class='edited tooltip icon-edit' data-item='{$id}' data-message='Uvědomit uživatele emailem o změně rezervace'></i>";
 				$output .="<i class='delete icon-close'></i> ";
 				$output .="<ul>";
 				foreach ($reservation["items"] as $item) {
-					$output .= "<li>{$item["name"]} <i data-item='{$item["id"]}' class='delete-item icon-close tooltip' data-message='Zamítnout položku'></i> <em>{$item['price']}</em></li>";
+					$output .= "<li>{$item["name"]} <i data-item='{$item["id"]}' class='delete-item icon-close'></i> <em>{$item['price']}</em></li>";
 				}
 				$output .= "</ul>";
-				$output .= "<em class='tooltip' data-message='Účel rezervace: <strong>{$reservation["purpose"]["title"]}</strong><br>Plošná sleva: <strong>{$reservation["purpose"]["discount"]}%</strong>'>{$price}</em>";
+				$output .= "<em class='tooltip change-purpose' data-item='{$id}' data-purpose='{$reservation["purpose"]["id"]}' data-message='Účel rezervace: <strong>{$reservation["purpose"]["title"]}</strong><br>Plošná sleva: <strong>{$reservation["purpose"]["discount"]}%</strong>'>{$price}</em>";
 				$output .= "</li>";
 			}
 			$output .= "</ol>";

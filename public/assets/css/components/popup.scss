@@ -1,0 +1,15 @@
+.popup {
+	@include absolute(0, 0, 0, 0);
+	@include child-middle();
+	background: rgba($black, .8);
+	position: fixed;
+	text-align: center;
+
+	.close {
+		@include absolute(20px, $right: 20px);
+		@include cursor;
+		color: $celeste;
+		font-size: 40px;
+	}
+
+}

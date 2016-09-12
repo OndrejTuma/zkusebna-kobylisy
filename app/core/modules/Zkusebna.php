@@ -173,6 +173,23 @@ class Zkusebna {
 		return $this->sql->query($query) ? $toggleResult : false;
 	}
 
+	/**
+	 * changes reservation purpose
+	 * @param $reservationId int - id of a reservation to change
+	 * @param $purposeId int - id a new purpose to set
+	 * @return mixed result after attemp to change purpose (0/1) or false
+	 */
+	public function changePurpose($reservationId, $purposeId) {
+
+		$query = "SELECT id FROM {$this->table_names["purpose"]} WHERE id = {$purposeId}";
+		$res = $this->sql->field_assoc($query);
+
+		if (!isset($res[0]['id'])) return false;
+
+		$query = "UPDATE {$this->table_names["reservations"]} SET purpose={$purposeId} WHERE id = {$reservationId}";
+		return $this->sql->query($query);
+	}
+
 
 
 	protected function _isReserved($item_id, $date_from, $date_to) {

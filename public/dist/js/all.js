@@ -5306,6 +5306,7 @@ $.datetimepicker.setLocale('cs');
 
 			if ($("#homepage").length) {
 				this.homepage.init();
+				this.reserve.init();
 			}
 			if ($("#reserve").length) {
 				this.reserve.init();
@@ -5321,6 +5322,30 @@ $.datetimepicker.setLocale('cs');
 				$elm.one('change', function() {
 					$elm.removeClass(Zkusebna._classes.born);
 				});
+			});
+
+			var self = this;
+			$('.tabs a').each(function() {
+				if ($(this).hasClass(self._classes.active)) {
+					$(this.hash).show();
+				}
+				else {
+					$(this.hash).hide();
+				}
+			});
+			$('.tabs').on('click', 'a', function(e) {
+				e.preventDefault();
+
+				$(this).parent().siblings().find('a').each(function() {
+					if ($(this).hasClass(self._classes.active)) {
+						$(this).removeClass(self._classes.active);
+						$(this.hash).hide();
+					}
+				});
+
+				$(this).addClass(self._classes.active);
+				$(this.hash).fadeIn();
+
 			});
 
 		},
@@ -5371,7 +5396,9 @@ $.datetimepicker.setLocale('cs');
 				items: {
 					src: src,
 					type: 'inline'
-				}
+				},
+				removalDelay: 300,
+				mainClass: 'mfp-fade'
 			});
 		},
 		_qtips: function() {
@@ -5433,12 +5460,101 @@ $.datetimepicker.setLocale('cs');
 			this._renderDashboard();
 			this._approveHandler();
 			this._deleteHandler();
+			this._editedHandler();
 			this._itemsHandler();
 			this._addPurposeHandler();
 			this._reservationsHandler();
 
 		},
 
+		_editedHandler: function() {
+			//var reservationId = $
+			this.$wrappers.admin.on("click", ".edited", function() {
+
+				if (!confirm("Jste si jisti? (doporučuju použít enter nebo esc)")) return;
+					
+				var reservationId = parseInt($(this).attr('data-item')),
+					$self = $(this);
+
+				$self.qtip('option', 'content.text', '...');
+
+				if (reservationId) {
+					Zkusebna._request("admin.php", {
+						action: 'emailReservationChange',
+						reservationId: reservationId
+					}, function(data) {
+						if (data.error) {
+							alert(data.error);
+						}
+						else {
+							$self.qtip('option', 'content.text', 'Email byl odeslán');
+						}
+
+						setTimeout(function() {
+							$self.qtip('option', 'content.text', $self.attr('data-message'));
+						}, 3000);
+					});
+				}
+			});
+		},
+		_changeHandler: function() {
+
+			this.$wrappers.admin.on("click", ".change-purpose", function(e) {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+
+				if (!this.active) {
+					this.active = true;
+				}
+				else {
+					hideContext(this);
+					return;
+				}
+
+				hideContext(this);
+
+				var purposeId = parseInt($(this).attr('data-purpose')),
+					reservationId = parseInt($(this).attr('data-item')),
+					purposes = "<ul id='change-purpose' style='top: "+$(this).offset().top+"px; left: "+$(this).offset().left+"px;'>",
+					self = this;
+
+				$('#edit-purpose li strong').each(function() {
+					var id = parseInt($(this).attr('data-id')),
+						discount = $(this).next("em").text();
+					purposes += "<li data-purpose-id='"+id+"'"+(id == purposeId ? ' class="selected"' : '')+">"+$(this).text()+" <em>"+discount+"%</em></li>";
+				});
+				purposes += "</ul>";
+
+				$('body').append($(purposes));
+				$("body").one('click', function(e) {
+					var purposeId = parseInt($(e.target).attr('data-purpose-id'));
+
+					if (purposeId) {
+						Zkusebna._request("admin.php", {
+							action: 'changePurpose',
+							reservationId: reservationId,
+							purposeId: purposeId
+						}, function(data) {
+							if (data.error) {
+								alert(data.error);
+							}
+							else {
+								$(self).attr('data-purpose', purposeId);
+							}
+						});
+					}
+
+					hideContext(self);
+				});
+
+				function hideContext(context) {
+					$('#change-purpose').slideUp(function () {
+						$(this).remove();
+						context.active = false;
+					});
+				}
+			});
+		},
 		_addItemHandler: function() {
 
 			var self = this,
@@ -5564,11 +5680,39 @@ $.datetimepicker.setLocale('cs');
 						reservationId: $(this).parents("[data-id]").attr("data-id")
 					};
 
-				if (action == "deleteItem") data.itemId = $(this).attr("data-item");
+				if (action == "deleteItem") {
+					data.itemId = $(this).attr("data-item");
 
-				Zkusebna._request("admin.php", data, self._repaintDashboard.bind(self),
-					null,
-					$(this));
+					Zkusebna._request("admin.php", data, self._repaintDashboard.bind(self),
+						null,
+						$(this));
+				}
+				else {
+					var $popup = $("<div class='popup'><span class='close icon-close'></span><form action=''><input id='delete-reason' name='delete-reason' placeholder='Důvod zrušení rezervace?'></form></div>");
+
+					$('body').append($popup);
+
+					$popup.find('#delete-reason').focus();
+					$popup.find('form').on('submit', function(e) {
+						e.preventDefault();
+						data.reason = $popup.find("#delete-reason").val();
+						Zkusebna._request("admin.php", data, self._repaintDashboard.bind(self),
+							null,
+							$(this));
+						hideContext();
+					});
+					$popup.find('.close').on('click', function(e) {
+						e.preventDefault();
+						hideContext();
+					});
+
+					function hideContext() {
+						$popup.fadeOut(function() {
+							$popup.remove();
+						})
+					}
+				}
+
 			});
 		},
 		_itemsHandler: function() {
@@ -5738,6 +5882,7 @@ $.datetimepicker.setLocale('cs');
 					}, 2000);
 					//e.clearSelection();
 				});
+				self._changeHandler();
 				//self.$wrappers.admin.find(".icon-mobile, .icon-mail").on('click', function() {
 				//	Zkusebna._copyToClipboard($(this).attr('data-message'));
 				//});
@@ -5775,9 +5920,10 @@ $.datetimepicker.setLocale('cs');
 				this.$calendar.fullCalendar({
 					eventLimit: true,
 					header: {
-						left: 'prev,next today',
+						left: 'prev,next',
 						center: 'title',
-						right: 'month,agendaWeek,agendaDay'
+						right: 'today'
+						//right: 'month,agendaWeek,agendaDay'
 					},
 					lang: "cs",
 					events: function(start, end, timezone, callback) {
@@ -5927,7 +6073,8 @@ $.datetimepicker.setLocale('cs');
 			this.$formInputs.purpose.on('change', this._renderItems.bind(this));
 		},
 		_selectAll: function() {
-			this.$wrappers.items.on('click','.select-all', function() {
+			this.$wrappers.items.on('click','.select-all', function(e) {
+				e.stopImmediatePropagation();
 				$(this).parents("li:first").find('.reservable').trigger('click');
 			});
 		},
@@ -5980,7 +6127,9 @@ $.datetimepicker.setLocale('cs');
 								src: '<div class="reservation-warning"><h2>Změnou data přijdete o následující položky:</h2>' + non_compatible_names.join("<br>") + '<ul class="tac table cols-2"><li><span class="button--red">Zrušit</span></li><li><span class="button">Potvrdit</span></li></ul></div>',
 								type: 'inline'
 							},
-							modal: true
+							modal: true,
+							removalDelay: 300,
+							mainClass: 'mfp-fade'
 						});
 						$(".reservation-warning").on("click", "span", function(e) {
 							$.magnificPopup.close();
@@ -6234,7 +6383,7 @@ $.datetimepicker.setLocale('cs');
 			}
 
 			if (!formIsValid) {
-				$("html, body").stop().animate({ scrollTop: 0 }, '500', 'swing');
+				$("html, body").stop().animate({ scrollTop: $('#form__reserve').offset().top }, '500', 'swing');
 			}
 
 			return formIsValid;

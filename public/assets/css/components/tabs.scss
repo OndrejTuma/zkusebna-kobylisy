@@ -1,0 +1,40 @@
+.tabs {
+	$bg-color: $white;
+	$bg-color-hover: #f6f6f6;
+	$borders-color: $zkusebna-color;
+
+	border-bottom: 1px solid $borders-color;
+	list-style: none;
+	margin: 50px auto 1em !important;
+	text-align: center;
+
+	a {
+		@include transition(all .3s);
+		border: 1px solid transparent;
+		border-radius: 5px 5px 0 0;
+		display: inline-block;
+		font-size: 1.5em;
+		line-height: 50px;
+		margin: 0 10px -1px;
+		max-width: 200px;
+		padding: 0 40px;
+		text-decoration: none;
+
+		&:hover {
+			background-color: $bg-color-hover;
+			border-bottom-color: $borders-color;
+		}
+		&.active {
+			border-color: $borders-color;
+			border-bottom-color: $bg-color;
+			cursor: default;
+
+			&:hover {
+				background-color: transparent;
+			}
+		}
+	}
+	li {
+		display: inline-block;
+	}
+}

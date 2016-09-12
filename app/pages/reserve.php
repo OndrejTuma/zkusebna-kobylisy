@@ -1,12 +1,6 @@
-<?php
-$admin = new AuthAdmin();
-
-
-?>
-
 <main id="reserve" class="wrapper">
 
-	<?php if($admin->is_logged()): ?>
+	<?php if($auth->is_logged()): ?>
 	<a class="button" href="?page=admin">Zpět</a>
 	<p class="fr"><a href="?page=admin&logout" class="button--red">Odhlásit</a></p>
 	<?php else: ?>
@@ -31,8 +25,8 @@ $admin = new AuthAdmin();
 			<legend>Vyplňte kontaktní údaje</legend>
 			<ul class="inline-blocks tac pt">
 				<li>
-<!--					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název rezervace" value="Mejdan!"/>-->
-					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název rezervace" />
+<!--					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" value="Mejdan!"/>-->
+					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" />
 				</li>
 				<li>
 <!--					<input type="text" name="name" id="name" placeholder="Celé jméno" value="Jafa Kree"/>-->
@@ -54,7 +48,7 @@ $admin = new AuthAdmin();
 				</li>
 			</ul>
 		</fieldset>
-		<?php if($admin->is_logged()): ?>
+		<?php if($auth->is_logged()): ?>
 			<fieldset class="repeat">
 				<legend>Opakování</legend>
 				<ul class="table cols-2 pt">

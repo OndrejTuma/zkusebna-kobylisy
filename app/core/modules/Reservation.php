@@ -102,6 +102,15 @@ class Reservation extends Zkusebna {
 		return $this->id;
 	}
 
+	public function getDiscount($reservationId = 0) {
+		$query = "
+SELECT discount FROM {$this->table_names["reservations"]} as r
+LEFT JOIN {$this->table_names["purpose"]} AS p ON p.id = r.purpose
+WHERE r.id = ".($reservationId ? $reservationId : $this->id);
+		$discount = $this->sql->field_assoc($query);
+		return isset($discount[0]) ? $discount[0]['discount'] : false;
+	}
+
 	public function getReservationById($id) {
 		$query = "
 SELECT r.name as reservation_name, c.name as name, email, phone, date_from, date_to, repetition FROM {$this->table_names["reservations"]} as r
@@ -141,6 +150,7 @@ LEFT JOIN {$this->table_names["r-i"]} AS ri ON r.id = ri.reservation_id
 LEFT JOIN {$this->table_names["items"]} AS i ON ri.item_id = i.id
 LEFT JOIN {$this->table_names["community"]} AS c ON c.id = r.who
 WHERE repetition IS NULL AND (r.date_from > '{$date_from}' OR r.date_to > '{$date_from}') AND (r.date_from < '{$date_to}' OR r.date_to < '{$date_to}')
+ORDER BY category, itemName
 ";
 		$reserved_items = $this->sql->field_assoc($query);
 		$repeated_reserved_items = $this->_getRepeatedReservedItems($date_from, $date_to);

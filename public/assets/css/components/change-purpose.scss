@@ -1,0 +1,32 @@
+#change-purpose {
+	background: $dark-goldenrod;
+	border-radius: 3px;
+	color: $white;
+	display: block;
+	list-style: none;
+	padding: 20px;
+	position: absolute;
+
+	li {
+		color: inherit;
+		cursor: pointer;
+		margin-bottom: $margin--small;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+		&:hover {
+			color: $alto;
+		}
+		&.selected {
+			color: $cape-cod;
+		}
+
+		em {
+			float: right;
+			font-style: normal;
+			font-weight: bold;
+			margin-left: 20px;
+		}
+	}
+}

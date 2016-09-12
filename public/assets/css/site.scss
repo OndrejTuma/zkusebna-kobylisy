@@ -62,6 +62,12 @@
 @import "components/no-scripts";
 @import "components/popups";
 @import "components/reservation-list";
+//#generated-components
+@import "components/datetimepicker";
+@import "components/fullcalendar";
+@import "components/popup";
+@import "components/change-purpose";
+@import "components/tabs";
 
 // common styles
 @import "_common/globals";

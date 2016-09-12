@@ -70,18 +70,11 @@ else {
 	}
 	elseif ($reservation->addItems($item_ids)) {
 
-		if ($admin->is_logged()) {
-			$output = array(
-				"result" => "success",
-				"heading" => "Rezervace je odeslaná",
-				"message" => "A právě čeká na schválení administrátorem. Až se tak stane, pošleme vám zprávu na uvedený email. Zatím si můžete v emailové schránce zrekapitulovat rezervaci."
-			);
-		}
-		else {
-			$items = new Items();
-			$items = $items->getItemsById($item_ids);
-			array_walk($items, function(&$item) { $item = $item["name"]; });
-			Zkusebna::sendMail($email, 'Rekapitulace rezervace', "
+		$items = new Items();
+		$items = $items->getItemsById($item_ids);
+		$price = array_reduce($items, function($carry, $item) { return $carry + $item['price']; });
+		array_walk($items, function(&$item) { $item = $item["name"]; });
+		Zkusebna::sendMail($email, 'Rekapitulace rezervace', "
 <table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
 	<tbody>
 	<tr>
@@ -89,6 +82,20 @@ else {
 			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Dobrý den,</h2>
 			<p>toto je předběžná rekapitulace rezervace <strong>{$reservation_name}</strong> v Kobyliské zkušebně.</p>
 			<p style=\"text-align: center; margin: 50px auto;\"><strong style=\"color: #cc2229;\">Čeká na schválení!</strong></p>
+			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
+			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
+				<tbody>
+				<tr>
+					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Cena:</td>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".($price * (100 - (int)$reservation->getDiscount()) / 100)."</th>
+				</tr>
+				<tr>
+					<td colspan='2' style='padding: 10px;'>
+						Platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme), nebo hotově správci zkušebny.
+					</td>
+				</tr>
+				</tbody>
+			</table>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>
 				<tr>
@@ -108,8 +115,8 @@ else {
 					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$phone}</th>
 				</tr>
 				<tr>
-					<td style=\"text-align: right; vertical-align: top; border-bottom: 1px dashed #000; padding: 10px;\">Rezervované položky:</td>
-					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">
+					<td style=\"text-align: right; vertical-align: top; padding: 10px;\">Rezervované položky:</td>
+					<th style=\"text-align: left; padding: 10px;\">
 						<ul style=\"margin: 0; padding: 0 0 0 15px;\">
 							<li>".implode("</li><li>", $items)."</li>
 						</ul>
@@ -117,18 +124,17 @@ else {
 				</tr>
 				</tbody>
 			</table>
-			<p>Pokud to není vaše rezervace, napište to koordinátorovi zkušebny.</p>
 		</td>
 	</tr>
 	</tbody>
 </table>
 ");
-			$output = array(
-				"result" => "success",
-				"heading" => "Rezervace je odeslaná",
-				"message" => "A právě čeká na schválení administrátorem. Až se tak stane, pošleme vám zprávu na uvedený email. Zatím si můžete v emailové schránce zrekapitulovat rezervaci."
-			);
-		}
+
+		$output = array(
+			"result" => "success",
+			"heading" => "Rezervace je odeslaná",
+			"message" => "A čeká na schválení. Až se tak stane, pošleme vám zprávu na uvedený email. Zatím si můžete v emailové schránce zrekapitulovat rezervaci."
+		);
 
 	}
 	else {

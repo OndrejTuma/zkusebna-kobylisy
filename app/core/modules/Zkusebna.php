@@ -169,7 +169,7 @@ class Zkusebna {
 
 		$query = "SELECT {$column} FROM {$this->table_names[$table]} WHERE id = $item_id";
 		$res = $this->sql->field_assoc($query);
-		$toggleResult = (int)$res[0]["payed"] === 0 ? 1 : 0;
+		$toggleResult = (int)$res[0][$column] === 0 ? 1 : 0;
 
 		$query = "UPDATE {$this->table_names[$table]} SET {$column} = {$toggleResult} WHERE id = {$item_id}";
 

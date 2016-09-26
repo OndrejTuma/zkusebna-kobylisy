@@ -1,5 +1,5 @@
 .button {
-
+	@include transition();
 	background: $buttons--bg;
 	border: none;
 	border-radius: $buttons--border-radius;

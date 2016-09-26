@@ -1,0 +1,26 @@
+.legend {
+	$stripe-height: 4px;
+	$stripe-width: 20px;
+
+	list-style: none;
+	padding-left: 0;
+
+	li {
+		margin-bottom: $margin--small;
+		padding-left: $stripe-width + 5;
+		position: relative;
+
+		&:before {
+			@include absolute-middle($stripe-height);
+			@include dim($stripe-width, $stripe-height);
+			border-radius: $stripe-height;
+			content: '';
+			left: 0;
+		}
+
+		&.zkusebna:before { background-color: $zkusebna-color; }
+		&.technika:before { background-color: $technika-color; }
+		&.nastroje:before { background-color: $nastroje-color; }
+	}
+
+}

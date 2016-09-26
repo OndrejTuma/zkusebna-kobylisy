@@ -94,6 +94,22 @@
 		opacity: 0;
 	}
 }
+.delete-reason {
+	background-color: $white;
+	padding: 30px;
+
+	button {
+		border: none;
+		float: right;
+	}
+	textarea {
+		display: block;
+		height: 100px;
+		margin-bottom: $margin--default;
+		text-align: left;
+		width: 280px;
+	}
+}
 #items {
 
 	li ul {

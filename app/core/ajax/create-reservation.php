@@ -73,7 +73,9 @@ else {
 		$items = new Items();
 		$items = $items->getItemsById($item_ids);
 		$price = array_reduce($items, function($carry, $item) { return $carry + $item['price']; });
+		$price_total = $price * (100 - (int)$reservation->getDiscount()) / 100;
 		array_walk($items, function(&$item) { $item = $item["name"]; });
+
 		Zkusebna::sendMail($email, 'Rekapitulace rezervace', "
 <table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
 	<tbody>
@@ -85,15 +87,15 @@ else {
 			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>
+				".($price_total > 0 ? "
 				<tr>
 					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Cena:</td>
-					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".($price * (100 - (int)$reservation->getDiscount()) / 100).",-</th>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$price_total},-</th>
 				</tr>
 				<tr>
-					<td colspan='2' style='padding: 10px;'>
-						Platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme), nebo hotově správci zkušebny.
-					</td>
+					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>1242882944 / 2310 </strong> (preferujeme), nebo hotově správci zkušebny.</td >
 				</tr>
+				" : "")."
 				</tbody>
 			</table>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
@@ -129,7 +131,7 @@ else {
 	</tbody>
 </table>
 ");
-		Zkusebna::sendMail('ondr@centrum.cz', 'Nová rezervace', "
+		Zkusebna::sendMail(Admin::getEmail(), 'Nová rezervace', "
 <table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
 	<tbody>
 	<tr>

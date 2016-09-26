@@ -4,6 +4,7 @@ name VARCHAR(100) NOT NULL,
 image VARCHAR(60) NOT NULL,
 price INT(4) DEFAULT 0,
 reservable tinyint(1) DEFAULT 1,
+active tinyint(1) DEFAULT 1,
 category ENUM('zkusebna','technika','nastroje') DEFAULT 'technika',
 parent_id INT(6),
 PRIMARY KEY (id)
@@ -62,7 +63,7 @@ FOREIGN KEY (repetition) REFERENCES zkusebna_reservation_repeat(id)
 CREATE TABLE zkusebna_reserved_items (
 item_id INT(6) NOT NULL,
 reservation_id INT(6) NOT NULL,
-active INT(1) DEFAULT 1,
+active tinyint(1) DEFAULT 1,
 PRIMARY KEY (item_id, reservation_id),
 FOREIGN KEY (item_id) REFERENCES zkusebna_items(id),
 FOREIGN KEY (reservation_id) REFERENCES zkusebna_reservations(id)

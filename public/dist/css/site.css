@@ -5818,46 +5818,52 @@ The `sprites` mixin generates identical output to the CSS template
     transform: rotate(360deg); } }
 
 .icon-edit:before {
-  content: "\e900"; }
+  content: "\e90f"; }
+
+.icon-toggle-on:before {
+  content: "\e90d"; }
+
+.icon-toggle-off:before {
+  content: "\e90e"; }
 
 .icon-coin:before {
-  content: "\1f4b3"; }
+  content: "\e90c"; }
 
 .icon-close:before {
-  content: "\2715"; }
+  content: "\e90b"; }
 
 .icon-mail:before {
-  content: "\1f582"; }
+  content: "\e908"; }
 
 .icon-mobile:before {
-  content: "\1f57f"; }
+  content: "\e909"; }
 
 .icon-checkmark:before {
-  content: "\2714"; }
+  content: "\e90a"; }
 
 .icon-cart:before, #reserved-items-wrapper .price:after {
-  content: "\1f52b"; }
+  content: "\e907"; }
 
 .icon-chevron-down:before, ul.item-list .expandable:after {
-  content: "\1f53d"; }
+  content: "\e904"; }
 
 .icon-chevron-up:before {
-  content: "\2bc5"; }
+  content: "\e905"; }
 
 .icon-chevron-right:before {
-  content: "\276f"; }
+  content: "\e906"; }
 
 .icon-chevron-left:before {
-  content: "\276e"; }
+  content: "\e900"; }
 
 .icon-spinner:before, #reserved-items-wrapper li.item.loading:after, .loading .fc-view-container:before, ul.item-list .reservable.loading i.icon-plus:before, .reservation-list i.loading:before {
-  content: "\273d"; }
+  content: "\e901"; }
 
 .icon-plus:before {
-  content: "\2795"; }
+  content: "\e902"; }
 
 .icon-cross:before, input[type=checkbox] + label:after, #reserved-items-wrapper li.item:after {
-  content: "\2716"; }
+  content: "\e903"; }
 
 input[type=checkbox] {
   position: absolute;
@@ -6074,21 +6080,26 @@ p {
   margin: 0 0 1em; }
 
 .button, .button--red, .button--submit, .button--white {
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -ms-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
   background: #00aeef;
   border: none;
   border-radius: 5px;
   color: #fff;
   cursor: pointer;
   display: inline-block;
-  font-size: 11px;
+  font-size: 15px;
   font-weight: normal;
-  height: 22px;
-  line-height: 22px;
-  padding: 0 10px;
+  height: 35px;
+  line-height: 35px;
+  padding: 0 25px;
   text-align: center;
   white-space: nowrap; }
   .button:hover, .button--red:hover, .button--submit:hover, .button--white:hover {
-    background: #00aeef;
+    background: #0089bc;
     color: #fff; }
   .button--red {
     background-color: #cc2229; }
@@ -6223,6 +6234,19 @@ a.button--white:hover {
     -o-transition: opacity 0.5s;
     transition: opacity 0.5s;
     opacity: 0; }
+
+.delete-reason {
+  background-color: #fff;
+  padding: 30px; }
+  .delete-reason button {
+    border: none;
+    float: right; }
+  .delete-reason textarea {
+    display: block;
+    height: 100px;
+    margin-bottom: 1em;
+    text-align: left;
+    width: 280px; }
 
 #items li ul {
   display: block; }
@@ -6871,6 +6895,29 @@ noscript {
 @media only screen and (max-width: 768px) {
   .reservation-list strong {
     display: block; } }
+
+.legend {
+  list-style: none;
+  padding-left: 0; }
+  .legend li {
+    margin-bottom: 0.5em;
+    padding-left: 25px;
+    position: relative; }
+    .legend li:before {
+      position: absolute;
+      top: 50%;
+      margin-top: -2px;
+      height: 4px;
+      width: 20px;
+      border-radius: 4px;
+      content: '';
+      left: 0; }
+    .legend li.zkusebna:before {
+      background-color: #b8860b; }
+    .legend li.technika:before {
+      background-color: #67a712; }
+    .legend li.nastroje:before {
+      background-color: #6c3082; }
 
 .xdsoft_datetimepicker .xdsoft_label > .xdsoft_select > div > .xdsoft_option.xdsoft_current {
   background: #b8860b;

@@ -80,7 +80,7 @@ class Items extends Zkusebna
 			$this->discount = $discount_row ? $discount_row[0]["discount"] : null;
 		}
 
-		$query = "SELECT id, name as itemName, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} ORDER BY parent_id, itemName";
+		$query = "SELECT id, name as itemName, active, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} WHERE active = 1 ORDER BY parent_id, itemName";
 		$this->items = $this->sql->field_assoc($query);
 
 		if (!$this->preview) {
@@ -89,7 +89,7 @@ class Items extends Zkusebna
 			$this->items = array_merge($this->items, $reservedItems);
 		}
 
-		$output = $this->preview ? "" : "";
+		$output = $this->preview ? "" : "";	//preview is mode without prices
 
 //		var_dump($this->items);
 
@@ -177,6 +177,7 @@ class Items extends Zkusebna
 					$output .= "<strong><span data-table='items' data-column='name' data-id='{$item["id"]}' class='editable'>{$item["itemName"]}</span> ";
 					$output .= isset($this->discount) ? "<span class='price'><span data-table='items' data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span>" : "";
 					$output .= "<i data-table='items' data-id='{$item["id"]}' data-parent='li:first' class='deletable trigger icon-close'></i>";
+					$output .= "<i data-toggle-0-class='icon-toggle-off' data-toggle-1-class='icon-toggle-on' data-toggle-0-message='Označit položku jako aktivní' data-toggle-1-message='Označit položku jako neaktivní' data-table='items' data-column='active' data-id='{$item["id"]}' class='toggleable tooltip icon-toggle-".($item["active"] ? "on" : "off")."' data-message='".($item["active"] ? "Označit položku jako neaktivní" : "Označit položku jako aktivní")."'></i>";
 					$output .= "</strong>";
 				} else {
 					$output .= "<strong>{$item["itemName"]} ";
@@ -185,8 +186,8 @@ class Items extends Zkusebna
 				}
 			} else {
 				$output .= "<strong class='reservable-item-{$item["id"]} reservable ";
-				if (isset($item["reserved_by"]) && $item["reserved_by"]) {
-					$output .= "already-reserved' data-name='{$item["reserved_by"]}' data-date-from='" . Zkusebna::parseSQLDate($item["start"]) . "' data-date-to='" . Zkusebna::parseSQLDate($item["end"]) . "'";
+				if (isset($item["reservation_name"]) && $item["reservation_name"]) {
+					$output .= "already-reserved' data-name='{$item["reservation_name"]}' data-date-from='" . Zkusebna::parseSQLDate($item["start"]) . "' data-date-to='" . Zkusebna::parseSQLDate($item["end"]) . "'";
 				} else {
 					$output .= "' ";
 				}

@@ -28,8 +28,8 @@ $.datetimepicker.setLocale('cs');
 			reserved: "reserved"
 		},
 		_urls: {
-			ajax: "../../../app/core/ajax/"
-			//ajax: "/zkusebna-kobylisy/app/core/ajax/"
+			//ajax: "../../../app/core/ajax/"
+			ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
 		_dateFormats: {
 			//dateTime: 'DD.MM.YYYY H:mm',
@@ -49,9 +49,11 @@ $.datetimepicker.setLocale('cs');
 				this.homepage.init();
 				this.reserve.init();
 			}
+			/*
 			if ($("#reserve").length) {
 				this.reserve.init();
 			}
+			*/
 			if ($("#admin").length) {
 				this.admin.init();
 			}
@@ -429,7 +431,7 @@ $.datetimepicker.setLocale('cs');
 						$(this));
 				}
 				else {
-					var $popup = $("<div class='popup'><span class='close icon-close'></span><form action=''><input id='delete-reason' name='delete-reason' placeholder='Důvod zrušení rezervace?'></form></div>");
+					var $popup = $("<div class='popup'><span class='close icon-close'></span><form action='' class='delete-reason'><textarea id='delete-reason' name='delete-reason' placeholder='Důvod zrušení rezervace?'></textarea><button class='button' type='submit'>Zamítnout a odeslat email</button></form></div>");
 
 					$('body').append($popup);
 
@@ -946,7 +948,7 @@ $.datetimepicker.setLocale('cs');
 			}
 			return price;
 		},
-		_createReservation: function() {alert(1);
+		_createReservation: function() {
 
 			var ids = [],
 				self = this;
@@ -1012,7 +1014,7 @@ $.datetimepicker.setLocale('cs');
 					e.stopPropagation();
 
 					if ($(this).hasClass(Zkusebna._classes.alreadyReserved)) {
-						Zkusebna._popup("Toto už je rezervované", "<strong>" + $(this).attr("data-name") + "</strong> má rezervaci od " + $(this).attr("data-date-from") + " do " + $(this).attr("data-date-to"));
+						Zkusebna._popup("Rezervované na akci " + $(this).attr("data-name"), "rezervováno od " + $(this).attr("data-date-from") + " do " + $(this).attr("data-date-to"));
 					}
 					else if ($(this).hasClass(Zkusebna._classes.reserved)) {
 						self.deleteItem($(this).attr("data-id"));

@@ -48,6 +48,7 @@ class Admin extends Zkusebna {
 			$reservation = $Reservation->getReservationById($reservationId);
 			$items = new Items();
 			$items = $items->getItemsById($Reservation->getReservationItems($reservationId));
+			$price = array_reduce($items, function($carry, $item) { return $carry + $item['price']; });
 			array_walk($items, function(&$item) { $item = $item["name"]; });
 			Zkusebna::sendMail($reservation["email"], "Rezervace byla schválena", "
 <table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
@@ -55,7 +56,8 @@ class Admin extends Zkusebna {
 	<tr>
 		<td>
 			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Dobrý den,</h2>
-			<p>Vaše rezervace <strong style=\"color: #67a712;\">{$reservation["reservation_name"]}</strong> byla právě schválena.</p>
+			<p>vaše rezervace <strong style=\"color: #67a712;\">{$reservation["reservation_name"]}</strong> byla schválena.</p>
+			<br>
 			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>
@@ -74,6 +76,13 @@ class Admin extends Zkusebna {
 				<tr>
 					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Telefon:</td>
 					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$reservation["phone"]}</th>
+				</tr>
+				<tr>
+					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Cena:</td>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".($price * (100 - (int)$reservation->getDiscount()) / 100).",-</th>
+				</tr>
+				<tr>
+					<td colspan=\"2\">Platbu poukazujte na účet číslo 1242882944 / 2310 (preferujeme), nebo hotově správci zkušebny.</td>
 				</tr>
 				<tr>
 					<td style=\"text-align: right; vertical-align: top; border-bottom: 1px dashed #000; padding: 10px;\">Rezervované položky:</td>
@@ -125,7 +134,7 @@ class Admin extends Zkusebna {
 	<tr>
 		<td>
 			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Dobrý den,</h2>
-			<p>Vaše rezervace <strong style=\"color: #cc2229;\">{$reservation["reservation_name"]}</strong> byla právě zamítnuta.</p>
+			<p>vaše rezervace <strong style=\"color: #cc2229;\">{$reservation["reservation_name"]}</strong> byla právě zamítnuta.</p>
 			".($reason ? "<h4 style='margin: 30px 0; text-align: center;'>$reason</h4>" : "")."
 			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">

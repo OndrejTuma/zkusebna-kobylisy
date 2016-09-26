@@ -157,8 +157,9 @@ switch ($action) {
 	<tr>
 		<td>
 			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Dobrý den,</h2>
-			<p>Vaše rezervace <strong style=\"color: #cc2229;\">{$reservation["reservation_name"]}</strong> byla upravena správcem zkušebny.</p>
-			<p><strong>Zkontrolujte si prosím položky rezervace a její cenu</strong></p>
+			<p>vaše rezervace <strong style=\"color: #cc2229;\">{$reservation["reservation_name"]}</strong> byla upravena správcem zkušebny.</p>
+			<p><strong>Zkontrolujte si prosím položky rezervace.</strong></p>
+			<br>
 			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>

@@ -87,7 +87,7 @@ else {
 				<tbody>
 				<tr>
 					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Cena:</td>
-					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".($price * (100 - (int)$reservation->getDiscount()) / 100)."</th>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".($price * (100 - (int)$reservation->getDiscount()) / 100).",-</th>
 				</tr>
 				<tr>
 					<td colspan='2' style='padding: 10px;'>
@@ -129,11 +129,24 @@ else {
 	</tbody>
 </table>
 ");
+		Zkusebna::sendMail('ondr@centrum.cz', 'Nová rezervace', "
+<table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
+	<tbody>
+	<tr>
+		<td>
+			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Čauko,</h2>
+			<p>na stránkách zkušebny vykvetla nová rezervace <strong>{$reservation_name}</strong> na jméno {$name} za ".($price * (100 - (int)$reservation->getDiscount()) / 100).",-</p>
+			<p style=\"text-align: center; margin: 50px auto;\">Tak se co nejdřív mrkni o co jde</p>
+		</td>
+	</tr>
+	</tbody>
+</table>
+", array('email' => 'no-reply@zkusebna-kobylisy.cz', 'name' => 'Zkušebna Kobylisy'));
 
 		$output = array(
 			"result" => "success",
-			"heading" => "Rezervace je odeslaná",
-			"message" => "A čeká na schválení. Až se tak stane, pošleme vám zprávu na uvedený email. Zatím si můžete v emailové schránce zrekapitulovat rezervaci."
+			"heading" => "Rezervace byla odeslána",
+			"message" => "Nyní čeká na schválení. Až se tak stane, pošleme vám zprávu na uvedený email. Zatím si můžete v emailové schránce zrekapitulovat rezervaci."
 		);
 
 	}

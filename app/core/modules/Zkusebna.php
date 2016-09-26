@@ -61,9 +61,12 @@ class Zkusebna {
 
 		return $repeated_reservations;
 	}
-	public static function sendMail($recipient, $subject, $body) {
+	public static function sendMail($recipient, $subject, $body, $from = null) {
 		$mail = new PHPMailer();
-		$mail->setFrom(Admin::getEmail(), ZKUSEBNA_MAILING_FROM);
+		$mail->setFrom(
+			isset($from['email']) ? $from['email'] : Admin::getEmail(),
+			isset($from['name']) ? $from['name'] : ZKUSEBNA_MAILING_FROM
+		);
 		$mail->addAddress($recipient);
 		$mail->isHTML(true);
 		$mail->Subject = $subject;

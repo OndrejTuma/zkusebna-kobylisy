@@ -19,13 +19,13 @@ $date2 = new DateTime("2016-03-02 17:00:00");
 	<p>Zde si můžete k zapůjčení rezervovat zkušebnu, zvukovou techniku a hudební nástroje.</p>
 	<h2>Jak rezervovat</h2>
 	<ol>
-		<li>Zvolte si datum a čas rezervace - u položek uvidíte, zda je možné si je rezervovat</li>
-		<li>Vyplňte všechny uvedené údaje jako název akce, jméno, kontaktní údaje</li>
+		<li>Zvolte si datum a čas rezervace - u položek uvidíte, zda je možné je rezervovat</li>
+		<li>Vyplňte všechny požadované údaje jako název akce, jméno, kontakt a účel rezervace</li>
 		<li>Vyberte si položky</li>
-		<li>Potvrďte rezervaci</li>
-		<li>Případnou platbu preferujeme na účet číslo <strong>1242882944 / 2310</strong> nebo hotově správci zkušebny</li>
+		<li>Rezervaci odešlete</li>
+		<li>Platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme) nebo hotově správci zkušebny</li>
 	</ol>
-	<p>S ostatními dotazy kontaktujte přímo správce zkušebny na <strong>zkusebna.kobylisy@centrum.cz</strong></p>
+	<p>Pomoc a dotazy na <strong>zkusebna.kobylisy@centrum.cz</strong></p>
 
 	<ul class="tabs">
 		<li><a class="active" href="#homepage">Kalendář</a></li>
@@ -46,12 +46,12 @@ $date2 = new DateTime("2016-03-02 17:00:00");
 			<legend>Zvolte termín vypůjčení</legend>
 			<ul class="table cols-2 pt mbn">
 				<li class="tar pr">
-					<!--					<input type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="30.08.2016 08:00"/>-->
-					<input class="datetimepicker" data-role="render" type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" placeholder="Datum a čas výpůjčky"/>
+										<input type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="30.09.2016 08:00"/>
+<!--					<input class="datetimepicker" data-role="render" type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" placeholder="Datum a čas výpůjčky"/>-->
 				</li>
 				<li class="tal pl">
-					<!--					<input type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="30.08.2016 12:00"/>-->
-					<input class="datetimepicker" data-role="render" type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" placeholder="Datum a čas navrácení"/>
+										<input type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="30.09.2016 12:00"/>
+<!--					<input class="datetimepicker" data-role="render" type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" placeholder="Datum a čas navrácení"/>-->
 				</li>
 			</ul>
 		</fieldset>
@@ -59,20 +59,20 @@ $date2 = new DateTime("2016-03-02 17:00:00");
 			<legend>Vyplňte kontaktní údaje</legend>
 			<ul class="inline-blocks tac pt">
 				<li>
-					<!--					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" value="Mejdan!"/>-->
-					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" />
+										<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" value="Mejdan!"/>
+<!--					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" />-->
 				</li>
 				<li>
-					<!--					<input type="text" name="name" id="name" placeholder="Celé jméno" value="Jafa Kree"/>-->
-					<input type="text" name="name" id="name" placeholder="Celé jméno"/>
+										<input type="text" name="name" id="name" placeholder="Celé jméno" value="Jafa Kree"/>
+<!--					<input type="text" name="name" id="name" placeholder="Celé jméno"/>-->
 				</li>
 				<li>
-					<!--					<input type="text" name="phone" id="phone" placeholder="Telefon" value="123123123"/>-->
-					<input type="text" name="phone" id="phone" placeholder="Telefon"/>
+										<input type="text" name="phone" id="phone" placeholder="Telefon" value="123123123"/>
+<!--					<input type="text" name="phone" id="phone" placeholder="Telefon"/>-->
 				</li>
 				<li>
-					<!--					<input type="email" name="email" id="email" placeholder="Email" value="ondr@centrum.cz"/>-->
-					<input type="email" name="email" id="email" placeholder="Email"/>
+										<input type="email" name="email" id="email" placeholder="Email" value="ondr@centrum.cz"/>
+<!--					<input type="email" name="email" id="email" placeholder="Email"/>-->
 				</li>
 				<li>
 					<?php

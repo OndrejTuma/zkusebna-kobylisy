@@ -778,6 +778,7 @@ $.datetimepicker.setLocale('cs');
 			this.reservableItems = {};
 			this.reservedItems = [];
 			this.activeReservation = false;
+			this.busy = false;
 
 			this._cart();
 			this._datetimePickers();
@@ -945,7 +946,7 @@ $.datetimepicker.setLocale('cs');
 			}
 			return price;
 		},
-		_createReservation: function() {
+		_createReservation: function() {alert(1);
 
 			var ids = [],
 				self = this;

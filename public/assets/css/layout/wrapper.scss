@@ -3,4 +3,8 @@
 	margin: 0 auto;
 	max-width: $wrapper--width;
 	padding: 20px 50px;
+
+	@media #{$mobile} {
+		padding: 20px 10px;
+	}
 }

@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'zkusebna';
-  src:  url('fonts/zkusebna.eot?jn7b4m');
-  src:  url('fonts/zkusebna.eot?jn7b4m#iefix') format('embedded-opentype'),
-    url('fonts/zkusebna.ttf?jn7b4m') format('truetype'),
-    url('fonts/zkusebna.woff?jn7b4m') format('woff'),
-    url('fonts/zkusebna.svg?jn7b4m#zkusebna') format('svg');
+  src:  url('fonts/zkusebna.eot?48b1le');
+  src:  url('fonts/zkusebna.eot?48b1le#iefix') format('embedded-opentype'),
+    url('fonts/zkusebna.ttf?48b1le') format('truetype'),
+    url('fonts/zkusebna.woff?48b1le') format('woff'),
+    url('fonts/zkusebna.svg?48b1le#zkusebna') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-image:before {
+  content: "\e910";
+}
 .icon-edit:before {
   content: "\e90f";
 }

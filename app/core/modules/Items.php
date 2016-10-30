@@ -173,40 +173,46 @@ class Items extends Zkusebna
 		$output = "";
 		if ($item["reservable"] == 1) {
 			if ($this->preview) {
+				$output .= $item["img"] ? "<a href='" . ZKUSEBNA_IMAGES_URL ."uploaded/". $item["img"] . "' class='magnific image'><img src='" . ZKUSEBNA_IMAGES_URL ."uploaded/". $item["img"] . "' alt='{$item["itemName"]}'/></a>" : "";
+				$output .= "<strong>";
 				if ($this->is_admin) {
-					$output .= "<strong><span data-table='items' data-column='name' data-id='{$item["id"]}' class='editable'>{$item["itemName"]}</span> ";
+					$output .= "<span data-table='items' data-column='name' data-id='{$item["id"]}' class='editable'>{$item["itemName"]}</span> ";
 					$output .= isset($this->discount) ? "<span class='price'><span data-table='items' data-column='price' data-id='{$item["id"]}' class='editable'>" . $this->_getItemPrice($item) . "</span>,-</span>" : "";
-					$output .= "<i data-table='items' data-id='{$item["id"]}' data-parent='li:first' class='deletable trigger icon-close'></i>";
+					$output .= "<i data-table='items' data-id='{$item["id"]}' data-parent='li:first' class='deletable trigger icon-close tooltip' data-message='Smazat položku'></i>";
 					$output .= "<i data-toggle-0-class='icon-toggle-off' data-toggle-1-class='icon-toggle-on' data-toggle-0-message='Označit položku jako aktivní' data-toggle-1-message='Označit položku jako neaktivní' data-table='items' data-column='active' data-id='{$item["id"]}' class='toggleable tooltip icon-toggle-".($item["active"] ? "on" : "off")."' data-message='".($item["active"] ? "Označit položku jako neaktivní" : "Označit položku jako aktivní")."'></i>";
-					$output .= "</strong>";
+					$output .= "<i data-id='{$item["id"]}' class='icon-image add-image tooltip' data-message='Přidat obrázek'></i>";
 				} else {
-					$output .= "<strong>{$item["itemName"]} ";
+					$output .= "{$item["itemName"]} ";
 					$output .= isset($this->discount) ? "<span class='price'>" . $this->_getItemPrice($item) . ",-</span>" : "";
-					$output .= "</strong>";
 				}
+				$output .= "</strong>";
 			} else {
+				$output .= $item["img"] ? "<a href='" . ZKUSEBNA_IMAGES_URL ."uploaded/". $item["img"] . "' class='magnific image'><img src='" . ZKUSEBNA_IMAGES_URL ."uploaded/". $item["img"] . "' alt='{$item["itemName"]}'/></a>" : "";
 				$output .= "<strong class='reservable-item-{$item["id"]} reservable ";
 				if (isset($item["reservation_name"]) && $item["reservation_name"]) {
 					$output .= "already-reserved' data-name='{$item["reservation_name"]}' data-date-from='" . Zkusebna::parseSQLDate($item["start"]) . "' data-date-to='" . Zkusebna::parseSQLDate($item["end"]) . "'";
 				} else {
 					$output .= "' ";
 				}
-				$output .= "data-id='{$item["id"]}'>{$item["itemName"]}";
+				$output .= "data-id='{$item["id"]}'>";
+				$output .= "{$item["itemName"]}";
 				$output .= "<i class='icon-plus'></i> ";
 				$output .= isset($this->discount) ? "<span class='price'>" . $this->_getItemPrice($item) . ",-</span>" : "";
 				$output .= "</strong>";
 			}
 		} else {
+			$output .= $item["img"] ? "<a href='" . ZKUSEBNA_IMAGES_URL ."uploaded/". $item["img"] . "' class='magnific image'><img src='" . ZKUSEBNA_IMAGES_URL ."uploaded/". $item["img"] . "' alt='{$item["itemName"]}'/></a>" : "";
+			$output .= "<strong class='expandable'>";
 			if ($this->is_admin) {
-				$output .= "<strong class='expandable'><span data-id='{$item["id"]}' data-table='items' data-column='name' class='editable trigger'>{$item["itemName"]}</span> ";
+				$output .= "<span data-id='{$item["id"]}' data-table='items' data-column='name' class='editable trigger'>{$item["itemName"]}</span> ";
 				$output .= "<i data-table='items' data-parent_id='{$item["id"]}' data-category='{$item["category"]}' class='add-new-item trigger icon-plus'></i>";
 				$output .= "<i data-table='items' data-id='{$item["id"]}' data-parent='li:first' class='deletable trigger icon-close'></i>";
 				$output .= "<span class='select-all trigger'>Vybrat vše</span>";
-				$output .= "</strong>";
 
 			} else {
-				$output .= "<strong class='expandable'>{$item["itemName"]}</strong>";
+				$output .= $item["itemName"];
 			}
+			$output .= "</strong>";
 		}
 		return $output;
 	}

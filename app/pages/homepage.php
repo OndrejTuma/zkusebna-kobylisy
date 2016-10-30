@@ -36,12 +36,12 @@ $date2 = new DateTime("2016-03-02 17:00:00");
 
 	<!--a class="button" href="?page=reserve">Rezervovat</a-->
 
-	<div id="calendar"></div>
 	<ul class="legend">
 		<li class="zkusebna">Zkušebna</li>
 		<li class="technika">Technika</li>
 		<li class="nastroje">Nástroje</li>
 	</ul>
+	<div id="calendar"></div>
 
 </main>
 <main id="reserve" class="wrapper" style="display: none;">
@@ -51,18 +51,18 @@ $date2 = new DateTime("2016-03-02 17:00:00");
 			<legend>Zvolte termín vypůjčení</legend>
 			<ul class="table cols-2 pt mbn">
 				<li class="tar pr">
-<!--										<input type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="30.09.2016 08:00"/>-->
+<!--										<input type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="31.10.2016 08:00"/>-->
 					<input class="datetimepicker" data-role="render" type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" placeholder="Datum a čas výpůjčky"/>
 				</li>
 				<li class="tal pl">
-<!--										<input type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="30.09.2016 12:00"/>-->
+<!--										<input type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="31.10.2016 12:00"/>-->
 					<input class="datetimepicker" data-role="render" type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" placeholder="Datum a čas navrácení"/>
 				</li>
 			</ul>
 		</fieldset>
 		<fieldset class="contact">
 			<legend>Vyplňte kontaktní údaje</legend>
-			<ul class="inline-blocks tac pt">
+			<ul class="inline-blocks tac pt pln">
 				<li>
 <!--										<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" value="Mejdan!"/>-->
 					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" />

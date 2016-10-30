@@ -1,3 +1,15 @@
+.mfp-image-holder {
+	img.mfp-img,
+	.mfp-content {
+		padding: 0;
+	}
+	.mfp-close {
+		right: 0;
+		top: -6px;
+		width: auto;
+	}
+}
+
 .popup {
 	@include absolute(0, 0, 0, 0);
 	@include child-middle();

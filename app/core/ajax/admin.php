@@ -28,49 +28,47 @@ switch ($action) {
 			}
 		}
 		else {
-			$target_dir = ZKUSEBNA_ROOT_URL . "../public/dist/images/uploaded/";
-			$target_file = $target_dir . basename($image["name"]);
-			$uploadOk = 1;
-			$imageFileType = pathinfo($target_file, PATHINFO_EXTENSION);
-			$allowed_types = array('jpg','jpeg','png','gif');
-			$max_filesize = 500000;
-
-// Check if image file is a actual image or fake image
-			$check = getimagesize($image["tmp_name"]);
-			if($check !== false) {
-				$uploadOk = 1;
-			} else {
-				$uploadOk = 0;
-			}
-// Check if file already exists
-			if (file_exists($target_file)) {
-				$error =  "Obrázek s tímto názvem ({$image["name"]}) už existuje. Nepřepisujeme:(";
-				$uploadOk = 0;
-			}
-// Check file size
-			if ($image["size"] > $max_filesize) {
-				$error = "Soubor nesmí být větší než " . round($max_filesize/1000) . "MB";
-				$uploadOk = 0;
-			}
-// Allow certain file formats
-			if(!in_array($imageFileType, $allowed_types)) {
-				$error = "Povolené formáty obrázku jsou: " . implode(",", $allowed_types);
-				$uploadOk = 0;
-			}
-// Check if $uploadOk is set to 0 by an error
-			if ($uploadOk == 0) {
-				$output["result"] = false;
-				$output["errorMessage"] = $error;
-// if everything is ok, try to upload file
-			} else {
-				if (move_uploaded_file($image["tmp_name"], $target_file)) {
+			$upload = new Upload($image);
+			if ($upload->uploaded) {
+				$upload->image_resize = true;
+				$upload->image_x = 800;
+				$upload->file_overwrite = true;
+				$upload->image_ratio_y = true;
+				$upload->Process(ZKUSEBNA_ROOT_URL . "../public/dist/images/uploaded/");
+				if ($upload->processed) {
 					$output["result"] = $admin->addItem($name, $image["name"], $price, $reservable, $category, $parent_id);
-					if (!$output["result"]) {
-						$output["errorMessage"] = "Nepodařilo se přidat položku do databáze";
-					}
+					$upload->Clean();
 				} else {
 					$output["result"] = false;
-					$output["errorMessage"] = "Sorry, there was an error uploading your file.";
+					$output["errorMessage"] = "Stala se chyba: " . $upload->error;
+				}
+			}
+		}
+
+		break;
+	case "addImage":
+		$image = isset($_FILES["image"]) ? $_FILES["image"] : "";
+		$item_id = isset($_POST["item_id"]) ? $_POST["item_id"] : "";
+
+		if (empty($image["name"])) {
+			$output["errorMessage"] = "Není vyplněný obrázek";
+		}
+		else {
+			// https://github.com/verot/class.upload.php/blob/master/README.md
+			$upload = new Upload($image);
+			if ($upload->uploaded) {
+				$upload->image_resize = true;
+				$upload->image_x = 800;
+				$upload->file_overwrite = true;
+				$upload->image_ratio_y = true;
+				$upload->Process(ZKUSEBNA_ROOT_URL . "../public/dist/images/uploaded/");
+				if ($upload->processed) {
+					$output["result"] = $admin->addImage($image["name"], $item_id);
+
+					$upload->Clean();
+				} else {
+					$output["result"] = false;
+					$output["errorMessage"] = "Stala se chyba: " . $upload->error;
 				}
 			}
 		}

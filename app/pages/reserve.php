@@ -23,7 +23,7 @@
 		</fieldset>
 		<fieldset class="contact">
 			<legend>Vyplňte kontaktní údaje</legend>
-			<ul class="inline-blocks tac pt">
+			<ul class="inline-blocks tac pt pln">
 				<li>
 <!--					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" value="Mejdan!"/>-->
 					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" />

@@ -28,8 +28,8 @@ $.datetimepicker.setLocale('cs');
 			reserved: "reserved"
 		},
 		_urls: {
-			//ajax: "../../../app/core/ajax/"
-			ajax: "/zkusebna-kobylisy/app/core/ajax/"
+			ajax: "../../../app/core/ajax/"
+			//ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
 		_dateFormats: {
 			//dateTime: 'DD.MM.YYYY H:mm',
@@ -88,7 +88,10 @@ $.datetimepicker.setLocale('cs');
 
 				$(this).addClass(self._classes.active);
 				$(this.hash).fadeIn();
-
+			});
+			$('body').magnificPopup({
+				delegate: 'a.magnific',
+				type:'image'
 			});
 
 		},
@@ -119,6 +122,7 @@ $.datetimepicker.setLocale('cs');
 					else {
 						$(this).addClass(self._classes.active);
 						$("+ ul", this).addClass(self._classes.active);
+						$('html, body').stop().animate({scrollTop: $(this).offset().top}, 1000);
 					}
 
 				});
@@ -190,6 +194,7 @@ $.datetimepicker.setLocale('cs');
 
 			this.$wrappers = {
 				admin: $("#admin"),
+				addImage: $("#add-image"),
 				addItem: $("#add-item"),
 				addPurpose: $("#add-purpose"),
 				editPurpose: $("#edit-purpose"),
@@ -200,6 +205,7 @@ $.datetimepicker.setLocale('cs');
 			};
 
 			this._addItemHandler();
+			this._addImageHandler();
 			this._renderDashboard();
 			this._approveHandler();
 			this._deleteHandler();
@@ -296,6 +302,76 @@ $.datetimepicker.setLocale('cs');
 						context.active = false;
 					});
 				}
+			});
+		},
+		_addImageHandler: function() {
+			var self = this,
+				$form = this.$wrappers.addImage;
+
+			$form.remove();
+
+			this.$wrappers.items.on('click', '.add-image', function(e) {
+				e.preventDefault();
+				var item_id = $(this).data('id'),
+					$target = $(e.target);
+
+				$('body').append($form.fadeIn().css({
+					top: $target.offset().top,
+					left: $target.offset().left
+				}));
+				$form.on('click', '.close', function() {
+					$(this).parents('form').fadeOut(function() {
+						$(this).remove();
+					})
+				}).on('submit', function(e) {
+					e.preventDefault();
+
+					var formData = new FormData($form[0]);
+					formData.append("item_id", item_id);
+					formData.append("action", "addImage");
+
+					$.ajax({
+						url: Zkusebna._urls.ajax + 'admin.php',
+						type: 'POST',
+						xhr: function() {  // Custom XMLHttpRequest
+							var myXhr = $.ajaxSettings.xhr();
+							if(myXhr.upload){ // Check if upload property exists
+								myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+							}
+							return myXhr;
+						},
+						beforeSend: function() {
+							$form.addClass('progress');
+						},
+						success: function(data) {
+							$form.removeClass('progress');
+							if (data.result) {
+								alert("Uloženo!");
+								$form.fadeOut(function() {
+									$(this).remove();
+								});
+							}
+							else {
+								alert(data.errorMessage || 'Došlo k chybě. Zkontrolujte, že nahráváte obrázek');
+							}
+						},
+						error: function(data) {
+							$form.removeClass('progress');
+							alert(data.errorMessage || 'Došlo k chybě. Zkontrolujte, že nahráváte obrázek');
+						},
+						data: formData,
+						//Options to tell jQuery not to process data or worry about content-type.
+						cache: false,
+						contentType: false,
+						processData: false
+					});
+					function progressHandlingFunction(e){
+						if(e.lengthComputable){
+							$form.find('progress').attr({value:e.loaded,max:e.total});
+						}
+					}
+
+				});
 			});
 		},
 		_addItemHandler: function() {
@@ -431,11 +507,18 @@ $.datetimepicker.setLocale('cs');
 						$(this));
 				}
 				else {
-					var $popup = $("<div class='popup'><span class='close icon-close'></span><form action='' class='delete-reason'><textarea id='delete-reason' name='delete-reason' placeholder='Důvod zrušení rezervace?'></textarea><button class='button' type='submit'>Zamítnout a odeslat email</button></form></div>");
+					var maxLength = 300,
+						$popup = $("<div class='popup'><span class='close icon-close'></span><form action='' class='delete-reason'><textarea id='delete-reason' name='delete-reason' placeholder='Důvod zrušení rezervace?'></textarea><p>Zbývá <em>"+maxLength+"</em> znaků</p><button class='button' type='submit'>Zamítnout a odeslat email</button></form></div>");
 
 					$('body').append($popup);
 
 					$popup.find('#delete-reason').focus();
+					$popup.find('textarea').on('keyup', function(e) {
+						if (maxLength - $(this).val().length < 0) {
+							$(this).val($(this).val().substring(0, maxLength));
+						}
+						$(this).next().find('em').text(maxLength - $(this).val().length);
+					});
 					$popup.find('form').on('submit', function(e) {
 						e.preventDefault();
 						data.reason = $popup.find("#delete-reason").val();
@@ -663,9 +746,9 @@ $.datetimepicker.setLocale('cs');
 				this.$calendar.fullCalendar({
 					eventLimit: true,
 					header: {
-						left: 'prev,next',
+						left: '',
 						center: 'title',
-						right: 'today'
+						right: 'prev,next,today'
 						//right: 'month,agendaWeek,agendaDay'
 					},
 					lang: "cs",
@@ -940,6 +1023,7 @@ $.datetimepicker.setLocale('cs');
 			output += "<div class='finish'><span class='button--red'>Zrušit</span><span class='button--white'>Odeslat</span></div>";
 
 			this.$wrappers.reservedItems.html(output);
+
 		},
 		_getReservedItemsPrice: function() {
 			var price = 0;

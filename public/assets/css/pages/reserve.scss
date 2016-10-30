@@ -18,8 +18,10 @@
 		padding-left: 45px;
 	}
 
+	.add-image,
 	.add-new-item,
-	.deletable {
+	.deletable,
+	.toggleable {
 		display: none;
 	}
 
@@ -29,6 +31,10 @@
 			font-size: $font-size-great;
 		}
 
+	}
+
+	@media #{$mobile} {
+		padding-top: 0;
 	}
 
 }
@@ -63,6 +69,9 @@
 
 		span {
 			border-radius: 0;
+			font-size: .9em;
+			height: 25px;
+			line-height: 25px;
 			min-width: 50px;
 			padding: 0;
 			width: 50%;
@@ -122,8 +131,6 @@
 
 
 	@media #{$mobile} {
-
 		max-height: 50%;
-
 	}
 }

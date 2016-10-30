@@ -11,12 +11,16 @@
 		visibility: hidden;
 	}
 	.editable {
-
 		input {
 			height: 27px;
 			margin-top: -5px;
 		}
-
+	}
+	.icon-toggle-on {
+		color: $christi;
+	}
+	.icon-toggle-off {
+		color: $fire-engine-red;
 	}
 	.select-all {
 		display: none;
@@ -53,7 +57,8 @@
 	}
 
 }
-#add-item {
+
+.add-form {
 	background: $white;
 	box-shadow: 0 0 30px rgba($black, .5);
 	display: none;

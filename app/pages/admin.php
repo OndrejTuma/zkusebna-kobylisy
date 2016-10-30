@@ -14,7 +14,7 @@
 	}
 
 	if ($admin->is_logged()): ?>
-		<p class="fl"><a href="?page=reserve" class="button">Rezervace</a></p>
+		<p class="fl"><a href="/" class="button">Rezervace</a></p>
 		<p class="fr"><a href="?page=admin&logout" class="button--red">Odhlásit</a></p>
 
 		<h2 class="clear">Rezervace ke schválení</h2>
@@ -45,7 +45,7 @@
 		<div id="edit-purpose"></div>
 
 		<h2>Správa položek</h2>
-		<form method="post" id="add-item" enctype="multipart/form-data">
+		<form method="post" id="add-item" class="add-form" enctype="multipart/form-data">
 			<h3>Přidat novou položku</h3>
 			<input type="text" name="name" placeholder="Název"/>
 			<input type="text" name="price" placeholder="Cena"/>
@@ -54,6 +54,13 @@
 				<input id="item-reservable" type="checkbox" name="reservable" checked="checked"/>
 				<label for="item-reservable">Rezervovatelná <small>(nerezervovatelná položka bude braná jako podkategorie)</small></label>
 			</div>
+			<progress></progress>
+			<button type="submit">Uložit</button>
+			<span class="close icon-close"></span>
+		</form>
+		<form method="post" id="add-image" class="add-form" enctype="multipart/form-data">
+			<h3>Přidat nový obrázek</h3>
+			<input type="file" name="image" placeholder="Obrázek"/>
 			<progress></progress>
 			<button type="submit">Uložit</button>
 			<span class="close icon-close"></span>

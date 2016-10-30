@@ -1,0 +1,7 @@
+.qtip {
+
+
+	@media #{$mobile} {
+		display: none !important;
+	}
+}

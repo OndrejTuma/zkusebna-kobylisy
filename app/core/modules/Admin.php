@@ -27,6 +27,11 @@ class Admin extends Zkusebna {
 		return false;
 	}
 
+	public function addImage($image, $item_id) {
+		$query = "UPDATE {$this->table_names["items"]} SET image = '{$image}' WHERE id = {$item_id}";
+		return $this->sql->query($query);
+	}
+
 	public function addPurpose($purpose, $discount) {
 		$query = "SELECT title FROM {$this->table_names["purpose"]} WHERE title = '{$purpose}'";
 		$rows = $this->sql->num_rows($query);

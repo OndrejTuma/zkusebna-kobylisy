@@ -85,9 +85,9 @@ else {
 			<p>toto je předběžná rekapitulace rezervace <strong>{$reservation_name}</strong> v Kobyliské zkušebně.</p>
 			<p style=\"text-align: center; margin: 50px auto;\"><strong style=\"color: #cc2229;\">Čeká na schválení!</strong></p>
 			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
+			".($price_total > 0 ? "
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>
-				".($price_total > 0 ? "
 				<tr>
 					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Cena:</td>
 					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$price_total},-</th>
@@ -95,9 +95,9 @@ else {
 				<tr>
 					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>1242882944 / 2310 </strong> (preferujeme), nebo hotově správci zkušebny.</td >
 				</tr>
-				" : "")."
 				</tbody>
 			</table>
+			" : "")."
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>
 				<tr>
@@ -143,7 +143,7 @@ else {
 	</tr>
 	</tbody>
 </table>
-", array('email' => 'no-reply@zkusebna-kobylisy.cz', 'name' => 'Zkušebna Kobylisy'));
+");
 
 		$output = array(
 			"result" => "success",

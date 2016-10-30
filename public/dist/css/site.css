@@ -3419,8 +3419,8 @@ The `sprites` mixin generates identical output to the CSS template
 */
 @font-face {
   font-family: "zkusebna";
-  src: url("../icons/fonts/zkusebna.eot?-chkwa3");
-  src: url("../icons/fonts/zkusebna.eot?#iefix-chkwa3") format("embedded-opentype"), url("../icons/fonts/zkusebna.woff?-chkwa3") format("woff"), url("../icons/fonts/zkusebna.ttf?-chkwa3") format("truetype"), url("../icons/fonts/zkusebna.svg?-chkwa3#zkusebna") format("svg");
+  src: url("../icons/fonts/zkusebna.eot?-chkwa5");
+  src: url("../icons/fonts/zkusebna.eot?#iefix-chkwa5") format("embedded-opentype"), url("../icons/fonts/zkusebna.woff?-chkwa5") format("woff"), url("../icons/fonts/zkusebna.ttf?-chkwa5") format("truetype"), url("../icons/fonts/zkusebna.svg?-chkwa5#zkusebna") format("svg");
   font-weight: normal;
   font-style: normal; }
 
@@ -5817,6 +5817,9 @@ The `sprites` mixin generates identical output to the CSS template
   100% {
     transform: rotate(360deg); } }
 
+.icon-image:before {
+  content: "\e910"; }
+
 .icon-edit:before {
   content: "\e90f"; }
 
@@ -6127,6 +6130,9 @@ a.button--white:hover {
   margin: 0 auto;
   max-width: 1000px;
   padding: 20px 50px; }
+  @media only screen and (max-width: 768px) {
+    .wrapper {
+      padding: 20px 10px; } }
 
 #admin .archive {
   margin-left: 50px; }
@@ -6156,6 +6162,12 @@ a.button--white:hover {
 #admin .editable input {
   height: 27px;
   margin-top: -5px; }
+
+#admin .icon-toggle-on {
+  color: #67a712; }
+
+#admin .icon-toggle-off {
+  color: #cc2229; }
 
 #admin .select-all {
   display: none; }
@@ -6190,7 +6202,7 @@ a.button--white:hover {
 #repeated-reservations li i.approve {
   display: none; }
 
-#add-item {
+.add-form {
   background: #fff;
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
   display: none;
@@ -6198,9 +6210,9 @@ a.button--white:hover {
   position: absolute;
   text-align: center;
   width: 300px; }
-  #add-item.progress progress {
+  .add-form.progress progress {
     opacity: 1; }
-  #add-item .close {
+  .add-form .close {
     position: absolute;
     top: 10px;
     left: auto;
@@ -6214,20 +6226,20 @@ a.button--white:hover {
     font-size: 20px;
     color: rgba(0, 0, 0, 0.5);
     cursor: pointer; }
-    #add-item .close:hover {
+    .add-form .close:hover {
       color: #000; }
-  #add-item input,
-  #add-item progress {
+  .add-form input,
+  .add-form progress {
     display: block;
     margin: 1em auto;
     width: 100%; }
-  #add-item h3 {
+  .add-form h3 {
     position: absolute;
     top: 0;
     left: 10px;
     bottom: auto;
     right: auto; }
-  #add-item progress {
+  .add-form progress {
     -webkit-transition: opacity 0.5s;
     -moz-transition: opacity 0.5s;
     -ms-transition: opacity 0.5s;
@@ -6251,6 +6263,15 @@ a.button--white:hover {
 #items li ul {
   display: block; }
 
+#homepage .legend {
+  margin-bottom: -40px; }
+
+@media only screen and (max-width: 768px) {
+  #homepage {
+    padding-top: 0; }
+    #homepage .legend {
+      margin-bottom: 1em; } }
+
 #items-wrapper.loading {
   opacity: .5; }
 
@@ -6263,12 +6284,18 @@ a.button--white:hover {
 #reserve #repeat {
   padding-left: 45px; }
 
+#reserve .add-image,
 #reserve .add-new-item,
-#reserve .deletable {
+#reserve .deletable,
+#reserve .toggleable {
   display: none; }
 
 #reserve fieldset.date input {
   font-size: 20px; }
+
+@media only screen and (max-width: 768px) {
+  #reserve {
+    padding-top: 0; } }
 
 #reserved-items-wrapper {
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
@@ -6319,6 +6346,9 @@ a.button--white:hover {
     padding: 5px 0; }
     #reserved-items-wrapper .finish span {
       border-radius: 0;
+      font-size: .9em;
+      height: 25px;
+      line-height: 25px;
       min-width: 50px;
       padding: 0;
       width: 50%; }
@@ -6375,6 +6405,21 @@ a.button--white:hover {
   @media only screen and (max-width: 768px) {
     #reserved-items-wrapper {
       max-height: 50%; } }
+
+.fc-button {
+  background: none;
+  border: 1px solid #b8860b;
+  border-radius: 0 !important;
+  transition: background .3s; }
+  .fc-button:hover {
+    background: #f6f6f6; }
+  .fc-button.fc-state-disabled {
+    border-color: #8d8c8c;
+    cursor: default; }
+
+@media only screen and (max-width: 768px) {
+  .fc-day-grid-container {
+    height: auto !important; } }
 
 .fc-event-container {
   cursor: pointer; }
@@ -6561,6 +6606,17 @@ ul.item-list {
     ul.item-list .expandable.category-empty {
       background-color: #808080 !important;
       cursor: default; }
+  ul.item-list .image {
+    height: 30px;
+    width: 30px;
+    background-color: #8d8c8c;
+    border-radius: 50%;
+    display: inline-block;
+    left: -25px;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    z-index: 1; }
   ul.item-list .reservable {
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -6796,6 +6852,10 @@ noscript {
   max-width: 1000px;
   padding: 20px; }
 
+@media only screen and (max-width: 768px) {
+  .qtip {
+    display: none !important; } }
+
 .reservation-list.percentage em:after {
   content: '%'; }
 
@@ -6955,6 +7015,15 @@ noscript {
 .fc-view-container {
   position: relative; }
 
+.mfp-image-holder img.mfp-img,
+.mfp-image-holder .mfp-content {
+  padding: 0; }
+
+.mfp-image-holder .mfp-close {
+  right: 0;
+  top: -6px;
+  width: auto; }
+
 .popup {
   position: absolute;
   top: 0;
@@ -7020,6 +7089,7 @@ noscript {
   border-bottom: 1px solid #b8860b;
   list-style: none;
   margin: 50px auto 1em !important;
+  padding: 0;
   text-align: center; }
   .tabs a {
     -webkit-transition: all 0.3s;
@@ -7028,7 +7098,7 @@ noscript {
     -o-transition: all 0.3s;
     transition: all 0.3s;
     border: 1px solid transparent;
-    border-radius: 5px 5px 0 0;
+    border-radius: 0;
     display: inline-block;
     font-size: 1.5em;
     line-height: 50px;
@@ -7047,6 +7117,11 @@ noscript {
         background-color: transparent; }
   .tabs li {
     display: inline-block; }
+  @media only screen and (max-width: 768px) {
+    .tabs a {
+      font-size: 1em;
+      line-height: 30px;
+      padding: 0 10px; } }
 
 body,
 html {
@@ -7069,6 +7144,9 @@ body {
     content: '';
     position: fixed;
     z-index: -1; }
+  @media only screen and (max-width: 768px) {
+    body {
+      background-image: none; } }
 
 * {
   box-sizing: border-box; }

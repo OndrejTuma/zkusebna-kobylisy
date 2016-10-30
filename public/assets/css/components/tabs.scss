@@ -6,12 +6,13 @@
 	border-bottom: 1px solid $borders-color;
 	list-style: none;
 	margin: 50px auto 1em !important;
+	padding: 0;
 	text-align: center;
 
 	a {
 		@include transition(all .3s);
 		border: 1px solid transparent;
-		border-radius: 5px 5px 0 0;
+		border-radius: 0;
 		display: inline-block;
 		font-size: 1.5em;
 		line-height: 50px;
@@ -36,5 +37,13 @@
 	}
 	li {
 		display: inline-block;
+	}
+
+	@media #{$mobile} {
+		a {
+			font-size: 1em;
+			line-height: 30px;
+			padding: 0 10px;
+		}
 	}
 }

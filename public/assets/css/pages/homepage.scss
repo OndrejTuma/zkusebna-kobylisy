@@ -1,0 +1,15 @@
+#homepage {
+
+	.legend {
+		margin-bottom: -40px;
+	}
+
+	@media #{$mobile} {
+		padding-top: 0;
+
+		.legend {
+			margin-bottom: $margin--default;
+		}
+	}
+
+}

@@ -18,6 +18,10 @@ body {
 		position: fixed;
 		z-index: -1;
 	}
+
+	@media #{$mobile} {
+		background-image: none;
+	}
 }
 
 * {

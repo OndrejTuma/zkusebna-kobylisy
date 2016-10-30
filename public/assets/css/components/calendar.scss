@@ -1,3 +1,22 @@
+.fc-button {
+	background: none;
+	border: 1px solid $zkusebna-color;
+	border-radius: 0 !important;
+	transition: background .3s;
+
+	&:hover {
+		background: #f6f6f6;
+	}
+	&.fc-state-disabled {
+		border-color: $stack;
+		cursor: default;
+	}
+}
+.fc-day-grid-container {
+	@media #{$mobile} {
+		height: auto !important;
+	}
+}
 .fc-event-container {
 	cursor: pointer;
 }

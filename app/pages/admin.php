@@ -14,7 +14,7 @@
 	}
 
 	if ($admin->is_logged()): ?>
-		<p class="fl"><a href="/" class="button">Rezervace</a></p>
+		<p class="fl"><a href="<?= ZKUSEBNA_APACHE_ROOT_URL ?>" class="button">Rezervace</a></p>
 		<p class="fr"><a href="?page=admin&logout" class="button--red">Odhlásit</a></p>
 
 		<h2 class="clear">Rezervace ke schválení</h2>

@@ -80,7 +80,7 @@ class Items extends Zkusebna
 			$this->discount = $discount_row ? $discount_row[0]["discount"] : null;
 		}
 
-		$query = "SELECT id, name as itemName, active, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} WHERE active = 1 ORDER BY parent_id, itemName";
+		$query = "SELECT id, name as itemName, active, image as img, price, reservable, category, parent_id FROM {$this->table_names["items"]} ".(!$is_admin ? "WHERE active = 1" : "")." ORDER BY parent_id, itemName";
 		$this->items = $this->sql->field_assoc($query);
 
 		if (!$this->preview) {

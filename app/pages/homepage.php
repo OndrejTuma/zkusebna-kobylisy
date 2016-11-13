@@ -15,17 +15,18 @@ $date2 = new DateTime("2016-03-02 17:00:00");
 
 
 	<h1>Vítejte na rezervační stránce kobyliské zkušebny</h1>
-	<p>Tyto stránky slouží jako rezervační systém <strong>pouze pro potřeby farnosti</strong>, farníků nebo po dohodě se správcem zkušebny (viz. kontakt níže).</p>
-	<p>Zde si můžete k zapůjčení rezervovat zkušebnu, zvukovou techniku a hudební nástroje.</p>
+	<p>Tyto stránky slouží jako rezervační systém <strong>pouze pro potřeby farnosti Kobylisy</strong> nebo výjimečně po dohodě se správcem zkušebny i jiným zájemcům.</p>
+	<p>Zde si můžete k zapůjčení rezervovat zkušebnu, zvukovou techniku a hudební nástroje.</p>
 	<h2>Jak rezervovat</h2>
 	<ol>
-		<li>Zvolte si datum a čas rezervace - u položek uvidíte, zda je možné je rezervovat</li>
-		<li>Vyplňte všechny požadované údaje jako název akce, jméno, kontakt a účel rezervace</li>
-		<li>Vyberte si položky</li>
-		<li>Rezervaci odešlete</li>
+		<li>V kalendáři zjistěte, zda váš termín nekoliduje s jinou rezervací.</li>
+		<li>Zvolte si datum a čas rezervace.</li>
+		<li>Vyplňte všechny požadované údaje jako název akce (např. svatba Josefky Novákové), jméno a kontakt toho, kdo si rezervuje a účel rezervace.</li>
+		<li>Vyberte si položky (u položek uvidíte, zda je možné je rezervovat).</li>
+		<li>Rezervaci odešlete a vyčkejte na její schválení.</li>
 		<li>Platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme) nebo hotově správci zkušebny</li>
 	</ol>
-	<p>Pomoc a dotazy na <strong>zkusebna.kobylisy@centrum.cz</strong></p>
+	<p>Pomoc, dotazy a připomínky na <strong>zkusebna.kobylisy@centrum.cz</strong></p>
 
 	<ul class="tabs">
 		<li><a class="active" href="#homepage">Kalendář</a></li>

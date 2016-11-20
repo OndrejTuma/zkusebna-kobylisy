@@ -54,8 +54,10 @@ class Admin extends Zkusebna {
 			$items = new Items();
 			$items = $items->getItemsById($Reservation->getReservationItems($reservationId));
 			$price = array_reduce($items, function($carry, $item) { return $carry + $item['price']; });
-			$price_total = $price * (100 - (int)$reservation->getDiscount()) / 100;
 			array_walk($items, function(&$item) { $item = $item["name"]; });
+
+			$price_total = $price * (100 - (int)$Reservation->getDiscount($reservationId)) / 100;
+
 			Zkusebna::sendMail($reservation["email"], "Rezervace byla schválena", "
 <table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
 	<tbody>
@@ -85,7 +87,7 @@ class Admin extends Zkusebna {
 				</tr>
 				".($price_total > 0 ? "
 				<tr>
-					<td style=\"text - align: right; border - bottom: 1px dashed #000; padding: 10px;\">Cena:</td>
+					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Cena:</td>
 					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$price_total},-</th>
 				</tr>
 				<tr>
@@ -184,7 +186,7 @@ class Admin extends Zkusebna {
 		return $this->sql->query($query);
 	}
 	public function renderApprovedReservations() {
-		return $this->_renderReservations($this->_getReservarvations("repetition IS NULL AND approved = 1"));
+		return $this->_renderReservations($this->_getReservarvations("repetition IS NULL AND approved = 1", 'ASC'));
 	}
 	public function renderItems() {
 		$items = new Items();
@@ -197,7 +199,7 @@ class Admin extends Zkusebna {
 		return $this->_renderReservations($this->_getReservarvations("repetition IS NULL AND approved = 0"));
 	}
 
-	private function _getReservarvations($where, $limit = 500) {
+	private function _getReservarvations($where, $order_by = 'DESC', $limit = 500) {
 		$query = "
 SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, r.name as reservation_name, purpose as purpose_id, email, phone, image, payed, date_from, date_to, (date_to < NOW()) as archived, price, discount, title as purpose, repeat_to FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
@@ -206,7 +208,7 @@ LEFT JOIN {$this->table_names["community"]} as c ON c.id = r.who
 LEFT JOIN {$this->table_names["purpose"]} as p ON p.id = r.purpose
 LEFT JOIN {$this->table_names["r-r"]} as rr ON rr.id = r.repetition
 WHERE {$where}
-ORDER BY date_to DESC
+ORDER BY date_to {$order_by}
 LIMIT {$limit}
 ";
 		$reservations = array();

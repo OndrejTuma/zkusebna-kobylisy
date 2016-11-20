@@ -148,6 +148,8 @@ switch ($action) {
 		$items = $items->getItemsById($Reservation->getReservationItems($reservationId));
 		$price = array_reduce($items, function($carry, $item) { return $carry + $item['price']; });
 		array_walk($items, function(&$item) { $item = $item["name"]; });
+
+		$price_total = $price * (100 - (int)$Reservation->getDiscount($reservationId)) / 100;
 		
 		Zkusebna::sendMail($reservation["email"], "Rezervace byla změněna", "
 <table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
@@ -161,10 +163,12 @@ switch ($action) {
 			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">
 				<tbody>
+				".($price_total > 0 ? "
 				<tr>
 					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Cena:</td>
-					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".($price * (100 - (int)$Reservation->getDiscount($reservationId)) / 100)."</th>
+					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$price_total},-</th>
 				</tr>
+				" : "")."
 				<tr>
 					<td style=\"text-align: right; border-bottom: 1px dashed #000; padding: 10px;\">Datum:</td>
 					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">".Zkusebna::parseSQLDate($reservation["date_from"])." - ".Zkusebna::parseSQLDate($reservation["date_to"])."</th>

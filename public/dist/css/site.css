@@ -6247,13 +6247,16 @@ a.button--white:hover {
     transition: opacity 0.5s;
     opacity: 0; }
 
-.delete-reason {
+.delete-reason,
+.edit-reason {
   background-color: #fff;
   padding: 30px; }
-  .delete-reason button {
+  .delete-reason button,
+  .edit-reason button {
     border: none;
     float: right; }
-  .delete-reason textarea {
+  .delete-reason textarea,
+  .edit-reason textarea {
     display: block;
     height: 100px;
     margin-bottom: 1em;

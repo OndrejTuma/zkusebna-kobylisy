@@ -5287,7 +5287,7 @@ $.datetimepicker.setLocale('cs');
 			reserved: "reserved"
 		},
 		_urls: {
-			ajax: "../../../app/core/ajax/"
+			ajax: AJAX_URL
 			//ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
 		_dateFormats: {
@@ -5476,32 +5476,59 @@ $.datetimepicker.setLocale('cs');
 		},
 
 		_editedHandler: function() {
-			//var reservationId = $
+			var self = this;
+
 			this.$wrappers.admin.on("click", ".edited", function() {
 
-				if (!confirm("Jste si jisti? (doporučuju použít enter nebo esc)")) return;
-					
 				var reservationId = parseInt($(this).attr('data-item')),
-					$self = $(this);
+					$self = $(this),
+					maxLength = 300,
+					$popup = $("<div class='popup'><span class='close icon-close'></span><form action='' class='edit-reason'><textarea id='edit-reason' name='edit-reason' placeholder='Co/proč se změnilo?'></textarea><p>Zbývá <em>"+maxLength+"</em> znaků</p><button class='button' type='submit'>Odeslat email</button></form></div>");
 
-				$self.qtip('option', 'content.text', '...');
+				$('body').append($popup);
 
-				if (reservationId) {
-					Zkusebna._request("admin.php", {
-						action: 'emailReservationChange',
-						reservationId: reservationId
-					}, function(data) {
-						if (data.error) {
-							alert(data.error);
-						}
-						else {
-							$self.qtip('option', 'content.text', 'Email byl odeslán');
-						}
+				$popup.find('#edit-reason').focus();
+				$popup.find('textarea').on('keyup', function(e) {
+					if (maxLength - $(this).val().length < 0) {
+						$(this).val($(this).val().substring(0, maxLength));
+					}
+					$(this).next().find('em').text(maxLength - $(this).val().length);
+				});
+				$popup.find('form').on('submit', function(e) {
+					e.preventDefault();
 
-						setTimeout(function() {
-							$self.qtip('option', 'content.text', $self.attr('data-message'));
-						}, 3000);
-					});
+					if (reservationId) {
+						Zkusebna._request("admin.php", {
+							action: 'emailReservationChange',
+							reservationId: reservationId,
+							reason: $popup.find("#edit-reason").val()
+						}, function(data) {
+							if (data.error) {
+								alert(data.error);
+							}
+							else {
+								$self.qtip('option', 'content.text', 'Email byl odeslán');
+							}
+
+							setTimeout(function() {
+								$self.qtip('option', 'content.text', $self.attr('data-message'));
+							}, 3000);
+						});
+					}
+					else {
+						alert('Nastala interní chyba systému. Kontaktujte Ondru! ' + reservationId);
+					}
+					hideContext();
+				});
+				$popup.find('.close').on('click', function(e) {
+					e.preventDefault();
+					hideContext();
+				});
+
+				function hideContext() {
+					$popup.fadeOut(function() {
+						$popup.remove();
+					})
 				}
 			});
 		},

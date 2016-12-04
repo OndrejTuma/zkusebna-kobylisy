@@ -136,6 +136,7 @@ switch ($action) {
 	case "emailReservationChange":
 
 		$reservationId = isset($_POST["reservationId"]) ? (int)$_POST["reservationId"] : "";
+		$reason = isset($_POST["reason"]) ? $_POST["reason"] : "";
 		$Reservation = new Reservation();
 		$reservation = $Reservation->getReservationById($reservationId);
 		
@@ -158,7 +159,8 @@ switch ($action) {
 		<td>
 			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Dobrý den,</h2>
 			<p>vaše rezervace <strong style=\"color: #cc2229;\">{$reservation["reservation_name"]}</strong> byla upravena správcem zkušebny.</p>
-			<p><strong>Zkontrolujte si prosím položky a cenu rezervace.</strong></p>
+			".($reason ? "<h4 style='margin: 30px 0; text-align: center;'>$reason</h4>" : "")."
+			<p>Zkontrolujte si prosím položky a cenu rezervace.</p>
 			<br>
 			<p>Pokud to není vaše rezervace, napište správci zkušebny odpovědí na tento email.</p>
 			<table class=\"list\" cellspacing=\"0\" cellpadding=\"0\" style=\"margin: 50px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px; background: #efefef; padding: 30px; box-shadow: inset 0 0 5px 5px #fff;\">

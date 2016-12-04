@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 include_once("app/core/inc/bootstrap.php");
 
 $sql = new mysql();
@@ -13,12 +12,18 @@ $auth = new AuthAdmin();
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Zkušebna Kobylisy</title>
+	<?php /*?>
 	<link rel="stylesheet" href="<?= ZKUSEBNA_CSS_URL; ?>site.css?21022015"/>
+	<?php */?>
+	<link rel="stylesheet" href="<?= ZKUSEBNA_CSS_URL; ?>site.min.css?03122016"/>
 </head>
 <body<?= $auth->is_logged() ? ' class="admin-logged"' : '' ?>>
 <noscript>
 	<p>Bez javascriptu se na této stránce nepohnete</p>
 </noscript>
+<script type="text/javascript">
+	var AJAX_URL = '<?= ZKUSEBNA_APACHE_ROOT_URL ?>app/core/ajax/';
+</script>
 
 <?php
 
@@ -33,6 +38,9 @@ switch ($page) {
 }
 ?>
 
+<?php /*?>
 <script type="text/javascript" src="<?= ZKUSEBNA_JS_URL; ?>all.js?<?= time() ?>"></script>
+<?php */?>
+<script type="text/javascript" src="<?= ZKUSEBNA_JS_URL; ?>all.min.js?03122016"></script>
 </body>
 </html>

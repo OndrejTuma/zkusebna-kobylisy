@@ -28,7 +28,7 @@ $.datetimepicker.setLocale('cs');
 			reserved: "reserved"
 		},
 		_urls: {
-			ajax: "../../../app/core/ajax/"
+			ajax: AJAX_URL
 			//ajax: "/zkusebna-kobylisy/app/core/ajax/"
 		},
 		_dateFormats: {

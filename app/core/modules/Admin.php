@@ -91,7 +91,7 @@ class Admin extends Zkusebna {
 					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$price_total},-</th>
 				</tr>
 				<tr>
-					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>1242882944 / 2310 </strong> (preferujeme), nebo hotově správci zkušebny.</td >
+					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>1242882944 / 2310 </strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce</strong>.<br>Nebo hotově správci zkušebny.</td >
 				</tr>
 				" : "")."
 				<tr>
@@ -209,7 +209,7 @@ LEFT JOIN {$this->table_names["purpose"]} as p ON p.id = r.purpose
 LEFT JOIN {$this->table_names["r-r"]} as rr ON rr.id = r.repetition
 WHERE {$where}
 ORDER BY date_to {$order_by}
-LIMIT {$limit}
+/*LIMIT {$limit}*/
 ";
 		$reservations = array();
 		foreach ($this->sql->field_assoc($query) as $reservation) {

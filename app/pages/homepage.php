@@ -1,10 +1,3 @@
-<?php
-
-$date = new DateTime("2016-03-01 16:00:00");
-$date2 = new DateTime("2016-03-02 17:00:00");
-
-?>
-
 <div class="wrapper">
 	<?php if($auth->is_logged()): ?>
 		<!--a class="button" href="?page=admin">Zpět</a-->
@@ -24,7 +17,7 @@ $date2 = new DateTime("2016-03-02 17:00:00");
 		<li>Vyplňte všechny požadované údaje jako název akce (např. svatba Josefky Novákové), jméno a kontakt toho, kdo si rezervuje a účel rezervace.</li>
 		<li>Vyberte si položky (u položek uvidíte, zda je možné je rezervovat).</li>
 		<li>Rezervaci odešlete a vyčkejte na její schválení.</li>
-		<li>Případnou platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme) nebo hotově správci zkušebny.</li>
+		<li>Případnou platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce</strong>.<br>Nebo hotově správci zkušebny.</li>
 	</ol>
 	<p class="h2">Pomoc, dotazy a připomínky na <strong>zkusebna.kobylisy@centrum.cz</strong></p>
 

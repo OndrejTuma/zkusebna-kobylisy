@@ -11,9 +11,9 @@ function __autoload($className){
 	}
 }
 
-//define("ZKUSEBNA_ROOT_URL", $_SERVER["DOCUMENT_ROOT"]. "/domains/kuchynsky-tym.cz/zkusebna-kobylisy/app/");
+//define("ZKUSEBNA_ROOT_URL", $_SERVER["DOCUMENT_ROOT"]. "/rezervace/app/");
 define("ZKUSEBNA_ROOT_URL", $_SERVER["DOCUMENT_ROOT"] . "/app/");
-//define("ZKUSEBNA_APACHE_ROOT_URL", "/zkusebna-kobylisy/");
+//define("ZKUSEBNA_APACHE_ROOT_URL", "/rezervace/");
 define("ZKUSEBNA_APACHE_ROOT_URL", "/");
 
 define("ZKUSEBNA_INC_URL", ZKUSEBNA_ROOT_URL . "core/inc/");

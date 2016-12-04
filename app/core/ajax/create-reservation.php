@@ -93,7 +93,7 @@ else {
 					<th style=\"text-align: left; border-bottom: 1px dashed #000; padding: 10px;\">{$price_total},-</th>
 				</tr>
 				<tr>
-					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce</strong>.<br>Nebo hotově správci zkušebny.</td >
+					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce ({$reservation_name})</strong>.<br>Nebo hotově správci zkušebny.</td >
 				</tr>
 				</tbody>
 			</table>

@@ -87,7 +87,7 @@ class AuthAdmin {
 			$this->forever = true;
 		}
 
-		$this->name = mysql_real_escape_string($name);
+		$this->name = mysqli_real_escape_string($this->sql_relace->get_connection(), $name);
 
 		$admin = $this->get_admin_by_name($this->name);
 

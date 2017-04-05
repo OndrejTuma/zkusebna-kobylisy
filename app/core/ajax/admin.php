@@ -171,7 +171,7 @@ switch ($action) {
 				</tr>
 				".($price_total > 0 ? "
 				<tr>
-					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>1242882944 / 2310</strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce ({$reservation["reservation_name"]})</strong>.<br>Nebo hotově správci zkušebny.</td>
+					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>".ZKUSEBNA_ACCOUNT_NUMBER."</strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce ({$reservation["reservation_name"]})</strong>.<br>Nebo hotově správci zkušebny.</td>
 				</tr>
 				" : "")."
 				<tr>

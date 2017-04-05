@@ -11,6 +11,7 @@ function __autoload($className){
 	}
 }
 
+//define("ZKUSEBNA_ROOT_URL", $_SERVER["DOCUMENT_ROOT"]. "/subdom/zkusebna/app/");
 define("ZKUSEBNA_ROOT_URL", $_SERVER["DOCUMENT_ROOT"]. "/app/");
 define("ZKUSEBNA_APACHE_ROOT_URL", "/");
 
@@ -24,6 +25,8 @@ define("ZKUSEBNA_CSS_URL", ZKUSEBNA_APACHE_ROOT_URL . "public/dist/css/");
 define("ZKUSEBNA_JS_URL", ZKUSEBNA_APACHE_ROOT_URL . "public/dist/js/");
 
 define("ZKUSEBNA_MAILING_FROM", "Zkušebna Kobylisy");
+
+define("ZKUSEBNA_ACCOUNT_NUMBER", "2101195475 / 2010");
 
 include_once(ZKUSEBNA_MODULES_URL . "logger.php");
 

@@ -17,7 +17,7 @@
 		<li>Vyplňte všechny požadované údaje jako název akce (např. svatba Josefky Novákové), jméno a kontakt toho, kdo si rezervuje a účel rezervace.</li>
 		<li>Vyberte si položky (u položek uvidíte, zda je možné je rezervovat).</li>
 		<li>Rezervaci odešlete a vyčkejte na její schválení.</li>
-		<li>Případnou platbu poukazujte na účet číslo <strong><?= ZKUSEBNA_ACCOUNT_NUMBER ?></strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce</strong>.<br>Nebo hotově správci zkušebny.</li>
+		<li>Případnou platbu poukazujte na účet číslo <strong><?= Zkusebna::getFormattedAccountNumber() ?></strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce</strong>.<br>Nebo hotově správci zkušebny.</li>
 	</ol>
 	<p class="h2">Pomoc, dotazy a připomínky na <strong>zkusebna.kobylisy@centrum.cz</strong></p>
 

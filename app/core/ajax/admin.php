@@ -171,7 +171,13 @@ switch ($action) {
 				</tr>
 				".($price_total > 0 ? "
 				<tr>
-					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>".ZKUSEBNA_ACCOUNT_NUMBER."</strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce ({$reservation["reservation_name"]})</strong>.<br>Nebo hotově správci zkušebny.</td>
+					<td colspan='2' style='padding: 10px;'>Platbu poukazujte na účet číslo <strong>".Zkusebna::getFormattedAccountNumber()."</strong> (preferujeme), <strong>do zprávy pro příjemce napište název akce ({$reservation["reservation_name"]})</strong>.<br>Nebo hotově správci zkušebny.</td>
+				</tr>
+				<tr>
+					<td colspan='2' style='text-align: center; border-top: 1px dashed #000; padding: 10px;'>
+						Případně, pokud používáte mobilní aplikaci internetového bankovnictví, můžete zaplatit přes následující QR kód:<br>
+						<img src='".Zkusebna::getPaymentQRCodeSrc($price_total, $reservation_name)."' alt='QR platba' width='150'>
+					</td>
 				</tr>
 				" : "")."
 				<tr>

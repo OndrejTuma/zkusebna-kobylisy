@@ -26,7 +26,10 @@ define("ZKUSEBNA_JS_URL", ZKUSEBNA_APACHE_ROOT_URL . "public/dist/js/");
 
 define("ZKUSEBNA_MAILING_FROM", "Zkušebna Kobylisy");
 
-define("ZKUSEBNA_ACCOUNT_NUMBER", "2101195475 / 2010");
+
+define("ZKUSEBNA_ACCOUNT_NUMBER", "2101195475");
+define("ZKUSEBNA_BANK_CODE", "2010");
+define("ZKUSEBNA_CURRENCY", "CZK");
 
 include_once(ZKUSEBNA_MODULES_URL . "logger.php");
 

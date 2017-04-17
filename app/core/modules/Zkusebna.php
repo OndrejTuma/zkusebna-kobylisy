@@ -97,6 +97,24 @@ class Zkusebna {
 
 		return $image_p;
 	}
+	public static function getFormattedAccountNumber() {
+		if (defined('ZKUSEBNA_ACCOUNT_NUMBER') && defined('ZKUSEBNA_BANK_CODE')) {
+			return ZKUSEBNA_ACCOUNT_NUMBER . ' / ' . ZKUSEBNA_BANK_CODE;
+		}
+		return '';
+	}
+	/**
+	 * Returns src to QR image
+	 * @param int $amount
+	 * @param string $message
+	 * @return string
+	 */
+	public static function getPaymentQRCodeSrc($amount, $message) {
+		if (defined('ZKUSEBNA_ACCOUNT_NUMBER') && defined('ZKUSEBNA_BANK_CODE') && defined('ZKUSEBNA_CURRENCY')) {
+			return "http://api.paylibo.com/paylibo/generator/czech/image?accountNumber=".ZKUSEBNA_ACCOUNT_NUMBER."&bankCode=".ZKUSEBNA_BANK_CODE."&amount=".(int)$amount."&currency=".ZKUSEBNA_CURRENCY."&message=" . urlencode($message);
+		}
+		return '';
+	}
 	public static function sendMail($recipient, $subject, $body, $from = null) {
 		$mail = new PHPMailer();
 		$mail->setFrom(

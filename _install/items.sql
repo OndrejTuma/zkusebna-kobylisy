@@ -21,7 +21,7 @@ PRIMARY KEY (id)
 CREATE TABLE zkusebna_reservation_purpose (
 id INT(6) AUTO_INCREMENT,
 title VARCHAR(40) NOT NULL,
-discount INT(3) NOT NULL,
+discount FLOAT(5) NOT NULL,
 PRIMARY KEY (id)
 )engine=InnoDB;
 

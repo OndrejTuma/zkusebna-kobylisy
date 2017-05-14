@@ -36,7 +36,7 @@ class Admin extends Zkusebna {
 		$query = "SELECT title FROM {$this->table_names["purpose"]} WHERE title = '{$purpose}'";
 		$rows = $this->sql->num_rows($query);
 		if (!$rows && !empty($purpose) && $discount >= 0) {
-			$query = "INSERT INTO {$this->table_names["purpose"]} (title,discount) VALUES ('{$purpose}'," . (int)$discount . ")";
+			$query = "INSERT INTO {$this->table_names["purpose"]} (title,discount) VALUES ('{$purpose}'," . (float)$discount . ")";
 			return $this->sql->query($query);
 		}
 		return false;

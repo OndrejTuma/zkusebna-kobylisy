@@ -1,4 +1,4 @@
-CREATE TABLE zkusebna_items (
+﻿CREATE TABLE zkusebna_items (
 id INT(6) AUTO_INCREMENT,
 name VARCHAR(100) NOT NULL,
 image VARCHAR(60) NOT NULL,
@@ -74,7 +74,7 @@ FOREIGN KEY (reservation_id) REFERENCES zkusebna_reservations(id)
 
 
 
-INSERT INTO zkusebna_admin (name,email,passwd) VALUES ('admin','ondr@centrum.cz',md5('heslo'));
+INSERT INTO zkusebna_admin (name,email,passwd) VALUES ('admin','ondr@centrum.cz',md5('Kobylisy5862'));
 INSERT INTO zkusebna_reservation_purpose (title,discount) VALUES ('Osobní účely',0), ('Akce farnosti',100);
 
 

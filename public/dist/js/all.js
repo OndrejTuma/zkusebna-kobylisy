@@ -6314,7 +6314,7 @@ $.datetimepicker.setLocale('cs');
 		_getReservedItemsPrice: function() {
 			var price = 0;
 			for (var i = 0; i < this.reservedItems.length; i++) {
-				price += Math.round(parseInt(this.reservableItems[this.reservedItems[i]].price) * (100 - parseInt(this.reservableItems[this.reservedItems[i]].discount)) / 100);
+				price += Math.round(parseFloat(this.reservableItems[this.reservedItems[i]].price) * (100 - parseFloat(this.reservableItems[this.reservedItems[i]].discount)) / 100);
 			}
 			return price;
 		},

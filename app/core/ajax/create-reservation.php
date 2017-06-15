@@ -72,8 +72,13 @@ else {
 
 		$items = new Items();
 		$items = $items->getItemsById($item_ids);
-		$price = array_reduce($items, function($carry, $item) { return $carry + $item['price']; });
-		$price_total = $price * (100 - (int)$reservation->getDiscount()) / 100;
+
+		$reduction = (100 - (float)$reservation->getDiscount()) / 100;
+		$price_total = 0;
+		foreach ($items as $item) {
+			$price_total += round($item['price'] * $reduction);
+		}
+
 		array_walk($items, function(&$item) { $item = $item["name"]; });
 
 		Zkusebna::sendMail($email, 'Rekapitulace rezervace', "

@@ -53,10 +53,14 @@ class Admin extends Zkusebna {
 			$reservation = $Reservation->getReservationById($reservationId);
 			$items = new Items();
 			$items = $items->getItemsById($Reservation->getReservationItems($reservationId));
-			$price = array_reduce($items, function($carry, $item) { return $carry + $item['price']; });
-			array_walk($items, function(&$item) { $item = $item["name"]; });
 
-			$price_total = $price * (100 - (int)$Reservation->getDiscount($reservationId)) / 100;
+			$reduction = (100 - (float)$Reservation->getDiscount($reservationId)) / 100;
+			$price_total = 0;
+			foreach ($items as $item) {
+				$price_total += round($item['price'] * $reduction);
+			}
+
+			array_walk($items, function(&$item) { $item = $item["name"]; });
 
 			Zkusebna::sendMail($reservation["email"], "Rezervace byla schválena", "
 <table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">

@@ -45,12 +45,12 @@
 			<legend>Zvolte termín vypůjčení</legend>
 			<ul class="table cols-2 pt mbn">
 				<li class="tar pr">
-<!--										<input type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="31.10.2016 08:00"/>-->
-					<input class="datetimepicker" data-role="render" type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" placeholder="Datum a čas výpůjčky"/>
+										<input type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="31.06.2017 08:00"/>
+<!--					<input class="datetimepicker" data-role="render" type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" placeholder="Datum a čas výpůjčky"/>-->
 				</li>
 				<li class="tal pl">
-<!--										<input type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="31.10.2016 12:00"/>-->
-					<input class="datetimepicker" data-role="render" type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" placeholder="Datum a čas navrácení"/>
+										<input type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="31.06.2017 12:00"/>
+<!--					<input class="datetimepicker" data-role="render" type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" placeholder="Datum a čas navrácení"/>-->
 				</li>
 			</ul>
 		</fieldset>
@@ -58,20 +58,20 @@
 			<legend>Vyplňte kontaktní údaje</legend>
 			<ul class="inline-blocks tac pt pln">
 				<li>
-<!--										<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" value="Mejdan!"/>-->
-					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" />
+										<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" value="Mejdan!"/>
+<!--					<input type="text" name="reservation_name" id="reservation_name" placeholder="Název akce" />-->
 				</li>
 				<li>
-<!--										<input type="text" name="name" id="name" placeholder="Celé jméno" value="Jafa Kree"/>-->
-					<input type="text" name="name" id="name" placeholder="Celé jméno"/>
+										<input type="text" name="name" id="name" placeholder="Celé jméno" value="Jafa Kree"/>
+<!--					<input type="text" name="name" id="name" placeholder="Celé jméno"/>-->
 				</li>
 				<li>
-<!--										<input type="text" name="phone" id="phone" placeholder="Telefon" value="123123123"/>-->
-					<input type="text" name="phone" id="phone" placeholder="Telefon"/>
+										<input type="text" name="phone" id="phone" placeholder="Telefon" value="123123123"/>
+<!--					<input type="text" name="phone" id="phone" placeholder="Telefon"/>-->
 				</li>
 				<li>
-<!--										<input type="email" name="email" id="email" placeholder="Email" value="ondr@centrum.cz"/>-->
-					<input type="email" name="email" id="email" placeholder="Email"/>
+										<input type="email" name="email" id="email" placeholder="Email" value="ondr@centrum.cz"/>
+<!--					<input type="email" name="email" id="email" placeholder="Email"/>-->
 				</li>
 				<li>
 					<?php

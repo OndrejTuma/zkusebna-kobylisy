@@ -211,7 +211,7 @@ class Admin extends Zkusebna {
 
 	private function _getReservarvations($where, $order_by = 'DESC', $limit = 500) {
 		$query = "
-SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, r.name as reservation_name, purpose as purpose_id, email, phone, image, payed, date_from, date_to, (date_to < NOW()) as archived, price, discount, title as purpose, repeat_to FROM {$this->table_names["reservations"]} as r
+SELECT r.id as id, i.id as item_id, c.name as who, i.name as item_name, r.name as reservation_name, purpose as purpose_id, email, phone, image, payed, date_from, date_to, (date_to < NOW()) as archived, r.price, i.price as item_price, discount, title as purpose, repeat_to FROM {$this->table_names["reservations"]} as r
 LEFT JOIN {$this->table_names["r-i"]} as ri ON ri.reservation_id = r.id
 LEFT JOIN {$this->table_names["items"]} as i ON i.id = ri.item_id
 LEFT JOIN {$this->table_names["community"]} as c ON c.id = r.who
@@ -224,6 +224,7 @@ ORDER BY date_to {$order_by}
 		$reservations = array();
 		foreach ($this->sql->field_assoc($query) as $reservation) {
 			$reservations[$reservation['id']]["reservation_name"] = $reservation['reservation_name'];
+			$reservations[$reservation['id']]["price"] = $reservation['price'];
 			$reservations[$reservation['id']]["who"] = $reservation['who'];
 			$reservations[$reservation['id']]["payed"] = $reservation['payed'];
 			$reservations[$reservation['id']]["email"] = $reservation['email'];
@@ -241,7 +242,7 @@ ORDER BY date_to {$order_by}
 				"id" => $reservation['item_id'],
 				"name" => $reservation['item_name'],
 				"image" => $reservation['image'],
-				"price" => round($reservation['price'] * (1 - $reservation['discount'] / 100))
+				"price" => round($reservation['item_price'] * (1 - $reservation['discount'] / 100))
 			);
 		}
 
@@ -253,11 +254,6 @@ ORDER BY date_to {$order_by}
 			$has_archived_reservations = false;
 			$output = "<ol>";
 			foreach ($reservations as $id => $reservation) {
-				$price = 0;
-				foreach ($reservation["items"] as $item) {
-					$price += $item['price'];
-				}
-
 				if ($reservation["archived"]) {
 					$has_archived_reservations = true;
 				}
@@ -265,7 +261,7 @@ ORDER BY date_to {$order_by}
 				$output .= "<li data-id='{$id}' class='" . ($reservation["archived"] ? "archived" : "") . "'><strong class='expandable'>{$reservation["reservation_name"]} <small>({$reservation["who"]})</small></strong> ";
 				$output .= "<small>" . Zkusebna::parseSQLDate($reservation['date_from']) . " - " . Zkusebna::parseSQLDate($reservation[$repeated ? 'repeat_to' : 'date_to']) . "</small> ";
 
-				if ($price > 0) {
+				if ($reservation['price'] > 0) {
 					$output .= "<span data-toggle-0-class='red' data-toggle-1-class='green' data-toggle-0-message='Označit jako zaplacenou' data-toggle-1-message='Označit jako nezaplacenou' data-table='reservations' data-column='payed' data-id='{$id}' class='tooltip toggleable payed icon-coin ".($reservation["payed"] ? "green" : "red")."' data-message='".($reservation["payed"] ? "Označit jako nezaplacenou" : "Označit jako zaplacenou")."'></span>";
 				}
 
@@ -279,7 +275,7 @@ ORDER BY date_to {$order_by}
 					$output .= "<li>{$item["name"]} <i data-item='{$item["id"]}' class='delete-item icon-close'></i> <em>{$item['price']}</em></li>";
 				}
 				$output .= "</ul>";
-				$output .= "<em class='tooltip change-purpose' data-item='{$id}' data-purpose='{$reservation["purpose"]["id"]}' data-message='Účel rezervace: <strong>{$reservation["purpose"]["title"]}</strong><br>Plošná sleva: <strong>{$reservation["purpose"]["discount"]}%</strong>'>{$price}</em>";
+				$output .= "<em class='tooltip change-purpose' data-item='{$id}' data-purpose='{$reservation["purpose"]["id"]}' data-message='Účel rezervace: <strong>{$reservation["purpose"]["title"]}</strong><br>Plošná sleva: <strong>{$reservation["purpose"]["discount"]}%</strong>'>{$reservation['price']}</em>";
 				$output .= "</li>";
 			}
 			$output .= "</ol>";

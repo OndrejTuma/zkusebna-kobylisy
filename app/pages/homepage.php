@@ -2,6 +2,19 @@
 	<?php if($auth->is_logged()): ?>
 		<!--a class="button" href="?page=admin">Zpět</a-->
 		<p class="fr"><a href="?page=admin&logout" class="button--red">Odhlásit</a></p>
+		<button onclick="$.ajax({
+				method: 'POST',
+				url: AJAX_URL + 'fill-reservation-price.php',
+				dataType: 'json',
+				data: '',
+				success: function(result) {
+					console.log(result);
+				},
+				error: function(e) {
+					alert(error);
+					console.log(e);
+				}
+		})">fill prices</button>
 	<?php else: ?>
 		<!--a class="button" href="<?= ZKUSEBNA_APACHE_ROOT_URL ?>">Zpět</a-->
 	<?php endif; ?>
@@ -45,11 +58,11 @@
 			<legend>Zvolte termín vypůjčení</legend>
 			<ul class="table cols-2 pt mbn">
 				<li class="tar pr">
-										<input type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky" value="31.06.2017 08:00"/>
+										<input value="5.11.2017 08:00" type="text" name="date_from" data-role="render" id="date_from" class="datetimepicker" data-date-type="from" data-connected-to="#date_to"  placeholder="Datum a čas výpůjčky"/>
 <!--					<input class="datetimepicker" data-role="render" type="text" name="date_from" id="date_from" data-date-type="from" data-connected-to="#date_to" placeholder="Datum a čas výpůjčky"/>-->
 				</li>
 				<li class="tal pl">
-										<input type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení" value="31.06.2017 12:00"/>
+										<input value="05.11.2017 12:00" type="text" name="date_to" data-role="render" id="date_to" class="datetimepicker" data-date-type="to" data-connected-to="#date_from"  placeholder="Datum a čas navrácení"/>
 <!--					<input class="datetimepicker" data-role="render" type="text" name="date_to" id="date_to" data-date-type="to" data-connected-to="#date_from" placeholder="Datum a čas navrácení"/>-->
 				</li>
 			</ul>
@@ -107,5 +120,5 @@
 	</div>
 
 	<div id="items-wrapper"></div>
-	
+
 </main>

@@ -79,6 +79,8 @@ else {
 			$price_total += round($item['price'] * $reduction);
 		}
 
+		$reservation->setPrice($price_total);
+
 		array_walk($items, function(&$item) { $item = $item["name"]; });
 
 		Zkusebna::sendMail($email, 'Rekapitulace rezervace', "
@@ -148,7 +150,7 @@ else {
 	<tr>
 		<td>
 			<h2 style=\"font-size: 30px; font-weight: 400; margin: 0 0 20px;\">Čauko,</h2>
-			<p>na stránkách zkušebny vykvetla nová rezervace <strong>{$reservation_name}</strong> na jméno {$name} za ".($price * (100 - (int)$reservation->getDiscount()) / 100).",-</p>
+			<p>na stránkách zkušebny vykvetla nová rezervace <strong>{$reservation_name}</strong> na jméno {$name} za {$price_total},-</p>
 			<p style=\"text-align: center; margin: 50px auto;\">Tak se co nejdřív mrkni o co jde</p>
 		</td>
 	</tr>

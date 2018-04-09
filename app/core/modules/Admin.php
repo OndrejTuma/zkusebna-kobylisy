@@ -42,6 +42,26 @@ class Admin extends Zkusebna {
 		return false;
 	}
 
+	public function getReservationPrice($reservationId) {
+        $Reservation = new Reservation();
+        $Items = new Items();
+        $reduction = (100 - (float)$Reservation->getDiscount($reservationId)) / 100;
+
+        $items = $Items->getItemsById($Reservation->getReservationItems($reservationId));
+
+        $price_total = 0;
+        foreach ($items as $item) {
+            $price_total += round($item['price'] * $reduction);
+        }
+
+        return $price_total;
+    }
+    public function updateReservationPrice($reservationId, $price) {
+        $query = "UPDATE {$this->table_names["reservations"]} SET price = {$price} WHERE id = " . (int)$reservationId;
+
+        return $this->sql->query($query);
+    }
+
 	/**
 	 * approves reservation
 	 * @param $reservationId
@@ -49,18 +69,14 @@ class Admin extends Zkusebna {
 	public function approveReservation($reservationId) {
 		$query = "UPDATE {$this->table_names["reservations"]} SET approved = 1 WHERE id = " . (int)$reservationId;
 		if ($this->sql->query($query)) {
-			$Reservation = new Reservation();
-			$reservation = $Reservation->getReservationById($reservationId);
-			$items = new Items();
-			$items = $items->getItemsById($Reservation->getReservationItems($reservationId));
+            $price_total = $this->getReservationPrice($reservationId);
 
-			$reduction = (100 - (float)$Reservation->getDiscount($reservationId)) / 100;
-			$price_total = 0;
-			foreach ($items as $item) {
-				$price_total += round($item['price'] * $reduction);
-			}
+            $Reservation = new Reservation();
+            $reservation = $Reservation->getReservationById($reservationId);
 
-			array_walk($items, function(&$item) { $item = $item["name"]; });
+            $items = new Items();
+            $items = $items->getItemsById($Reservation->getReservationItems($reservationId));
+            array_walk($items, function(&$item) { $item = $item["name"]; });
 
 			Zkusebna::sendMail($reservation["email"], "Rezervace byla schválena", "
 <table style=\"max-width: 600px; margin: 20px auto; color: #333; font-family: Arial, Helvetica, sans-serif; font-size: 17px;\">
@@ -100,7 +116,7 @@ class Admin extends Zkusebna {
 				<tr>
 					<td colspan='2' style='text-align: center; border-top: 1px dashed #000; padding: 10px;'>
 						Případně, pokud používáte mobilní aplikaci internetového bankovnictví, můžete zaplatit přes následující QR kód:<br>
-						<img src='".Zkusebna::getPaymentQRCodeSrc($price_total, $reservation_name)."' alt='QR platba' width='150'>
+						<img src='".Zkusebna::getPaymentQRCodeSrc($price_total, $reservation["reservation_name"])."' alt='QR platba' width='150'>
 					</td>
 				</tr>
 				" : "")."
@@ -193,8 +209,14 @@ class Admin extends Zkusebna {
 	}
 	public function deleteReservationItem($itemId, $reservationId) {
 		$query = "DELETE FROM {$this->table_names["r-i"]} WHERE reservation_id = {$reservationId} AND item_id = {$itemId}";
-		return $this->sql->query($query);
-	}
+
+		if ($this->sql->query($query)) {
+            return $this->updateReservationPrice(
+                $reservationId,
+                $this->getReservationPrice($reservationId)
+            );
+        }
+    }
 	public function renderApprovedReservations() {
 		return $this->_renderReservations($this->_getReservarvations("repetition IS NULL AND approved = 1", 'ASC'));
 	}
